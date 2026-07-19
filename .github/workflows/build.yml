@@ -41,12 +41,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Generate missing source files
+      - name: Create stub gradle at Termux path
         run: |
-          # Remove the Termux-specific Gradle subprocess call (causes FileNotFoundError on CI)
-          sed -i '/subprocess.run.*gradle-bin/,/exit(1)/d' compile_master_apk_final_v2.py
-          sed -i '/RUNNING GRADLE/d' compile_master_apk_final_v2.py
-          python3 compile_master_apk_final_v2.py || true
+          mkdir -p /home/user/gradle-bin/gradle-8.5/bin
+          echo '#!/bin/bash' > /home/user/gradle-bin/gradle-8.5/bin/gradle
+          echo 'echo "Stub gradle - skipping Termux build"' >> /home/user/gradle-bin/gradle-8.5/bin/gradle
+          echo 'exit 0' >> /home/user/gradle-bin/gradle-8.5/bin/gradle
+          chmod +x /home/user/gradle-bin/gradle-8.5/bin/gradle
+
+      - name: Generate missing source files via compile script
+        run: python3 compile_master_apk_final_v2.py
 
       - name: Apply visual and import patches
         run: python3 ci_patch.py
