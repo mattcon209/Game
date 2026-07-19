@@ -117,6 +117,11 @@ fun DiceFace3D(value: Int, size: Int = 44) {
         c = c.replace('import androidx.compose.foundation.Canvas', 'import androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background')
     if 'import androidx.compose.ui.text.font.FontWeight' not in c and 'FontWeight' not in c:
         pass  # Text doesn't need FontWeight here
+    # Add missing imports for the new DiceFace3D
+    if 'import androidx.compose.foundation.border' not in c:
+        c = c.replace('import androidx.compose.foundation.Canvas', 'import androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.border')
+    if 'import androidx.compose.ui.unit.sp' not in c:
+        c = c.replace('import androidx.compose.ui.unit.dp', 'import androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.sp')
     with open(pillars_path, 'w') as f:
         f.write(c)
     print("  ✓ PillarsOfSummoning.kt patched")
