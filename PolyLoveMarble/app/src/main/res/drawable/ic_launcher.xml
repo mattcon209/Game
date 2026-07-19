@@ -1,0 +1,74 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Velvet Obsidian Background -->
+    <path
+        android:pathData="M0,0h108v108h-108z"
+        android:fillColor="#07040B"/>
+    
+    <!-- Outer Gothic Silver/Metallic Runic Ring Frame -->
+    <path
+        android:pathData="M54,54m-46,0a46,46 0,1 1,92 0a46,46 0,1 1,-92 0"
+        android:strokeColor="#7A7A8A"
+        android:strokeWidth="1.8"
+        android:fillColor="#140D1E"/>
+    <path
+        android:pathData="M54,54m-41,0a41,41 0,1 1,82 0a41,41 0,1 1,-82 0"
+        android:strokeColor="#C5A059"
+        android:strokeWidth="1"
+        android:strokeLineJoin="round"/>
+
+    <!-- Left Spreading Bat Wing with Silver Horn -->
+    <path
+        android:pathData="M54,54 C34,24 24,34 10,48 C24,64 38,68 50,60 C40,58 35,46 44,44 Z"
+        android:fillColor="#8B0000"/>
+    <path
+        android:pathData="M44,44 C34,24 24,34 10,48"
+        android:strokeColor="#7A7A8A"
+        android:strokeWidth="1.2"/>
+    <path
+        android:pathData="M10,48 C24,64 38,68 50,60"
+        android:strokeColor="#C5A059"
+        android:strokeWidth="1"/>
+
+    <!-- Right Spreading Bat Wing with Silver Horn -->
+    <path
+        android:pathData="M54,54 C74,24 84,34 98,48 C84,64 70,68 58,60 C68,58 73,46 64,44 Z"
+        android:fillColor="#8B0000"/>
+    <path
+        android:pathData="M64,44 C74,24 84,34 98,48"
+        android:strokeColor="#7A7A8A"
+        android:strokeWidth="1.2"/>
+    <path
+        android:pathData="M98,48 C84,64 70,68 58,60"
+        android:strokeColor="#C5A059"
+        android:strokeWidth="1"/>
+
+    <!-- Central Seductive Glossy Red Heart -->
+    <path
+        android:pathData="M54,72 C54,72 26,52 26,38 C26,26 38,20 46,30 C50,34 54,36 54,36 C54,36 58,34 62,30 C70,20 82,26 82,38 C82,52 54,72 54,72 Z"
+        android:fillColor="#E50914"/>
+    <path
+        android:pathData="M54,72 C54,72 26,52 26,38 C26,26 38,20 46,30 C50,34 54,36 54,36 C54,36 58,34 62,30 C70,20 82,26 82,38 C82,52 54,72 54,72 Z"
+        android:strokeColor="#C5A059"
+        android:strokeWidth="1.8"/>
+
+    <!-- Glowing Golden Keyhole in Center of Heart -->
+    <path
+        android:pathData="M54,48m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0"
+        android:fillColor="#FFD700"/>
+    <path
+        android:pathData="M52.5,48 L55.5,48 L56.5,58 L51.5,58 Z"
+        android:fillColor="#FFD700"/>
+    
+    <!-- Brilliant Gold/White Star at Top Cleft of Heart -->
+    <path
+        android:pathData="M54,20 L55.5,25 L60,26 L55.5,27 L54,32 L52.5,27 L48,26 L52.5,25 Z"
+        android:fillColor="#FFF"/>
+    <path
+        android:pathData="M54,20 L55.5,25 L60,26 L55.5,27 L54,32 L52.5,27 L48,26 L52.5,25 Z"
+        android:strokeColor="#FFD700"
+        android:strokeWidth="0.5"/>
+</vector>
