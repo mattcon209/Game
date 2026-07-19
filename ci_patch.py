@@ -129,3 +129,16 @@ if os.path.exists(gradle_path):
         print("  ✓ build.gradle.kts patched (icons-extended)")
 
 print("=== All CI patches applied ===")
+
+# 7. Fix OutOfMemoryError - increase JVM metaspace for Kotlin compiler
+gradle_props = "PolyLoveMarble/gradle.properties"
+if os.path.exists(gradle_props):
+    with open(gradle_props, 'r') as f:
+        c = f.read()
+    if 'MaxMetaspaceSize' not in c:
+        c = c.rstrip() + '\norg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError\nkotlin.daemon.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g\n'
+        with open(gradle_props, 'w') as f:
+            f.write(c)
+        print("  ✓ gradle.properties patched (JVM memory increased)")
+
+print("=== All CI patches applied ===")
