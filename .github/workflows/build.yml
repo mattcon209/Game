@@ -101,6 +101,124 @@ jobs:
                   with open(cui_path, 'w') as f:
                       f.write(c)
                   print("  ✓ Patched CommonUI.kt (added Canvas import)")
+
+          # Fix CommonUI.kt - add CornerRadius import
+          if os.path.exists(cui_path):
+              with open(cui_path, 'r') as f:
+                  c = f.read()
+              if 'import androidx.compose.ui.geometry.CornerRadius' not in c:
+                  c = c.replace(
+                      'import androidx.compose.ui.geometry.Offset',
+                      'import androidx.compose.ui.geometry.CornerRadius\nimport androidx.compose.ui.geometry.Offset'
+                  )
+                  with open(cui_path, 'w') as f:
+                      f.write(c)
+                  print("  ✓ Patched CommonUI.kt (added CornerRadius import)")
+
+          # Fix GrimoireOfSafety.kt - replace Book icon with MenuBook or text
+          gos_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/GrimoireOfSafety.kt"
+          if os.path.exists(gos_path):
+              with open(gos_path, 'r') as f:
+                  c = f.read()
+              c = c.replace('Icons.Filled.Book', 'Icons.Filled.MenuBook')
+              if 'import androidx.compose.material.icons.filled.MenuBook' not in c:
+                  c = c.replace(
+                      'import androidx.compose.material.icons.filled.*',
+                      'import androidx.compose.material.icons.filled.*\nimport androidx.compose.material.icons.filled.MenuBook'
+                  )
+              with open(gos_path, 'w') as f:
+                  f.write(c)
+              print("  ✓ Patched GrimoireOfSafety.kt (Book -> MenuBook)")
+
+          # Fix SetupScreen.kt - add missing imports
+          setup_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/SetupScreen.kt"
+          if os.path.exists(setup_path):
+              with open(setup_path, 'r') as f:
+                  c = f.read()
+              if 'import androidx.compose.ui.draw.shadow' not in c:
+                  c = c.replace(
+                      'import androidx.compose.ui.draw.clip',
+                      'import androidx.compose.ui.draw.clip\nimport androidx.compose.ui.draw.shadow'
+                  )
+              c = c.replace('Icons.Filled.Remove', 'Icons.Filled.Delete')
+              with open(setup_path, 'w') as f:
+                  f.write(c)
+              print("  ✓ Patched SetupScreen.kt (shadow import + Remove->Delete)")
+
+          # Fix PillarsOfSummoning.kt - replace image-based dice with canvas-drawn dice
+          if os.path.exists(pillars_path):
+              with open(pillars_path, 'r') as f:
+                  c = f.read()
+              # Replace the DiceFace3D function that uses missing drawable resources
+              old_dice = """@Composable
+fun DiceFace3D(value: Int, size: Int = 44) {
+    val resId = when (value) {
+        1 -> R.drawable.gothic_dice_1
+        2 -> R.drawable.gothic_dice_2
+        3 -> R.drawable.gothic_dice_3
+        4 -> R.drawable.gothic_dice_4
+        5 -> R.drawable.gothic_dice_5
+        6 -> R.drawable.gothic_dice_6
+        else -> R.drawable.gothic_dice_1
+    }
+
+    Box(
+        modifier = Modifier
+            .size(size.dp)
+            .shadow(6.dp, RoundedCornerShape(10.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = resId),
+            contentDescription = "Dice Face $value",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}"""
+              new_dice = """@Composable
+fun DiceFace3D(value: Int, size: Int = 44) {
+    Box(
+        modifier = Modifier
+            .size(size.dp)
+            .shadow(6.dp, RoundedCornerShape(10.dp))
+            .background(Color(0xFF2D1B3E), RoundedCornerShape(10.dp))
+            .border(1.5.dp, Color(0xFFC5A059), RoundedCornerShape(10.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = when(value) {
+                1 -> "⚀"; 2 -> "⚁"; 3 -> "⚂"
+                4 -> "⚃"; 5 -> "⚄"; 6 -> "⚅"; else -> "⚀"
+            },
+            fontSize = (size * 0.6).sp,
+            color = Color.White
+        )
+    }
+}"""
+              if old_dice in c:
+                  c = c.replace(old_dice, new_dice)
+              else:
+                  # Try a simpler replacement - just replace the R.drawable references
+                  import re
+                  c = re.sub(r'R\.drawable\.gothic_dice_\d', '0', c)
+              with open(pillars_path, 'w') as f:
+                  f.write(c)
+              print("  ✓ Patched PillarsOfSummoning.kt (dice drawables -> unicode)")
+
+          # Add material-icons-extended dependency to build.gradle.kts
+          gradle_path = "PolyLoveMarble/app/build.gradle.kts"
+          if os.path.exists(gradle_path):
+              with open(gradle_path, 'r') as f:
+                  c = f.read()
+              if 'material-icons-extended' not in c:
+                  c = c.replace(
+                      'implementation(libs.androidx.compose.material3)',
+                      'implementation(libs.androidx.compose.material3)\n    implementation(libs.androidx.compose.material.icons.extended)'
+                  )
+                  with open(gradle_path, 'w') as f:
+                      f.write(c)
+                  print("  ✓ Added material-icons-extended dependency")
           PATCH
 
       - name: Build Debug APK
