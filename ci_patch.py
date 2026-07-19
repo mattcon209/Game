@@ -315,6 +315,11 @@ if os.path.exists(cui_path):
         c = c.replace(old_btn_structure, new_btn_structure)
         with open(cui_path, 'w') as f:
             f.write(c)
+        # Ensure alpha import
+        if 'import androidx.compose.ui.draw.alpha' not in c:
+            c = c.replace('import androidx.compose.ui.draw.clip', 'import androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.draw.clip')
+            with open(cui_path, 'w') as f:
+                f.write(c)
         print("  ✓ LeatherStrapButton: capsule removed, PNG used directly")
     else:
         # Try without the background line (in case previous patch didn't add it)
