@@ -271,6 +271,81 @@ if os.path.exists(cui_path):
         f.write(c)
     print("  ✓ CommonUI.kt patched (button background added)")
 
+
+# 10. Fix buttons - replace broken JPEG images with code-drawn gradient buttons
+# Fix LeatherStrapButton in CommonUI.kt
+cui_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/CommonUI.kt"
+if os.path.exists(cui_path):
+    with open(cui_path, 'r') as f:
+        c = f.read()
+    # Replace the Image inside LeatherStrapButton with a gradient + text
+    old_btn_image = """Image(
+            painter = painterResource(id = R.drawable.begin_session_btn),
+            contentDescription = text,
+            contentScale = ContentScale.Crop, // Crops and fits perfectly
+            modifier = Modifier.fillMaxSize()
+        )"""
+    new_btn_content = """Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(Color(0xFF4A0020), Color(0xFF8B0040), Color(0xFF4A0020))
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text.uppercase(),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Black,
+                color = Color.White,
+                letterSpacing = 2.sp
+            )
+        }"""
+    if old_btn_image in c:
+        c = c.replace(old_btn_image, new_btn_content)
+        # Ensure needed imports
+        if 'import androidx.compose.ui.text.font.FontWeight' not in c:
+            c = c.replace('import androidx.compose.ui.graphics.Color', 'import androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.text.font.FontWeight')
+        if 'import androidx.compose.ui.unit.sp' not in c:
+            c = c.replace('import androidx.compose.ui.unit.dp', 'import androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.sp')
+        with open(cui_path, 'w') as f:
+            f.write(c)
+        print("  ✓ LeatherStrapButton: replaced image with gradient+text")
+
+# Fix Open Creation Mode button in SetupScreen.kt
+setup_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/SetupScreen.kt"
+if os.path.exists(setup_path):
+    with open(setup_path, 'r') as f:
+        c = f.read()
+    old_creation_img = """Image(
+                            painter = painterResource(id = R.drawable.open_creation_btn),
+                            contentDescription = "Open Creation Mode",
+                            contentScale = ContentScale.Crop, // Crops and fits perfectly
+                            modifier = Modifier.fillMaxSize()
+                        )"""
+    new_creation_content = """Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFF1A0030), Color(0xFF3D0060), Color(0xFF1A0030))
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("Open Creation Mode", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = BrassGold)
+                                Text("/ Spellbook Editor", fontSize = 12.sp, color = Color.White)
+                            }
+                        }"""
+    if old_creation_img in c:
+        c = c.replace(old_creation_img, new_creation_content)
+        with open(setup_path, 'w') as f:
+            f.write(c)
+        print("  ✓ Open Creation button: replaced image with gradient+text")
+
 # 7. Fix OutOfMemoryError - REPLACE restrictive Termux memory limits with CI-appropriate values
 gradle_props = "PolyLoveMarble/gradle.properties"
 if os.path.exists(gradle_props):
