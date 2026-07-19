@@ -60,7 +60,7 @@ fun BoardScreen(viewModel: GameViewModel) {
     val activePlayer = viewModel.players[viewModel.currentPlayerIndex]
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current.density
-
+    
     val infiniteTransition = rememberInfiniteTransition(label = "Pulse")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1.0f,
@@ -74,8 +74,8 @@ fun BoardScreen(viewModel: GameViewModel) {
 
     // Cinematic camera and Turn-Start prompt states
     var showTurnStartPrompt by remember { mutableStateOf(true) }
-    var pendingLandingTile by remember { mutableStateOf<Tile?>(null) }
-
+    var pendingLandingTile by remember { mutableStateOf<Tile?>(null) } // POP-UP LANDING STATE!
+    
     // Automatically reveal turn-start prompt on player turn change
     LaunchedEffect(viewModel.currentPlayerIndex) {
         showTurnStartPrompt = true
@@ -83,19 +83,19 @@ fun BoardScreen(viewModel: GameViewModel) {
 
     // Determine camera focus tile index
     val focusTileIndex = if (viewModel.animatedPlayerIndex != -1) {
-        viewModel.animatedPlayerTargetTile
+        viewModel.animatedPlayerTargetTile // Follow meeple as it leaps!
     } else {
         activePlayer.position
     }
 
-    // FIXED: Reduced zoom from 1.9x to 1.25x - keeps board visible while giving mild focus
+    // Determine target zoom: 1x on Turn-Start (zoomed out), 1.9x during zoom follow
     val targetZoom = if (showTurnStartPrompt) 1.0f else 1.25f
 
     // Calculate target focal coordinates percentages based on focus cell index
     val (col, row) = BoardCreator.getGridCoordinates(focusTileIndex, viewModel.gridSize)
     val cellCenterPercentX = (col + 0.5f) / viewModel.gridSize
     val cellCenterPercentY = (row + 0.5f) / viewModel.gridSize
-
+    
     // Center is 0.5f. Calculate pan percentage displacement
     val targetPanXPercent = if (showTurnStartPrompt) 0f else (0.5f - cellCenterPercentX) * targetZoom
     val targetPanYPercent = if (showTurnStartPrompt) 0f else (0.5f - cellCenterPercentY) * targetZoom
@@ -103,17 +103,17 @@ fun BoardScreen(viewModel: GameViewModel) {
     // Animate zoom and pan floats smoothly
     val animZoom by animateFloatAsState(
         targetValue = targetZoom,
-        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 1100, easing = FastOutSlowInEasing),
         label = "CinematicZoom"
     )
     val animPanXPercent by animateFloatAsState(
         targetValue = targetPanXPercent,
-        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 1100, easing = FastOutSlowInEasing),
         label = "CinematicPanX"
     )
     val animPanYPercent by animateFloatAsState(
         targetValue = targetPanYPercent,
-        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 1100, easing = FastOutSlowInEasing),
         label = "CinematicPanY"
     )
 
@@ -127,9 +127,8 @@ fun BoardScreen(viewModel: GameViewModel) {
         val listener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event != null) {
-                    // Smoothed tilt with damping to prevent jitter
-                    tiltX = tiltX * 0.85f + event.values[0] * 0.15f
-                    tiltY = tiltY * 0.85f + event.values[1] * 0.15f
+                    tiltX = tiltX * 0.85f + event.values[0] * 0.15f // Yaw tilt
+                    tiltY = tiltY * 0.85f + event.values[1] * 0.15f // Pitch tilt
                 }
             }
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -142,7 +141,7 @@ fun BoardScreen(viewModel: GameViewModel) {
         }
     }
 
-    // Background drifting ash/embers particle engine simulation
+    // Background drifting ash/embers particle engine simulation (Juice!)
     val particles = remember { mutableStateListOf<EmberParticle>() }
     LaunchedEffect(Unit) {
         repeat(15) {
@@ -191,34 +190,7 @@ fun BoardScreen(viewModel: GameViewModel) {
         }
     }
 
-    // Real-Time seconds countdown tick timer engine
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000)
-            val expired = ArrayList<Constraint>()
-            viewModel.activeConstraints.forEach { constraint ->
-                if (constraint.durationUnit == "seconds" || constraint.durationUnit == "minutes") {
-                    if (constraint.remainingSeconds > 0) {
-                        constraint.remainingSeconds--
-                        if (constraint.remainingSeconds == 0) {
-                            expired.add(constraint)
-                        }
-                    }
-                }
-            }
-            if (expired.isNotEmpty()) {
-                expired.forEach { constraint ->
-                    viewModel.activeConstraints.remove(constraint)
-                    viewModel.constraintAlertTitle = "🕰️ TIME'S UP! 🔓"
-                    viewModel.constraintAlertText = "${constraint.playerName} has completed and is released from their constraint:\n\n'${constraint.description}'"
-                    viewModel.showConstraintAlert = true
-                    soundManager.play("shuffle")
-                }
-            }
-        }
-    }
-
-    // Apply Screen shake offset values locally
+    // Apply Screen shake offset values locally (Visual Juice!)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -280,17 +252,17 @@ fun BoardScreen(viewModel: GameViewModel) {
                                 },
                                 fontSize = 11.sp,
                                 color = Color.LightGray
-                            )
+                             )
                         }
-                        // Animated 3D Mini-Pawn Preview
+                        // Animated 3D Mini-Pawn Preview with bat wings!
                         Box(modifier = Modifier.size(24.dp)) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                drawGamePawn(color = activePlayer.color, x = size.width / 2, y = size.height / 2, size = 18f * density)
+                                drawGamePawn(color = activePlayer.color, x = size.width/2, y = size.height/2, size = 18f * density)
                             }
                         }
                     }
                 }
-
+                
                 // Main Board Area (Responsive scaling with Camera viewport!)
                 BoxWithConstraints(
                     modifier = Modifier
@@ -302,7 +274,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                     val totalWidth = maxWidth
                     val cellSize = totalWidth / viewModel.gridSize
                     val totalWidthPx = with(LocalDensity.current) { maxWidth.toPx() }
-
+                    
                     // Convert animated pan percentages to screen translation pixels
                     val animPanX = animPanXPercent * totalWidthPx
                     val animPanY = animPanYPercent * totalWidthPx
@@ -311,7 +283,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                         modifier = Modifier
                             .fillMaxSize()
                             .border(1.5.dp, SeductiveViolet.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                            .clip(RoundedCornerShape(12.dp)) // FIXED: Clip board edges to prevent overflow bleed
+                            .clip(RoundedCornerShape(12.dp))
                     ) {
                         // CINEMATIC GRAPHICS VIEWPORT wrapper
                         Box(
@@ -324,16 +296,15 @@ fun BoardScreen(viewModel: GameViewModel) {
                                     translationY = animPanY
                                 }
                         ) {
-                            // Render 2.5D Isometric Columns - FIXED: draw order is correct for painter's algorithm
-                            // viewModel.board is in index order (row-major), so back rows draw first
+                            // Render 2.5D Isometric Columns with chosen theme skin!
                             viewModel.board.forEach { tile ->
-                                val (tileCol, tileRow) = BoardCreator.getGridCoordinates(tile.index, viewModel.gridSize)
-                                val leftOffset = cellSize * tileCol
-                                val topOffset = cellSize * tileRow
-
+                                val (col, row) = BoardCreator.getGridCoordinates(tile.index, viewModel.gridSize)
+                                val leftOffset = cellSize * col
+                                val topOffset = cellSize * row
+                                
                                 val playersOnThisTile = viewModel.players.filter { it.position == tile.index && viewModel.animatedPlayerIndex != it.id }
                                 val isActivePlayerOnThisTile = playersOnThisTile.any { it.id == activePlayer.id }
-
+                                
                                 Box(
                                     modifier = Modifier
                                         .size(cellSize)
@@ -350,16 +321,13 @@ fun BoardScreen(viewModel: GameViewModel) {
                                         skin = viewModel.selectedSkin,
                                         modifier = Modifier.fillMaxSize()
                                     )
-
-                                    // 3D glossy game pawns/meeples - FIXED: offset matches new 1.7x pillar height
-                                    // Cap center is at -0.275 * cellSize from cell top
-                                    // Pawn box center without offset = 0.5 * cellSize
-                                    // So offset = -0.275 - 0.5 = -0.775, rounded to -0.75
+                                    
+                                    // 3D glossy game pawns/meeples stand centered and OFFSET UPWARDS TO PREVENT SQUISHING!
                                     if (playersOnThisTile.isNotEmpty()) {
                                         Box(
                                             modifier = Modifier
                                                 .fillMaxSize()
-                                                .offset(y = cellSize * -0.75f),
+                                                .offset(y = cellSize * -0.75f), // Offset up so meeple base sits exactly on the 3x scaled column caps!
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Row(
@@ -370,15 +338,15 @@ fun BoardScreen(viewModel: GameViewModel) {
                                                 playersOnThisTile.forEach { playerOnTile ->
                                                     Box(
                                                         modifier = Modifier
-                                                            .size(if (viewModel.gridSize == 6) 28.dp else 34.dp)
+                                                            .size(if (viewModel.gridSize == 6) 30.dp else 36.dp)
                                                             .padding(horizontal = 0.5.dp)
                                                     ) {
-                                                        Canvas(modifier = Modifier.fillMaxSize()) {
+                                                        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
                                                             drawGamePawn(
                                                                 color = playerOnTile.color,
                                                                 x = size.width / 2,
                                                                 y = size.height / 2,
-                                                                size = (if (viewModel.gridSize == 6) 20f else 24f) * density
+                                                                size = (if (viewModel.gridSize == 6) 24f else 28f) * density
                                                             )
                                                         }
                                                     }
@@ -386,25 +354,28 @@ fun BoardScreen(viewModel: GameViewModel) {
                                             }
                                         }
                                     }
-
-                                    // Meeple active leaps rendering
+                                    
+                                    // Meeple active leaps rendering path
                                     if (viewModel.animatedPlayerIndex != -1 && tile.index == viewModel.animatedPlayerTargetTile) {
                                         val activeLeapingPlayer = viewModel.players.firstOrNull { it.id == viewModel.animatedPlayerIndex }
                                         if (activeLeapingPlayer != null) {
+                                            // Compute jumping arc offsets
                                             val progress = viewModel.animatedPlayerStepProgress
-                                            val arcY = -kotlin.math.sin(progress * Math.PI).toFloat() * 28f * density
-
+                                            val arcY = -kotlin.math.sin(progress * Math.PI).toFloat() * 32f * density
+                                            
+                                            // Find source offset to slide from
                                             val (srcCol, srcRow) = BoardCreator.getGridCoordinates(viewModel.animatedPlayerSourceTile, viewModel.gridSize)
                                             val srcLeft = cellSize * srcCol
                                             val srcTop = cellSize * srcRow
-
+                                            
                                             val cellSizePx = with(LocalDensity.current) { cellSize.toPx() }
                                             val currentLeapX = srcLeft + (leftOffset - srcLeft) * progress
                                             val currentLeapY = srcTop + (topOffset - srcTop) * progress + arcY - (cellSizePx * 0.75f)
-
-                                            val stretchY = 1.0f + (kotlin.math.sin(progress * Math.PI).toFloat() * 0.12f)
-                                            val squashX = 1.0f - (kotlin.math.sin(progress * Math.PI).toFloat() * 0.12f)
-
+                                            
+                                            // Squish and stretch meeple base keyframes
+                                            val stretchY = 1.0f + (kotlin.math.sin(progress * Math.PI).toFloat() * 0.16f)
+                                            val squashX = 1.0f - (kotlin.math.sin(progress * Math.PI).toFloat() * 0.16f)
+                                            
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
@@ -412,14 +383,14 @@ fun BoardScreen(viewModel: GameViewModel) {
                                                 contentAlignment = Alignment.Center
                                             ) {
                                                 Box(
-                                                    modifier = Modifier.size(if (viewModel.gridSize == 6) 28.dp else 34.dp)
+                                                    modifier = Modifier.size(if (viewModel.gridSize == 6) 30.dp else 36.dp)
                                                 ) {
-                                                    Canvas(modifier = Modifier.fillMaxSize()) {
+                                                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
                                                         drawGamePawn(
                                                             color = activeLeapingPlayer.color,
                                                             x = size.width / 2,
                                                             y = size.height / 2,
-                                                            size = (if (viewModel.gridSize == 6) 20f else 24f) * density,
+                                                            size = (if (viewModel.gridSize == 6) 24f else 28f) * density,
                                                             squashX = squashX,
                                                             stretchY = stretchY
                                                         )
@@ -451,7 +422,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            // 3D Shaded Double Dice
+                            // 3D Shaded Double Dice (2d6 Mechanics!)
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                 modifier = Modifier.scale(if (viewModel.isRolling) pulseScale else 1f)
@@ -459,7 +430,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                                 DiceFace3D(value = viewModel.diceValue1, size = 38)
                                 DiceFace3D(value = viewModel.diceValue2, size = 38)
                             }
-
+                            
                             // Movement Status Text
                             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                                 if (viewModel.isTokenMoving) {
@@ -479,7 +450,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                                     )
                                 }
                             }
-
+                            
                             // Roll Button
                             Button(
                                 onClick = {
@@ -497,60 +468,60 @@ fun BoardScreen(viewModel: GameViewModel) {
                                             viewModel.diceValue2 = finalRoll2
                                             val finalRoll = finalRoll1 + finalRoll2
                                             viewModel.isRolling = false
-
+                                            
                                             // Step-by-Step walk animation!
                                             viewModel.isTokenMoving = true
                                             val oldPos = activePlayer.position
                                             val boardSize = viewModel.board.size
-
+                                            
                                             for (step in 1..finalRoll) {
                                                 val duration = (350 / viewModel.gameSpeedMultiplier).toLong()
                                                 viewModel.animationStatusText = "Moving: $step of $finalRoll ⛓️"
                                                 val src = activePlayer.position
                                                 val tgt = (src + 1) % boardSize
-
+                                                
                                                 viewModel.animatedPlayerIndex = activePlayer.id
                                                 viewModel.animatedPlayerSourceTile = src
                                                 viewModel.animatedPlayerTargetTile = tgt
-
+                                                
                                                 val startTime = System.currentTimeMillis()
                                                 while (System.currentTimeMillis() - startTime < duration) {
                                                     val elapsed = System.currentTimeMillis() - startTime
                                                     viewModel.animatedPlayerStepProgress = (elapsed.toFloat() / duration).coerceIn(0f, 1f)
-                                                    delay(16)
+                                                    delay(16) // ~60fps rendering frame rate ticks!
                                                 }
                                                 viewModel.animatedPlayerStepProgress = 1f
-                                                delay(50)
+                                                delay(50) // settle pause
                                                 activePlayer.position = tgt
                                             }
-
+                                            
                                             viewModel.animatedPlayerIndex = -1
                                             viewModel.animationStatusText = "Arrived! 🔒"
-
+                                            
                                             viewModel.tileLandingCounts[activePlayer.position] = (viewModel.tileLandingCounts[activePlayer.position] ?: 0) + 1
                                             viewModel.shakeX = (Random.nextFloat() - 0.5f) * 12f
                                             viewModel.shakeY = (Random.nextFloat() - 0.5f) * 12f
                                             delay(80)
                                             viewModel.shakeX = 0f
                                             viewModel.shakeY = 0f
-
+                                            
                                             delay(720)
                                             viewModel.isTokenMoving = false
-
+                                            
                                             val newPos = activePlayer.position
                                             if (newPos < oldPos) {
                                                 activePlayer.lapsCompleted += 1
                                             }
-
+                                            
                                             if (!viewModel.isInfiniteMode && activePlayer.lapsCompleted >= viewModel.targetLaps) {
                                                 viewModel.winnerName = activePlayer.name
                                                 viewModel.victorySummaryText = "${activePlayer.name} has crossed the threshold first and asserted absolute dominance!"
                                                 viewModel.currentScreen = GameScreen.Win
                                                 return@launch
                                             }
-
+                                            
                                             val tile = viewModel.board[newPos]
-                                            pendingLandingTile = tile
+                                            pendingLandingTile = tile // SHOW LANDING POP-UP ALERT FIRST!
                                         }
                                     }
                                 },
@@ -571,8 +542,8 @@ fun BoardScreen(viewModel: GameViewModel) {
                         }
                     }
                 }
-
-                // Bottom Scoreboard Area
+                
+                // Bottom Scoreboard Area (Cleanly extracted into separate modular panels!)
                 Row(
                     modifier = Modifier
                         .weight(0.5f)
@@ -597,7 +568,7 @@ fun BoardScreen(viewModel: GameViewModel) {
         }
     }
 
-    // --- POP-UP LANDING ALERT OVERLAY ---
+    // --- 💎 POP-UP LANDING ALERT OVERLAY ---
     if (pendingLandingTile != null) {
         val tile = pendingLandingTile!!
         Dialog(onDismissRequest = { }) {
@@ -624,9 +595,9 @@ fun BoardScreen(viewModel: GameViewModel) {
                     ) {
                         TileVectorIcon(type = tile.cardCategory, action = tile.action, modifier = Modifier.size(36.dp))
                     }
-
+                    
                     Spacer(modifier = Modifier.height(12.dp))
-
+                    
                     Text(
                         text = "RUNE LANDED!",
                         fontSize = 10.sp,
@@ -634,7 +605,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                         color = BrassGold,
                         letterSpacing = 1.sp
                     )
-
+                    
                     Text(
                         text = tile.label.uppercase(),
                         fontSize = 18.sp,
@@ -644,7 +615,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                         lineHeight = 22.sp,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
-
+                    
                     Text(
                         text = when (tile.action) {
                             TileAction.NORMAL_CARD -> "Prepare to invoke a standard ${tile.cardCategory.displayName} Spell."
@@ -662,15 +633,16 @@ fun BoardScreen(viewModel: GameViewModel) {
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
-
+                    
                     Spacer(modifier = Modifier.height(12.dp))
-
+                    
                     Button(
                         onClick = {
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             val finalTile = tile
-                            pendingLandingTile = null
-
+                            pendingLandingTile = null // close pop-up
+                            
+                            // Execute actual tile action trigger
                             if (finalTile.action == TileAction.NORMAL_CARD && finalTile.cardCategory == TileType.START) {
                                 viewModel.cardDialogType = "MOTIF"
                                 viewModel.motifTitle = "SESSION START PASS 🔒"
@@ -687,16 +659,16 @@ fun BoardScreen(viewModel: GameViewModel) {
                                         val steps = kotlin.math.abs(cascadeMoveVal)
                                         val direction = if (cascadeMoveVal > 0) 1 else -1
                                         val boardSize = viewModel.board.size
-
+                                        
                                         for (step in 1..steps) {
                                             viewModel.animationStatusText = "Cascade: $step of $steps 🌀"
                                             val src = activePlayer.position
                                             val tgt = (src + direction + boardSize) % boardSize
-
+                                            
                                             viewModel.animatedPlayerIndex = activePlayer.id
                                             viewModel.animatedPlayerSourceTile = src
                                             viewModel.animatedPlayerTargetTile = tgt
-
+                                            
                                             val duration = (350 / viewModel.gameSpeedMultiplier).toLong()
                                             val startTime = System.currentTimeMillis()
                                             while (System.currentTimeMillis() - startTime < duration) {
@@ -708,7 +680,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                                             delay(50)
                                             activePlayer.position = tgt
                                         }
-
+                                        
                                         viewModel.animatedPlayerIndex = -1
                                         delay(800)
                                         viewModel.isTokenMoving = false
@@ -767,9 +739,9 @@ fun BoardScreen(viewModel: GameViewModel) {
                         lineHeight = 14.sp,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
-
+                    
                     Spacer(modifier = Modifier.height(12.dp))
-
+                    
                     Button(
                         onClick = {
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
