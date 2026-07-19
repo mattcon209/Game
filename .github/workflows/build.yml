@@ -41,191 +41,17 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Generate missing source files via compile script
-        run: |
-          # This script generates/patches all missing source files (EmberParticle, ChainsOfDesireLogo,
-          # ActiveConstraint, missing imports, etc). It fails at the end because it tries to run
-          # Gradle with a Termux-specific path - that's fine, all file generation happens before that.
-          python3 compile_master_apk_final_v2.py || true
-          echo "✓ Source generation complete"
+      - name: Generate missing source files
+        run: python3 compile_master_apk_final_v2.py || true
 
-      - name: Apply board camera visual fixes
-        run: |
-          python3 << 'PATCH'
-          import os
-
-          # Fix PillarsOfSummoning.kt - pillar scale 3x -> proper
-          pillars_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/PillarsOfSummoning.kt"
-          if os.path.exists(pillars_path):
-              with open(pillars_path, 'r') as f:
-                  c = f.read()
-              c = c.replace('val targetW = w * 3f', 'val targetW = w * 0.95f')
-              c = c.replace('val targetH = h * 3f', 'val targetH = h * 1.7f')
-              c = c.replace('tiltX * density * 0.4f', 'tiltX * density * 0.15f')
-              c = c.replace('tiltY * density * 0.4f', 'tiltY * density * 0.15f')
-              c = c.replace('targetW * 0.12f * scale', 'targetW * 0.28f * scale')
-              c = c.replace('targetH * 0.12f * scale', 'targetH * 0.16f * scale')
-              c = c.replace('targetH * 0.28f', 'targetH * 0.25f')
-              c = c.replace('targetW * 0.08f * scale', 'targetW * 0.18f * scale')
-              c = c.replace('targetW * 0.14f * pulseScale', 'targetW * 0.22f * pulseScale')
-              with open(pillars_path, 'w') as f:
-                  f.write(c)
-              print("  ✓ Patched PillarsOfSummoning.kt (scale fix)")
-
-          # Fix BoardScreen.kt - camera zoom + pawn offset + clip
-          board_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/BoardScreen.kt"
-          if os.path.exists(board_path):
-              with open(board_path, 'r') as f:
-                  c = f.read()
-              c = c.replace('1.0f else 1.9f', '1.0f else 1.25f')
-              c = c.replace('cellSize * -1.18f', 'cellSize * -0.75f')
-              c = c.replace('cellSizePx * 1.18f', 'cellSizePx * 0.75f')
-              old = '.border(1.5.dp, SeductiveViolet.copy(alpha = 0.3f), RoundedCornerShape(12.dp))'
-              new = old + '\n                            .clip(RoundedCornerShape(12.dp))'
-              if old in c and '.clip(RoundedCornerShape(12.dp))' not in c:
-                  c = c.replace(old, new, 1)
-              with open(board_path, 'w') as f:
-                  f.write(c)
-              print("  ✓ Patched BoardScreen.kt (zoom + offset fix)")
-
-          # Fix CommonUI.kt - add missing Canvas import (composable version)
-          cui_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/CommonUI.kt"
-          if os.path.exists(cui_path):
-              with open(cui_path, 'r') as f:
-                  c = f.read()
-              if 'import androidx.compose.foundation.Canvas' not in c:
-                  c = c.replace(
-                      'import androidx.compose.foundation.background',
-                      'import androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background'
-                  )
-                  with open(cui_path, 'w') as f:
-                      f.write(c)
-                  print("  ✓ Patched CommonUI.kt (added Canvas import)")
-
-          # Fix CommonUI.kt - add CornerRadius import
-          if os.path.exists(cui_path):
-              with open(cui_path, 'r') as f:
-                  c = f.read()
-              if 'import androidx.compose.ui.geometry.CornerRadius' not in c:
-                  c = c.replace(
-                      'import androidx.compose.ui.geometry.Offset',
-                      'import androidx.compose.ui.geometry.CornerRadius\nimport androidx.compose.ui.geometry.Offset'
-                  )
-                  with open(cui_path, 'w') as f:
-                      f.write(c)
-                  print("  ✓ Patched CommonUI.kt (added CornerRadius import)")
-
-          # Fix GrimoireOfSafety.kt - replace Book icon with MenuBook or text
-          gos_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/GrimoireOfSafety.kt"
-          if os.path.exists(gos_path):
-              with open(gos_path, 'r') as f:
-                  c = f.read()
-              c = c.replace('Icons.Filled.Book', 'Icons.Filled.MenuBook')
-              if 'import androidx.compose.material.icons.filled.MenuBook' not in c:
-                  c = c.replace(
-                      'import androidx.compose.material.icons.filled.*',
-                      'import androidx.compose.material.icons.filled.*\nimport androidx.compose.material.icons.filled.MenuBook'
-                  )
-              with open(gos_path, 'w') as f:
-                  f.write(c)
-              print("  ✓ Patched GrimoireOfSafety.kt (Book -> MenuBook)")
-
-          # Fix SetupScreen.kt - add missing imports
-          setup_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/SetupScreen.kt"
-          if os.path.exists(setup_path):
-              with open(setup_path, 'r') as f:
-                  c = f.read()
-              if 'import androidx.compose.ui.draw.shadow' not in c:
-                  c = c.replace(
-                      'import androidx.compose.ui.draw.clip',
-                      'import androidx.compose.ui.draw.clip\nimport androidx.compose.ui.draw.shadow'
-                  )
-              c = c.replace('Icons.Filled.Remove', 'Icons.Filled.Delete')
-              with open(setup_path, 'w') as f:
-                  f.write(c)
-              print("  ✓ Patched SetupScreen.kt (shadow import + Remove->Delete)")
-
-          # Fix PillarsOfSummoning.kt - replace image-based dice with canvas-drawn dice
-          if os.path.exists(pillars_path):
-              with open(pillars_path, 'r') as f:
-                  c = f.read()
-              # Replace the DiceFace3D function that uses missing drawable resources
-              old_dice = """@Composable
-fun DiceFace3D(value: Int, size: Int = 44) {
-    val resId = when (value) {
-        1 -> R.drawable.gothic_dice_1
-        2 -> R.drawable.gothic_dice_2
-        3 -> R.drawable.gothic_dice_3
-        4 -> R.drawable.gothic_dice_4
-        5 -> R.drawable.gothic_dice_5
-        6 -> R.drawable.gothic_dice_6
-        else -> R.drawable.gothic_dice_1
-    }
-
-    Box(
-        modifier = Modifier
-            .size(size.dp)
-            .shadow(6.dp, RoundedCornerShape(10.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = resId),
-            contentDescription = "Dice Face $value",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}"""
-              new_dice = """@Composable
-fun DiceFace3D(value: Int, size: Int = 44) {
-    Box(
-        modifier = Modifier
-            .size(size.dp)
-            .shadow(6.dp, RoundedCornerShape(10.dp))
-            .background(Color(0xFF2D1B3E), RoundedCornerShape(10.dp))
-            .border(1.5.dp, Color(0xFFC5A059), RoundedCornerShape(10.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = when(value) {
-                1 -> "⚀"; 2 -> "⚁"; 3 -> "⚂"
-                4 -> "⚃"; 5 -> "⚄"; 6 -> "⚅"; else -> "⚀"
-            },
-            fontSize = (size * 0.6).sp,
-            color = Color.White
-        )
-    }
-}"""
-              if old_dice in c:
-                  c = c.replace(old_dice, new_dice)
-              else:
-                  # Try a simpler replacement - just replace the R.drawable references
-                  import re
-                  c = re.sub(r'R\.drawable\.gothic_dice_\d', '0', c)
-              with open(pillars_path, 'w') as f:
-                  f.write(c)
-              print("  ✓ Patched PillarsOfSummoning.kt (dice drawables -> unicode)")
-
-          # Add material-icons-extended dependency to build.gradle.kts
-          gradle_path = "PolyLoveMarble/app/build.gradle.kts"
-          if os.path.exists(gradle_path):
-              with open(gradle_path, 'r') as f:
-                  c = f.read()
-              if 'material-icons-extended' not in c:
-                  c = c.replace(
-                      'implementation(libs.androidx.compose.material3)',
-                      'implementation(libs.androidx.compose.material3)\n    implementation(libs.androidx.compose.material.icons.extended)'
-                  )
-                  with open(gradle_path, 'w') as f:
-                      f.write(c)
-                  print("  ✓ Added material-icons-extended dependency")
-          PATCH
+      - name: Apply visual and import patches
+        run: python3 ci_patch.py
 
       - name: Build Debug APK
         working-directory: PolyLoveMarble
         run: gradle assembleDebug --no-daemon --stacktrace
 
-      - name: Upload APK as artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: PolyKinkMarble-debug-${{ github.run_number }}
@@ -240,6 +66,6 @@ fun DiceFace3D(value: Int, size: Int = 44) {
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f PolyKinkMarble.apk
           git diff --staged --quiet || {
-            git commit -m "🤖 Auto-build APK from ${{ github.sha }}"
+            git commit -m "Auto-build APK from ${{ github.sha }}"
             git push
           }
