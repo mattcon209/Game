@@ -272,82 +272,102 @@ if os.path.exists(cui_path):
     print("  ✓ CommonUI.kt patched (button background added)")
 
 
-# 10. Fix buttons - replace broken JPEG images with code-drawn gradient buttons
+
+
+# 10. Fix buttons - remove capsule Box wrapper, use PNG shape directly with per-pixel hit testing
 # Fix LeatherStrapButton in CommonUI.kt
 cui_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/CommonUI.kt"
 if os.path.exists(cui_path):
     with open(cui_path, 'r') as f:
         c = f.read()
-    # Replace the Image inside LeatherStrapButton with a gradient + text
-    old_btn_image = """Image(
+    # Remove the capsule Box wrapper - replace with just Image + clickable
+    # The original has: Box(modifier=...clip(RoundedCornerShape(29.dp)).border(...).shadow(...).clickable...) { Image(...) }
+    # Replace with: Image(modifier=...clickable...)
+    old_btn_structure = """Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .background(Color(0xFF1A0A1E))
+            .clip(RoundedCornerShape(29.dp)) // Pill-shape clipping to hide outer background!
+            .border(2.dp, BrassGold, RoundedCornerShape(29.dp))
+            .shadow(12.dp, RoundedCornerShape(29.dp), ambientColor = BrassGold)
+            .then(if (enabled) Modifier.clickable { onClick() } else Modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
             painter = painterResource(id = R.drawable.begin_session_btn),
             contentDescription = text,
             contentScale = ContentScale.Crop, // Crops and fits perfectly
             modifier = Modifier.fillMaxSize()
-        )"""
-    new_btn_content = """Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(Color(0xFF4A0020), Color(0xFF8B0040), Color(0xFF4A0020))
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text.uppercase(),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Black,
-                color = Color.White,
-                letterSpacing = 2.sp
-            )
-        }"""
-    if old_btn_image in c:
-        c = c.replace(old_btn_image, new_btn_content)
-        # Ensure needed imports
-        if 'import androidx.compose.ui.text.font.FontWeight' not in c:
-            c = c.replace('import androidx.compose.ui.graphics.Color', 'import androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.text.font.FontWeight')
-        if 'import androidx.compose.ui.unit.sp' not in c:
-            c = c.replace('import androidx.compose.ui.unit.dp', 'import androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.sp')
+        )
+    }"""
+    new_btn_structure = """Image(
+        painter = painterResource(id = R.drawable.begin_session_btn),
+        contentDescription = text,
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
+            .alpha(alpha)
+    )"""
+    if old_btn_structure in c:
+        c = c.replace(old_btn_structure, new_btn_structure)
         with open(cui_path, 'w') as f:
             f.write(c)
-        print("  ✓ LeatherStrapButton: replaced image with gradient+text")
+        print("  ✓ LeatherStrapButton: capsule removed, PNG used directly")
+    else:
+        # Try without the background line (in case previous patch didn't add it)
+        old_btn_structure2 = old_btn_structure.replace("            .background(Color(0xFF1A0A1E))\n", "")
+        if old_btn_structure2 in c:
+            c = c.replace(old_btn_structure2, new_btn_structure)
+            with open(cui_path, 'w') as f:
+                f.write(c)
+            print("  ✓ LeatherStrapButton: capsule removed, PNG used directly")
 
 # Fix Open Creation Mode button in SetupScreen.kt
 setup_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/SetupScreen.kt"
 if os.path.exists(setup_path):
     with open(setup_path, 'r') as f:
         c = f.read()
-    old_creation_img = """Image(
+    # Remove the Box wrapper around the open_creation_btn Image
+    old_creation = """Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(58.dp)
+                            .clip(RoundedCornerShape(29.dp)) // Pill-shape clipping to hide outer background!
+                            .border(2.dp, BrassGold, RoundedCornerShape(29.dp))
+                            .shadow(12.dp, RoundedCornerShape(29.dp), ambientColor = BrassGold)
+                            .clickable {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                viewModel.currentScreen = GameScreen.Editor
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
                             painter = painterResource(id = R.drawable.open_creation_btn),
                             contentDescription = "Open Creation Mode",
                             contentScale = ContentScale.Crop, // Crops and fits perfectly
                             modifier = Modifier.fillMaxSize()
-                        )"""
-    new_creation_content = """Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.horizontalGradient(
-                                        colors = listOf(Color(0xFF1A0030), Color(0xFF3D0060), Color(0xFF1A0030))
-                                    )
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Open Creation Mode", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = BrassGold)
-                                Text("/ Spellbook Editor", fontSize = 12.sp, color = Color.White)
+                        )
+                    }"""
+    new_creation = """Image(
+                        painter = painterResource(id = R.drawable.open_creation_btn),
+                        contentDescription = "Open Creation Mode",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(72.dp)
+                            .clickable {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                viewModel.currentScreen = GameScreen.Editor
                             }
-                        }"""
-    if old_creation_img in c:
-        c = c.replace(old_creation_img, new_creation_content)
-        # Ensure Brush import for gradient
-        if 'import androidx.compose.ui.graphics.Brush' not in c:
-            c = c.replace('import androidx.compose.ui.graphics.Color', 'import androidx.compose.ui.graphics.Brush\nimport androidx.compose.ui.graphics.Color')
+                    )"""
+    if old_creation in c:
+        c = c.replace(old_creation, new_creation)
         with open(setup_path, 'w') as f:
             f.write(c)
-        print("  ✓ Open Creation button: replaced image with gradient+text")
+        print("  ✓ Open Creation button: capsule removed, PNG used directly")
 
 # 7. Fix OutOfMemoryError - REPLACE restrictive Termux memory limits with CI-appropriate values
 gradle_props = "PolyLoveMarble/gradle.properties"
