@@ -5,6 +5,74 @@ import re
 
 print("=== Applying CI patches ===")
 
+# 0. Fix GameData.kt import order (import before package = fatal)
+gamedata_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/game/GameData.kt"
+if os.path.exists(gamedata_path):
+    with open(gamedata_path, 'r') as f:
+        c = f.read()
+    # Fix import before package
+    if c.startswith('import ') and '\npackage ' in c[:100]:
+        lines = c.split('\n')
+        pkg_idx = next(i for i, l in enumerate(lines) if l.startswith('package '))
+        imports_before_pkg = lines[:pkg_idx]
+        rest = lines[pkg_idx:]
+        # Rebuild: package first, then all imports
+        c = '\n'.join(rest[:1] + [''] + imports_before_pkg + rest[1:])
+    # Add missing classes if not present
+    if 'data class ActiveConstraint' not in c:
+        insert_after = 'data class Prompt(\n    val category: TileType,\n    val spiceLevel: SpiceLevel,\n    val template: String,\n    val packName: String = "Base Deck"\n)'
+        new_classes = """data class Prompt(
+    val category: TileType,
+    val spiceLevel: SpiceLevel,
+    val template: String,
+    val packName: String = "Base Deck",
+    val durationValue: Int = 0,
+    val durationUnit: String = ""
+)
+
+data class ActiveConstraint(
+    val id: String = "",
+    val playerName: String,
+    val description: String,
+    val durationValue: Int,
+    val durationUnit: String,
+    var remainingSeconds: Int,
+    var remainingTurns: Int = 0,
+    var remainingTimes: Int
+)
+
+data class BookletPunishment(
+    val text: String,
+    val packName: String
+)"""
+        if insert_after in c:
+            c = c.replace(insert_after, new_classes)
+    # Add getPunishmentsForSpellbook if missing
+    if 'getPunishmentsForSpellbook' not in c and 'object PromptDatabase' in c:
+        c = c.replace('object PromptDatabase {', 'object PromptDatabase {\n    val customPunishments = mutableStateListOf<BookletPunishment>()\n    fun getPunishmentsForSpellbook(spellbook: String): List<String> = punishments')
+    with open(gamedata_path, 'w') as f:
+        f.write(c)
+    print("  ✓ GameData.kt patched (import order + missing classes)")
+
+# 0b. Fix GameViewModel.kt - add missing properties
+vm_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/GameViewModel.kt"
+if os.path.exists(vm_path):
+    with open(vm_path, 'r') as f:
+        c = f.read()
+    additions = ""
+    if 'var shakeX' not in c:
+        additions += "    var shakeX by mutableStateOf(0f)\n    var shakeY by mutableStateOf(0f)\n"
+    if 'tileLandingCounts' not in c:
+        additions += "    val tileLandingCounts = mutableMapOf<Int, Int>()\n"
+    if 'customPunishments' not in c:
+        additions += "    val customPunishments = mutableStateListOf<BookletPunishment>()\n"
+    if additions:
+        # Insert after "var victorySummaryText"
+        c = c.replace('var victorySummaryText by mutableStateOf("")', 'var victorySummaryText by mutableStateOf("")\n' + additions)
+        with open(vm_path, 'w') as f:
+            f.write(c)
+        print("  ✓ GameViewModel.kt patched (missing properties)")
+
 # 1. Fix PillarsOfSummoning.kt - pillar scale + dice
 pillars_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/PillarsOfSummoning.kt"
 if os.path.exists(pillars_path):
