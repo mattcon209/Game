@@ -113,11 +113,16 @@ if os.path.exists(pillars_path):
     c = re.sub(r'radius = targetW \* [\d.]+f \* scale', 'radius = targetW * 0.15f * scale', c)
     c = re.sub(r'radius = targetW \* [\d.]+f \* pulseScale', 'radius = targetW * 0.2f * pulseScale', c)
 
-    # Remove rune drawing from pillars (keep only gold highlight for active player)
-    # Comment out the rune sprite sheet section and glow
-    c = re.sub(r'// 3\. SPRITE SHEET SLICING:.*?(?=// 4\.)', '// 3. RUNES REMOVED\n', c, flags=re.DOTALL)
-    # Also remove the radial glow circle that was under the rune
-    c = re.sub(r'// Draw central radial glow.*?center = Offset\(targetCapCenterX, targetCapCenterY\)\s*\)', '// Radial glow removed\n', c, flags=re.DOTALL)
+    # Remove rune DRAWING from pillars (keep cap center vars + gold highlight)
+    # Remove the rune sprite sheet drawImage call
+    c = re.sub(r'drawImage\(\s*image = runesBitmap,.*?dstSize = IntSize\(runeSizeW, runeSizeH\)\s*\)', '// rune drawImage removed', c, flags=re.DOTALL)
+    # Remove the radial glow drawCircle
+    c = re.sub(r'drawCircle\(\s*brush = Brush\.radialGradient\(.*?center = Offset\(targetCapCenterX, targetCapCenterY\)\s*\)', '// radial glow removed', c, flags=re.DOTALL)
+    # Remove the rune size calculations (no longer needed)
+    c = re.sub(r'val runeSizeW = .*', '// runeSizeW removed', c)
+    c = re.sub(r'val runeSizeH = .*', '// runeSizeH removed', c)
+    c = re.sub(r'val runeX = .*', '// runeX removed', c)
+    c = re.sub(r'val runeY = .*', '// runeY removed', c)
     # Replace the ENTIRE DiceFace3D function with a safe text-based version
     # Use regex to match the whole function regardless of whitespace
     dice_pattern = r'@Composable\nfun DiceFace3D\(value: Int, size: Int = \d+\) \{.*?^\}'
