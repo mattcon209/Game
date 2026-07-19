@@ -342,6 +342,9 @@ if os.path.exists(setup_path):
                         }"""
     if old_creation_img in c:
         c = c.replace(old_creation_img, new_creation_content)
+        # Ensure Brush import for gradient
+        if 'import androidx.compose.ui.graphics.Brush' not in c:
+            c = c.replace('import androidx.compose.ui.graphics.Color', 'import androidx.compose.ui.graphics.Brush\nimport androidx.compose.ui.graphics.Color')
         with open(setup_path, 'w') as f:
             f.write(c)
         print("  ✓ Open Creation button: replaced image with gradient+text")
