@@ -214,6 +214,39 @@ if os.path.exists(gradle_path):
 
 print("=== All CI patches applied ===")
 
+
+# 8. Fix SetupScreen.kt - reduce header height, fix spacing
+setup_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/SetupScreen.kt"
+if os.path.exists(setup_path):
+    with open(setup_path, 'r') as f:
+        c = f.read()
+    # Reduce header height (230dp -> 160dp to crop empty space)
+    c = c.replace('.height(230.dp)', '.height(160.dp)')
+    # Reduce top spacer
+    c = c.replace('Spacer(modifier = Modifier.height(8.dp))\n\n            LazyColumn(', 'Spacer(modifier = Modifier.height(4.dp))\n\n            LazyColumn(')
+    with open(setup_path, 'w') as f:
+        f.write(c)
+    print("  ✓ SetupScreen.kt patched (header height reduced)")
+
+# 9. Fix CommonUI.kt - add dark background to LeatherStrapButton (fixes checkered transparency)
+cui_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/CommonUI.kt"
+if os.path.exists(cui_path):
+    with open(cui_path, 'r') as f:
+        c = f.read()
+    # Add background color to LeatherStrapButton Box (before clip)
+    old_btn = """.fillMaxWidth()
+            .height(58.dp)
+            .clip(RoundedCornerShape(29.dp)) // Pill-shape clipping to hide outer background!"""
+    new_btn = """.fillMaxWidth()
+            .height(58.dp)
+            .background(Color(0xFF1A0A1E))
+            .clip(RoundedCornerShape(29.dp)) // Pill-shape clipping to hide outer background!"""
+    if old_btn in c and '.background(Color(0xFF1A0A1E))' not in c:
+        c = c.replace(old_btn, new_btn)
+    with open(cui_path, 'w') as f:
+        f.write(c)
+    print("  ✓ CommonUI.kt patched (button background added)")
+
 # 7. Fix OutOfMemoryError - REPLACE restrictive Termux memory limits with CI-appropriate values
 gradle_props = "PolyLoveMarble/gradle.properties"
 if os.path.exists(gradle_props):
