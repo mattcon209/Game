@@ -87,6 +87,20 @@ jobs:
               with open(board_path, 'w') as f:
                   f.write(c)
               print("  ✓ Patched BoardScreen.kt (zoom + offset fix)")
+
+          # Fix CommonUI.kt - add missing Canvas import (composable version)
+          cui_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/CommonUI.kt"
+          if os.path.exists(cui_path):
+              with open(cui_path, 'r') as f:
+                  c = f.read()
+              if 'import androidx.compose.foundation.Canvas' not in c:
+                  c = c.replace(
+                      'import androidx.compose.foundation.background',
+                      'import androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background'
+                  )
+                  with open(cui_path, 'w') as f:
+                      f.write(c)
+                  print("  ✓ Patched CommonUI.kt (added Canvas import)")
           PATCH
 
       - name: Build Debug APK
