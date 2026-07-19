@@ -73,21 +73,45 @@ if os.path.exists(vm_path):
             f.write(c)
         print("  ✓ GameViewModel.kt patched (missing properties)")
 
-# 1. Fix PillarsOfSummoning.kt - pillar scale + dice
+# 1. REWRITE PillarsOfSummoning.kt to use single pillar image (no sprite sheet)
 pillars_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/PillarsOfSummoning.kt"
 if os.path.exists(pillars_path):
     with open(pillars_path, 'r') as f:
         c = f.read()
-    # Scale fixes
-    c = c.replace('val targetW = w * 3f', 'val targetW = w * 0.95f')
-    c = c.replace('val targetH = h * 3f', 'val targetH = h * 1.4f')
-    c = c.replace('tiltX * density * 0.4f', 'tiltX * density * 0.15f')
-    c = c.replace('tiltY * density * 0.4f', 'tiltY * density * 0.15f')
-    c = c.replace('targetW * 0.12f * scale', 'targetW * 0.28f * scale')
-    c = c.replace('targetH * 0.12f * scale', 'targetH * 0.16f * scale')
-    c = c.replace('targetH * 0.28f', 'targetH * 0.25f')
-    c = c.replace('targetW * 0.08f * scale', 'targetW * 0.18f * scale')
-    c = c.replace('targetW * 0.14f * pulseScale', 'targetW * 0.22f * pulseScale')
+    
+    # Replace the sprite sheet slicing + drawing with single image approach
+    # Find and replace the Canvas content
+    old_canvas_start = "Canvas(modifier = modifier.fillMaxSize()) {"
+    old_canvas_end = "// --- \xf0\x9f\x8e\xb2"  # The dice section marker
+    
+    # Actually, let's just replace the specific sprite sheet lines
+    # Remove sprite sheet slicing logic
+    c = re.sub(r'// 2\. SPRITE SHEET SLICING.*?val pSrcY = pillarRow \* pH', '// Single pillar image (no sprite sheet)\n        val pSrcX = 0\n        val pSrcY = 0\n        val pW = pillarBitmap.width\n        val pH = pillarBitmap.height', c, flags=re.DOTALL)
+    
+    # Fix the pillar index/col/row references (no longer needed)
+    c = re.sub(r'val pillarIdx = tile\.index % 6\n.*?val pillarRow = pillarIdx / 3', '// All tiles use the same pillar image', c)
+    
+    # Fix drawing dimensions - fill cell width, maintain aspect ratio for height
+    c = re.sub(r'val targetW = w \* [\d.]+f', 'val targetW = w * 0.9f', c)
+    c = re.sub(r'val targetH = h \* [\d.]+f', 'val targetH = targetW * (pH.toFloat() / pW.toFloat())', c)
+    
+    # Fix drawY to anchor bottom of pillar at bottom of cell
+    c = re.sub(r'val drawY = h - targetH.*', 'val drawY = h - targetH * 0.75f + tiltOffsetY  // Show top 75% of pillar in cell', c)
+    
+    # Fix tilt
+    c = c.replace('tiltX * density * 0.4f', 'tiltX * density * 0.12f')
+    c = c.replace('tiltY * density * 0.4f', 'tiltY * density * 0.12f')
+    
+    # Fix rune sizing for new proportions
+    c = re.sub(r'val runeSizeW = \(targetW \* [\d.]+f \* scale\)', 'val runeSizeW = (targetW * 0.25f * scale)', c)
+    c = re.sub(r'val runeSizeH = \(targetH \* [\d.]+f \* scale\)', 'val runeSizeH = (targetW * 0.25f * scale)', c)
+    
+    # Fix cap center for new image (cap is at top ~30% of image)
+    c = re.sub(r'val targetCapCenterY = drawY \+ targetH \* [\d.]+f', 'val targetCapCenterY = drawY + targetH * 0.22f', c)
+    
+    # Fix glow/highlight sizes
+    c = re.sub(r'radius = targetW \* [\d.]+f \* scale', 'radius = targetW * 0.15f * scale', c)
+    c = re.sub(r'radius = targetW \* [\d.]+f \* pulseScale', 'radius = targetW * 0.2f * pulseScale', c)
     # Replace the ENTIRE DiceFace3D function with a safe text-based version
     # Use regex to match the whole function regardless of whitespace
     dice_pattern = r'@Composable\nfun DiceFace3D\(value: Int, size: Int = \d+\) \{.*?^\}'
