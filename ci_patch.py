@@ -80,7 +80,7 @@ if os.path.exists(pillars_path):
         c = f.read()
     # Scale fixes
     c = c.replace('val targetW = w * 3f', 'val targetW = w * 0.95f')
-    c = c.replace('val targetH = h * 3f', 'val targetH = h * 1.7f')
+    c = c.replace('val targetH = h * 3f', 'val targetH = h * 1.4f')
     c = c.replace('tiltX * density * 0.4f', 'tiltX * density * 0.15f')
     c = c.replace('tiltY * density * 0.4f', 'tiltY * density * 0.15f')
     c = c.replace('targetW * 0.12f * scale', 'targetW * 0.28f * scale')
@@ -134,15 +134,34 @@ board_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/Bo
 if os.path.exists(board_path):
     with open(board_path, 'r') as f:
         c = f.read()
-    c = c.replace('1.0f else 1.9f', '1.0f else 1.25f')
-    c = c.replace('cellSize * -1.18f', 'cellSize * -0.75f')
-    c = c.replace('cellSizePx * 1.18f', 'cellSizePx * 0.75f')
-    old_border = '.border(1.5.dp, SeductiveViolet.copy(alpha = 0.3f), RoundedCornerShape(12.dp))'
-    if old_border in c and '.clip(RoundedCornerShape(12.dp))' not in c:
-        c = c.replace(old_border, old_border + '\n                            .clip(RoundedCornerShape(12.dp))', 1)
+    c = c.replace('1.0f else 1.9f', '1.0f else 1.0f')  # Disable zoom temporarily to fix crash
+    c = c.replace('cellSize * -1.18f', 'cellSize * -0.55f')
+    c = c.replace('cellSizePx * 1.18f', 'cellSizePx * 0.55f')
+    # NOTE: Do NOT add .clip() here - it clips the 3D pillar tops!
+    # Remove clip if the compile script added one
+    c = c.replace('.clip(RoundedCornerShape(12.dp))\n', '')
+    c = c.replace('\n                            .clip(RoundedCornerShape(12.dp))', '')
+    # Add crash protection: wrap sensor registration in try-catch
+    c = c.replace(
+        'val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager',
+        'val sensorManager = try { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager } catch (e: Exception) { null }'
+    )
+    c = c.replace(
+        'sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME)',
+        'if (sensorManager != null && accelerometer != null) sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME)'
+    )
+    c = c.replace(
+        'sensorManager.unregisterListener(listener)',
+        'sensorManager?.unregisterListener(listener)'
+    )
+    # Also protect the DisposableEffect onDispose
+    c = c.replace(
+        'val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)',
+        'val accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)'
+    )
     with open(board_path, 'w') as f:
         f.write(c)
-    print("  ✓ BoardScreen.kt patched")
+    print("  ✓ BoardScreen.kt patched (zoom disabled, crash protection added)")
 
 # 3. Fix CommonUI.kt - add missing imports
 cui_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/CommonUI.kt"
