@@ -43,11 +43,11 @@ jobs:
 
       - name: Create stub gradle at Termux path
         run: |
-          mkdir -p /home/user/gradle-bin/gradle-8.5/bin
-          echo '#!/bin/bash' > /home/user/gradle-bin/gradle-8.5/bin/gradle
-          echo 'echo "Stub gradle - skipping Termux build"' >> /home/user/gradle-bin/gradle-8.5/bin/gradle
-          echo 'exit 0' >> /home/user/gradle-bin/gradle-8.5/bin/gradle
-          chmod +x /home/user/gradle-bin/gradle-8.5/bin/gradle
+          sudo mkdir -p /home/user/gradle-bin/gradle-8.5/bin && sudo chmod 755 /home/user
+          echo '#!/bin/bash' | sudo tee /home/user/gradle-bin/gradle-8.5/bin/gradle > /dev/null
+          echo 'echo Stub gradle' | sudo tee -a /home/user/gradle-bin/gradle-8.5/bin/gradle > /dev/null
+          echo 'exit 0' | sudo tee -a /home/user/gradle-bin/gradle-8.5/bin/gradle > /dev/null
+          sudo chmod +x /home/user/gradle-bin/gradle-8.5/bin/gradle
 
       - name: Generate missing source files via compile script
         run: python3 compile_master_apk_final_v2.py
