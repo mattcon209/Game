@@ -42,7 +42,11 @@ jobs:
           python-version: '3.11'
 
       - name: Generate missing source files
-        run: python3 compile_master_apk_final_v2.py || true
+        run: |
+          # Remove the Termux-specific Gradle subprocess call (causes FileNotFoundError on CI)
+          sed -i '/subprocess.run.*gradle-bin/,/exit(1)/d' compile_master_apk_final_v2.py
+          sed -i '/RUNNING GRADLE/d' compile_master_apk_final_v2.py
+          python3 compile_master_apk_final_v2.py || true
 
       - name: Apply visual and import patches
         run: python3 ci_patch.py
