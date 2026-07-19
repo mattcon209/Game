@@ -112,6 +112,12 @@ if os.path.exists(pillars_path):
     # Fix glow/highlight sizes
     c = re.sub(r'radius = targetW \* [\d.]+f \* scale', 'radius = targetW * 0.15f * scale', c)
     c = re.sub(r'radius = targetW \* [\d.]+f \* pulseScale', 'radius = targetW * 0.2f * pulseScale', c)
+
+    # Remove rune drawing from pillars (keep only gold highlight for active player)
+    # Comment out the rune sprite sheet section and glow
+    c = re.sub(r'// 3\. SPRITE SHEET SLICING:.*?(?=// 4\.)', '// 3. RUNES REMOVED\n', c, flags=re.DOTALL)
+    # Also remove the radial glow circle that was under the rune
+    c = re.sub(r'// Draw central radial glow.*?center = Offset\(targetCapCenterX, targetCapCenterY\)\s*\)', '// Radial glow removed\n', c, flags=re.DOTALL)
     # Replace the ENTIRE DiceFace3D function with a safe text-based version
     # Use regex to match the whole function regardless of whitespace
     dice_pattern = r'@Composable\nfun DiceFace3D\(value: Int, size: Int = \d+\) \{.*?^\}'
@@ -307,7 +313,7 @@ if os.path.exists(cui_path):
         contentScale = ContentScale.Fit,
         modifier = modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .height(120.dp)
             .then(if (enabled) Modifier.clickable { onClick() } else Modifier)
             .alpha(alpha)
     )"""
