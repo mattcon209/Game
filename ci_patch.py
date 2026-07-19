@@ -88,23 +88,12 @@ if os.path.exists(pillars_path):
     c = c.replace('targetH * 0.28f', 'targetH * 0.25f')
     c = c.replace('targetW * 0.08f * scale', 'targetW * 0.18f * scale')
     c = c.replace('targetW * 0.14f * pulseScale', 'targetW * 0.22f * pulseScale')
-    # Replace image-based dice with unicode dice (drawables don't exist)
-    c = re.sub(r'R\.drawable\.gothic_dice_\d', '0', c)
-    # Replace the entire DiceFace3D body to use Text instead of Image
-    old_dice_body = '''Box(
-        modifier = Modifier
-            .size(size.dp)
-            .shadow(6.dp, RoundedCornerShape(10.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = resId),
-            contentDescription = "Dice Face $value",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize()
-        )
-    }'''
-    new_dice_body = '''Box(
+    # Replace the ENTIRE DiceFace3D function with a safe text-based version
+    # Use regex to match the whole function regardless of whitespace
+    dice_pattern = r'@Composable\nfun DiceFace3D\(value: Int, size: Int = \d+\) \{.*?^\}'
+    dice_replacement = '''@Composable
+fun DiceFace3D(value: Int, size: Int = 44) {
+    Box(
         modifier = Modifier
             .size(size.dp)
             .shadow(6.dp, RoundedCornerShape(10.dp))
@@ -114,17 +103,20 @@ if os.path.exists(pillars_path):
     ) {
         Text(
             text = when(value) {
-                1 -> "\\u2680"; 2 -> "\\u2681"; 3 -> "\\u2682"
-                4 -> "\\u2683"; 5 -> "\\u2684"; 6 -> "\\u2685"; else -> "\\u2680"
+                1 -> "\u2680"; 2 -> "\u2681"; 3 -> "\u2682"
+                4 -> "\u2683"; 5 -> "\u2684"; 6 -> "\u2685"; else -> "\u2680"
             },
             fontSize = (size * 0.6).sp,
             color = Color.White
         )
-    }'''
-    if old_dice_body in c:
-        c = c.replace(old_dice_body, new_dice_body)
-        # Remove the resId val that references missing drawables
-        c = re.sub(r'    val resId = when.*?else -> 0\n    }\n', '', c, flags=re.DOTALL)
+    }
+}'''
+    c = re.sub(dice_pattern, dice_replacement, c, flags=re.DOTALL | re.MULTILINE)
+    # Also ensure needed imports are present
+    if 'import androidx.compose.foundation.background' not in c:
+        c = c.replace('import androidx.compose.foundation.Canvas', 'import androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background')
+    if 'import androidx.compose.ui.text.font.FontWeight' not in c and 'FontWeight' not in c:
+        pass  # Text doesn't need FontWeight here
     with open(pillars_path, 'w') as f:
         f.write(c)
     print("  ✓ PillarsOfSummoning.kt patched")
