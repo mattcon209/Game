@@ -130,15 +130,21 @@ if os.path.exists(gradle_path):
 
 print("=== All CI patches applied ===")
 
-# 7. Fix OutOfMemoryError - increase JVM metaspace for Kotlin compiler
+# 7. Fix OutOfMemoryError - REPLACE restrictive Termux memory limits with CI-appropriate values
 gradle_props = "PolyLoveMarble/gradle.properties"
 if os.path.exists(gradle_props):
     with open(gradle_props, 'r') as f:
         c = f.read()
-    if 'MaxMetaspaceSize' not in c:
-        c = c.rstrip() + '\norg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError\nkotlin.daemon.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g\n'
-        with open(gradle_props, 'w') as f:
-            f.write(c)
-        print("  ✓ gradle.properties patched (JVM memory increased)")
+    # Replace the low-memory jvmargs line
+    import re
+    c = re.sub(r'org\.gradle\.jvmargs=.*', 'org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+UseParallelGC -Dfile.encoding=UTF-8', c)
+    # Remove in-process strategy (let Kotlin compiler use its own process with more memory)
+    c = c.replace('kotlin.compiler.execution.strategy=in-process', '# kotlin.compiler.execution.strategy=in-process  # disabled for CI')
+    # Allow parallel workers on CI
+    c = c.replace('org.gradle.workers.max=1', 'org.gradle.workers.max=4')
+    c = c.replace('org.gradle.parallel=false', 'org.gradle.parallel=true')
+    with open(gradle_props, 'w') as f:
+        f.write(c)
+    print("  ✓ gradle.properties patched (4GB heap, 1GB metaspace, parallel workers)")
 
 print("=== All CI patches applied ===")
