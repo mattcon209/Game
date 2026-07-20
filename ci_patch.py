@@ -400,6 +400,7 @@ import android.graphics.BitmapFactory
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import com.polylove.marble.R
 
@@ -409,7 +410,7 @@ object PawnBitmapCache {
     
     fun get(context: Context): ImageBitmap {
         if (bitmap == null) {
-            val options = BitmapFactory.Options().apply { inPreferredConfig = BitmapFactory.Config.ARGB_8888 }
+            val options = BitmapFactory.Options().apply { inPreferredConfig = android.graphics.BitmapFactory.Config.ARGB_8888 }
             val stream = context.resources.openRawResource(
                 context.resources.getIdentifier("player_statue", "drawable", context.packageName)
             )
@@ -441,7 +442,7 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
     // Draw statue image with color tint
     drawImage(
         image = img,
-        srcOffset = androidx.compose.ui.unit.IntOffset.Zero,
+        srcOffset = IntOffset.Zero,
         srcSize = IntSize(img.width, img.height),
         dstOffset = IntOffset((x - w / 2f).toInt(), (y - h * 0.5f).toInt()),
         dstSize = IntSize(w.toInt(), h.toInt()),
