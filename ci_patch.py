@@ -385,6 +385,96 @@ if os.path.exists(setup_path):
             f.write(c)
         print("  ✓ Open Creation button: capsule removed, PNG used directly")
 
+
+# 11. Replace drawGamePawn with statue image + color tint
+pawn_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/components/GamePawn.kt"
+if os.path.exists(pawn_path):
+    with open(pawn_path, 'r') as f:
+        c = f.read()
+    
+    # Replace the entire file with an image-based version
+    new_pawn_code = """package com.polylove.marble.ui.components
+
+import android.content.Context
+import android.graphics.BitmapFactory
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.unit.IntSize
+import com.polylove.marble.R
+
+// Singleton to cache the statue bitmap (loaded once from resources)
+object PawnBitmapCache {
+    private var bitmap: ImageBitmap? = null
+    
+    fun get(context: Context): ImageBitmap {
+        if (bitmap == null) {
+            val options = BitmapFactory.Options().apply { inPreferredConfig = BitmapFactory.Config.ARGB_8888 }
+            val stream = context.resources.openRawResource(
+                context.resources.getIdentifier("player_statue", "drawable", context.packageName)
+            )
+            val androidBitmap = BitmapFactory.decodeStream(stream, null, options)
+            stream.close()
+            bitmap = androidBitmap?.asImageBitmap()
+        }
+        return bitmap!!
+    }
+}
+
+// Store context reference for DrawScope access
+var pawnContext: Context? = null
+
+fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squashX: Float = 1f, stretchY: Float = 1f) {
+    val ctx = pawnContext ?: return
+    val img = PawnBitmapCache.get(ctx)
+    
+    val h = size * 2.2f * stretchY
+    val w = size * 1.8f * squashX
+    
+    // Draw shadow
+    drawOval(
+        color = Color.Black.copy(alpha = 0.4f),
+        topLeft = Offset(x - w * 0.4f, y + h * 0.3f),
+        size = androidx.compose.ui.geometry.Size(w * 0.8f, h * 0.15f)
+    )
+    
+    // Draw statue image with color tint
+    drawImage(
+        image = img,
+        srcOffset = androidx.compose.ui.unit.IntOffset.Zero,
+        srcSize = IntSize(img.width, img.height),
+        dstOffset = IntOffset((x - w / 2f).toInt(), (y - h * 0.5f).toInt()),
+        dstSize = IntSize(w.toInt(), h.toInt()),
+        colorFilter = ColorFilter.tint(color, blendMode = BlendMode.SrcIn)
+    )
+}
+"""
+    
+    with open(pawn_path, 'w') as f:
+        f.write(new_pawn_code)
+    print("  ✓ GamePawn.kt: replaced with statue image + color tint")
+    
+    # Also need to set pawnContext in BoardScreen (where Canvas is used)
+    board_path = "PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/screens/BoardScreen.kt"
+    if os.path.exists(board_path):
+        with open(board_path, 'r') as f:
+            bc = f.read()
+        # Add pawnContext = context after the context declaration
+        if 'pawnContext = context' not in bc:
+            bc = bc.replace(
+                'val context = LocalContext.current',
+                'val context = LocalContext.current\n    pawnContext = context'
+            )
+            # Add import
+            if 'import com.polylove.marble.ui.components.pawnContext' not in bc:
+                bc = bc.replace(
+                    'import com.polylove.marble.ui.components.*',
+                    'import com.polylove.marble.ui.components.*\nimport com.polylove.marble.ui.components.pawnContext'
+                )
+            with open(board_path, 'w') as f:
+                f.write(bc)
+            print("  ✓ BoardScreen.kt: pawnContext set")
+
 # 7. Fix OutOfMemoryError - REPLACE restrictive Termux memory limits with CI-appropriate values
 gradle_props = "PolyLoveMarble/gradle.properties"
 if os.path.exists(gradle_props):
