@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.polylove.marble.game.*
-import com.polylove.marble.ui.CryptSkin
 import com.polylove.marble.ui.EmberParticle
 import com.polylove.marble.ui.GameScreen
 import com.polylove.marble.ui.GameViewModel
@@ -318,7 +317,6 @@ fun BoardScreen(viewModel: GameViewModel) {
                                         pulseScale = pulseScale,
                                         tiltX = tiltX,
                                         tiltY = tiltY,
-                                        skin = viewModel.selectedSkin,
                                         modifier = Modifier.fillMaxSize()
                                     )
                                     

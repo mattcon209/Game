@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.polylove.marble.R
 import com.polylove.marble.game.*
-import com.polylove.marble.ui.CryptSkin
 import com.polylove.marble.ui.theme.*
 
 // Imports needed for pre-sliced Image-based Dice
@@ -40,7 +39,6 @@ fun SummoningPillar(
     pulseScale: Float,
     tiltX: Float,
     tiltY: Float,
-    skin: CryptSkin,
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current.density

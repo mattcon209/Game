@@ -373,7 +373,7 @@ if os.path.exists(setup_path):
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(72.dp)
+                            .height(100.dp)
                             .clickable {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 viewModel.currentScreen = GameScreen.Editor
@@ -447,7 +447,7 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
         srcSize = IntSize(img.width, img.height),
         dstOffset = IntOffset((x - w / 2f).toInt(), (y - h * 0.5f).toInt()),
         dstSize = IntSize(w.toInt(), h.toInt()),
-        colorFilter = ColorFilter.tint(color, blendMode = BlendMode.SrcIn)
+        colorFilter = ColorFilter.tint(color, blendMode = BlendMode.Modulate)
     )
 }
 """

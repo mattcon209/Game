@@ -97,7 +97,7 @@ fun KinkyCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 28.dp, vertical = 24.dp), // Extra padding to stay inside the gold scroll frame!
+                .padding(horizontal = 48.dp, vertical = 36.dp), // Extra padding to stay inside the gold scroll frame!
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()

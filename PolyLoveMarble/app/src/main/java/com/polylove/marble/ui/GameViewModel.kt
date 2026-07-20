@@ -64,7 +64,6 @@ class GameViewModel {
     
     // Game Settings
     var gridSize by mutableStateOf(5) // 4 (12 tiles), 5 (16 tiles), 6 (20 tiles)
-    var selectedSkin by mutableStateOf(CryptSkin.OBSIDIAN_CRYPT)
     var isInfiniteMode by mutableStateOf(false)
     var targetLaps by mutableStateOf(2)
     var isBoardRandomized by mutableStateOf(true)

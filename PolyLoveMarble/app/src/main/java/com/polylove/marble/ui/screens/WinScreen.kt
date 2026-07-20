@@ -170,7 +170,7 @@ fun WinScreen(viewModel: GameViewModel) {
                 item {
                     KinkyCard(borderColor = BrassGold.copy(alpha = 0.4f)) {
                         Text(
-                            text = "Grimoire Dominance Badges",
+                            text = "Ritual Dominance Badges",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = BrassGold,

@@ -31,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.polylove.marble.R
 import com.polylove.marble.ui.ChainsOfDesireLogo
-import com.polylove.marble.ui.CryptSkin
 import com.polylove.marble.ui.GameScreen
 import com.polylove.marble.ui.GameViewModel
 import com.polylove.marble.ui.components.*
@@ -404,60 +403,6 @@ fun SetupScreen(viewModel: GameViewModel) {
                         }
                     }
                 }
-
-                // Theme skins selection inside a Dropdown Menu Card!
-                item {
-                    var skinMenuExpanded by remember { mutableStateOf(false) }
-                    KinkyCard(isShort = true) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    skinMenuExpanded = true
-                                },
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Summoning Crypt Theme Skin",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = BrassGold
-                                )
-                                Text(
-                                    text = "Active Skin: ${viewModel.selectedSkin.displayName}",
-                                    fontSize = 11.sp,
-                                    color = Color.LightGray
-                                )
-                            }
-                            Icon(Icons.Default.KeyboardArrowDown, "Expand Skin Menu", tint = BrassGold)
-                        }
-
-                        DropdownMenu(
-                            expanded = skinMenuExpanded,
-                            onDismissRequest = { skinMenuExpanded = false },
-                            modifier = Modifier.background(LeatherDarkPurple)
-                        ) {
-                            CryptSkin.values().forEach { skin ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Column {
-                                            Text(skin.displayName, fontWeight = FontWeight.Bold, color = Color.White, fontSize = 12.sp)
-                                            Text(skin.desc, color = Color.Gray, fontSize = 10.sp)
-                                        }
-                                    },
-                                    onClick = {
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        viewModel.selectedSkin = skin
-                                        skinMenuExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
                 
                 // Select Expansion Decks / Spell Books is COLLAPSIBLE!
                 item {
@@ -568,11 +513,6 @@ fun SetupScreen(viewModel: GameViewModel) {
                             }
                         }
                     }
-                }
-                
-                // GRIMOIRE OF SAFETY & RULES ACCORDION (Extracted into a beautiful modular component!)
-                item {
-                    GrimoireOfSafety(hapticFeedback = hapticFeedback)
                 }
                 
                 // Creation Mode Editor Button (Updated to use your beautiful custom image!)
