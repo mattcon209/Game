@@ -396,6 +396,7 @@ if os.path.exists(pawn_path):
     new_pawn_code = """package com.polylove.marble.ui.components
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
@@ -410,7 +411,7 @@ object PawnBitmapCache {
     
     fun get(context: Context): ImageBitmap {
         if (bitmap == null) {
-            val options = BitmapFactory.Options().apply { inPreferredConfig = android.graphics.BitmapFactory.Config.ARGB_8888 }
+            val options = BitmapFactory.Options().apply { inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888 }
             val stream = context.resources.openRawResource(
                 context.resources.getIdentifier("player_statue", "drawable", context.packageName)
             )
