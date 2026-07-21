@@ -405,21 +405,77 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import com.polylove.marble.R
 
-// Singleton to cache the statue bitmap (loaded once from resources)
+// Singleton to cache the statue bitmap (loaded once from resources and colorized)
 object PawnBitmapCache {
-    private var bitmap: ImageBitmap? = null
+    private var baseBitmap: ImageBitmap? = null
+    private val colorizedCache = mutableMapOf<Color, ImageBitmap>()
     
-    fun get(context: Context): ImageBitmap {
-        if (bitmap == null) {
+    fun getBase(context: Context): ImageBitmap {
+        if (baseBitmap == null) {
             val options = BitmapFactory.Options().apply { inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888 }
             val stream = context.resources.openRawResource(
                 context.resources.getIdentifier("player_statue", "drawable", context.packageName)
             )
             val androidBitmap = BitmapFactory.decodeStream(stream, null, options)
             stream.close()
-            bitmap = androidBitmap?.asImageBitmap()
+            baseBitmap = androidBitmap?.asImageBitmap()
         }
-        return bitmap!!
+        return baseBitmap!!
+    }
+    
+    fun getColorized(context: Context, color: Color): ImageBitmap {
+        return colorizedCache.getOrPut(color) {
+            val base = getBase(context)
+            val androidBitmap = base.asAndroidBitmap()
+            val mutableBitmap = androidBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            val width = mutableBitmap.width
+            val height = mutableBitmap.height
+            val pixels = IntArray(width * height)
+            mutableBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+            
+            val rTint = (color.red * 255f).toInt()
+            val gTint = (color.green * 255f).toInt()
+            val bTint = (color.blue * 255f).toInt()
+            
+            for (y in 0 until height) {
+                for (x in 0 until width) {
+                    val idx = y * width + x
+                    val pixel = pixels[idx]
+                    val a = (pixel shr 24) and 0xff
+                    if (a == 0) continue
+                    
+                    val r = (pixel shr 16) and 0xff
+                    val g = (pixel shr 8) and 0xff
+                    val b = pixel and 0xff
+                    
+                    // Greyscale conversion (luminance)
+                    val l = 0.299f * r + 0.587f * g + 0.114f * b
+                    
+                    // Colorized pixel (greyscale shading preserved!)
+                    val rCol = (l * rTint / 255f).toInt()
+                    val gCol = (l * gTint / 255f).toInt()
+                    val bCol = (l * bTint / 255f).toInt()
+                    
+                    // Only tint the hooded cloak (top ~71% of height), with soft anti-aliased luminance blending
+                    val blend = if (y < height * 0.71f) {
+                        if (l <= 70f) 0.0f
+                        else if (l >= 120f) 1.0f
+                        else (l - 70f) / 50f
+                    } else {
+                        0.0f
+                    }
+                    
+                    val rFinal = (r * (1f - blend) + rCol * blend).toInt().coerceIn(0, 255)
+                    val gFinal = (g * (1f - blend) + gCol * blend).toInt().coerceIn(0, 255)
+                    val bFinal = (b * (1f - blend) + bCol * blend).toInt().coerceIn(0, 255)
+                    
+                    pixels[idx] = (a shl 24) or (rFinal shl 16) or (gFinal shl 8) or bFinal
+                }
+            }
+            
+            mutableBitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+            mutableBitmap.asImageBitmap()
+        }
     }
 }
 
@@ -428,7 +484,7 @@ var pawnContext: Context? = null
 
 fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squashX: Float = 1f, stretchY: Float = 1f) {
     val ctx = pawnContext ?: return
-    val img = PawnBitmapCache.get(ctx)
+    val img = PawnBitmapCache.getColorized(ctx, color)
     
     val h = size * 2.2f * stretchY
     val w = size * 1.8f * squashX
@@ -440,32 +496,13 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
         size = androidx.compose.ui.geometry.Size(w * 0.8f, h * 0.15f)
     )
     
-    // Slice height calculation: top 70% is figure, bottom 30% is base
-    val topSrcH = (img.height * 0.7f).toInt()
-    val baseSrcY = topSrcH
-    val baseSrcH = img.height - baseSrcY
-    
-    val topDstH = h * 0.7f
-    val baseDstY = (y - h * 0.5f) + topDstH
-    val baseDstH = h * 0.3f
-    
-    // 1. Draw top figure portion with color tint (Modulate preserves textures & shadows!)
+    // Draw the colorized statue directly from the pre-rendered cache!
     drawImage(
         image = img,
-        srcOffset = IntOffset(0, 0),
-        srcSize = IntSize(img.width, topSrcH),
+        srcOffset = IntOffset.Zero,
+        srcSize = IntSize(img.width, img.height),
         dstOffset = IntOffset((x - w / 2f).toInt(), (y - h * 0.5f).toInt()),
-        dstSize = IntSize(w.toInt(), topDstH.toInt()),
-        colorFilter = ColorFilter.tint(color, blendMode = BlendMode.Modulate)
-    )
-    
-    // 2. Draw bottom base portion WITHOUT color tint (keeps pristine stone texture & glows!)
-    drawImage(
-        image = img,
-        srcOffset = IntOffset(0, baseSrcY),
-        srcSize = IntSize(img.width, baseSrcH),
-        dstOffset = IntOffset((x - w / 2f).toInt(), baseDstY.toInt()),
-        dstSize = IntSize(w.toInt(), baseDstH.toInt())
+        dstSize = IntSize(w.toInt(), h.toInt())
     )
 }
 """

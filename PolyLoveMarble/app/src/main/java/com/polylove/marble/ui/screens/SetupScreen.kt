@@ -6,6 +6,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -90,8 +92,15 @@ fun SetupScreen(viewModel: GameViewModel) {
                         
                         Spacer(modifier = Modifier.height(4.dp))
                         
-                        viewModel.players.forEachIndexed { index, player ->
-                            Column(modifier = Modifier.fillMaxWidth()) {
+                        val playerScrollState = rememberScrollState()
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(170.dp)
+                                .verticalScroll(playerScrollState)
+                        ) {
+                            viewModel.players.forEachIndexed { index, player ->
+                                Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
@@ -193,6 +202,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                 }
                             }
                         }
+                        } // Close scrollable Column
                     }
                 }
                 
@@ -482,7 +492,14 @@ fun SetupScreen(viewModel: GameViewModel) {
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         
-                        SpiceLevel.values().forEach { level ->
+                        val levelScrollState = rememberScrollState()
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(160.dp)
+                                .verticalScroll(levelScrollState)
+                        ) {
+                            SpiceLevel.values().forEach { level ->
                             val isSelected = viewModel.selectedSpiceLevels.contains(level)
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -512,6 +529,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                 }
                             }
                         }
+                        } // Close scrollable Column
                     }
                 }
                 
