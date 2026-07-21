@@ -422,38 +422,71 @@ fun GothicPremiumCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 150.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        LeatherDarkPurple.copy(alpha = 0.85f),
-                        ObsidianBlack.copy(alpha = 0.95f)
-                    )
-                )
-            )
-            .border(1.5.dp, borderColor, RoundedCornerShape(16.dp))
-            .shadow(8.dp, RoundedCornerShape(16.dp), ambientColor = BrassGold),
+            .shadow(8.dp, RoundedCornerShape(16.dp), ambientColor = BrassGold)
+            .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
-        // Draw the four elegant gold gilded corner filigrees!
+        val bitmap = ImageBitmap.imageResource(id = R.drawable.gothic_frame_large)
+        
         Canvas(modifier = Modifier.matchParentSize()) {
             val w = size.width
             val h = size.height
             
-            // Top-Left
+            val imgW = bitmap.width.toFloat()
+            val imgH = bitmap.height.toFloat()
+            
+            // Slice definitions: top border (115px), bottom border (88px), middle stretches
+            val srcTopH = 115f
+            val srcBotH = 88f
+            val srcMidH = imgH - srcTopH - srcBotH
+            
+            // Calculate destination heights while keeping top/bottom aspect ratio correct
+            val dstTopH = srcTopH * (w / imgW)
+            val dstBotH = srcBotH * (w / imgW)
+            val dstMidH = h - dstTopH - dstBotH
+            
+            // 1. Draw top border slice
+            drawImage(
+                image = bitmap,
+                srcOffset = IntOffset(0, 0),
+                srcSize = IntSize(bitmap.width, srcTopH.toInt()),
+                dstOffset = IntOffset(0, 0),
+                dstSize = IntSize(w.toInt(), dstTopH.toInt())
+            )
+            
+            // 2. Draw middle stretchable parchment
+            if (dstMidH > 0) {
+                drawImage(
+                    image = bitmap,
+                    srcOffset = IntOffset(0, srcTopH.toInt()),
+                    srcSize = IntSize(bitmap.width, srcMidH.toInt()),
+                    dstOffset = IntOffset(0, dstTopH.toInt()),
+                    dstSize = IntSize(w.toInt(), dstMidH.toInt())
+                )
+            }
+            
+            // 3. Draw bottom border slice
+            drawImage(
+                image = bitmap,
+                srcOffset = IntOffset(0, (imgH - srcBotH).toInt()),
+                srcSize = IntSize(bitmap.width, srcBotH.toInt()),
+                dstOffset = IntOffset(0, (h - dstBotH).toInt()),
+                dstSize = IntSize(w.toInt(), dstBotH.toInt())
+            )
+            
+            // Draw the four elegant gold gilded corner filigrees!
             drawGildedCorner(x = 0f, y = 0f, isLeft = true, isTop = true)
-            // Top-Right
             drawGildedCorner(x = w, y = 0f, isLeft = false, isTop = true)
-            // Bottom-Left
             drawGildedCorner(x = 0f, y = h, isLeft = true, isTop = false)
-            // Bottom-Right
             drawGildedCorner(x = w, y = h, isLeft = false, isTop = false)
         }
         
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+                .padding(start = 48.dp, end = 48.dp, top = 54.dp, bottom = 42.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()
@@ -475,32 +508,17 @@ fun PremiumGothicButton(
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, label = "ButtonScale")
     
-    val bgGradient = if (isPurple) {
-        Brush.verticalGradient(
-            colors = listOf(SeductiveViolet, LeatherDarkPurple)
-        )
-    } else {
-        Brush.verticalGradient(
-            colors = listOf(LatexCrimson, Color(0xFF4A0000))
-        )
-    }
+    val imgRes = if (isPurple) R.drawable.begin_session_btn else R.drawable.open_creation_btn
+    val heightVal = if (isPurple) 120.dp else 100.dp
     
-    val borderCol = if (enabled) BrassGold else Color.Gray.copy(alpha = 0.5f)
-    val textCol = if (enabled) BrassGold else Color.Gray
-    
-    Box(
+    Image(
+        painter = painterResource(id = imgRes),
+        contentDescription = text,
+        contentScale = ContentScale.Fit,
         modifier = modifier
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .fillMaxWidth()
-            .height(54.dp)
-            .clip(RoundedCornerShape(27.dp))
-            .background(bgGradient)
-            .border(2.dp, borderCol, RoundedCornerShape(27.dp))
-            .shadow(
-                elevation = if (isPressed) 4.dp else 12.dp,
-                shape = RoundedCornerShape(27.dp),
-                ambientColor = if (isPurple) SeductiveViolet else LatexCrimson
-            )
+            .height(heightVal)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -508,16 +526,6 @@ fun PremiumGothicButton(
             ) {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 onClick()
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text.uppercase(),
-            fontFamily = FontFamily.Serif,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 15.sp,
-            color = textCol,
-            letterSpacing = 1.5.sp
-        )
-    }
+            }
+    )
 }
