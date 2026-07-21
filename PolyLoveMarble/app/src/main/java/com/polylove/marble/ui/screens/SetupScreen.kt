@@ -49,12 +49,26 @@ fun SetupScreen(viewModel: GameViewModel) {
     val scrollState = rememberScrollState()
     
     SeductiveLeatherBackground {
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
+            val wDp = maxWidth
+            
+            // Image assets & slice heights dynamically scaled to prevent distortion
             val bitmap = ImageBitmap.imageResource(id = R.drawable.gothic_long_frame)
+            val imgW = bitmap.width.toFloat()
+            val imgH = bitmap.height.toFloat()
+            
+            // Slice definitions: top border (240px), bottom border with buttons (342px)
+            val srcTopH = 240f
+            val srcBotH = 342f
+            val srcMidH = imgH - srcTopH - srcBotH
+            
+            // Convert to Dp scaling
+            val dstTopH = srcTopH * (wDp.value / imgW)
+            val dstBotH = srcBotH * (wDp.value / imgW)
             
             // Outer scrollable column for the entire un-distorted gothic long scroll
             Column(
@@ -75,18 +89,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                         val w = size.width
                         val h = size.height
                         
-                        val imgW = bitmap.width.toFloat()
-                        val imgH = bitmap.height.toFloat()
-                        
-                        // Slice definitions for gothic_long_frame.png: top border (240px), bottom border (196px)
-                        val srcTopH = 240f
-                        val srcBotH = 196f
-                        val srcMidH = imgH - srcTopH - srcBotH
-                        
                         // Calculate un-distorted destination heights preserving original aspect ratio
-                        val dstTopH = srcTopH * (w / imgW)
-                        val dstBotH = srcBotH * (w / imgW)
-                        val dstMidH = h - dstTopH - dstBotH
+                        val dstTopHPx = srcTopH * (w / imgW)
+                        val dstBotHPx = srcBotH * (w / imgW)
+                        val dstMidHPx = h - dstTopHPx - dstBotHPx
                         
                         // 1. Draw top heart scroll border
                         drawImage(
@@ -94,27 +100,27 @@ fun SetupScreen(viewModel: GameViewModel) {
                             srcOffset = IntOffset(0, 0),
                             srcSize = IntSize(bitmap.width, srcTopH.toInt()),
                             dstOffset = IntOffset(0, 0),
-                            dstSize = IntSize(w.toInt(), dstTopH.toInt())
+                            dstSize = IntSize(w.toInt(), dstTopHPx.toInt())
                         )
                         
                         // 2. Draw middle stretchable nebula parchment
-                        if (dstMidH > 0) {
+                        if (dstMidHPx > 0) {
                             drawImage(
                                 image = bitmap,
                                 srcOffset = IntOffset(0, srcTopH.toInt()),
                                 srcSize = IntSize(bitmap.width, srcMidH.toInt()),
-                                dstOffset = IntOffset(0, dstTopH.toInt()),
-                                dstSize = IntSize(w.toInt(), dstMidH.toInt())
+                                dstOffset = IntOffset(0, dstTopHPx.toInt()),
+                                dstSize = IntSize(w.toInt(), dstMidHPx.toInt())
                             )
                         }
                         
-                        // 3. Draw bottom candle border
+                        // 3. Draw bottom candle & buttons border
                         drawImage(
                             image = bitmap,
                             srcOffset = IntOffset(0, (imgH - srcBotH).toInt()),
                             srcSize = IntSize(bitmap.width, srcBotH.toInt()),
-                            dstOffset = IntOffset(0, (h - dstBotH).toInt()),
-                            dstSize = IntSize(w.toInt(), dstBotH.toInt())
+                            dstOffset = IntOffset(0, (h - dstBotHPx).toInt()),
+                            dstSize = IntSize(w.toInt(), dstBotHPx.toInt())
                         )
                     }
                     
@@ -122,7 +128,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 32.dp, end = 32.dp, top = 135.dp, bottom = 110.dp), // Safely clear top heart and bottom candles!
+                            .padding(start = 32.dp, end = 32.dp, top = (dstTopH + 12f).dp, bottom = 0.dp), // Safely clear top heart!
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // === 1. Session Partners (Lobby) ===
@@ -155,23 +161,24 @@ fun SetupScreen(viewModel: GameViewModel) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(175.dp)
+                                .height(160.dp)
                                 .verticalScroll(playerScrollState),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             viewModel.players.forEachIndexed { index, player ->
-                                Column(modifier = Modifier.fillMaxWidth()) {
+                                Column(modifier = Modifier.wrapContentSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                                    // Player bar backdrop - exactly 248.dp x 50.dp to match un-stretched ratio (1310x264)!
                                     Box(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(58.dp),
+                                            .width(248.dp)
+                                            .height(50.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        // Custom session_partner_bar background image
                                         Image(
                                             painter = painterResource(id = R.drawable.session_partner_bar),
                                             contentDescription = "Player Row Backdrop",
-                                            contentScale = ContentScale.FillBounds,
+                                            contentScale = ContentScale.Fit,
                                             modifier = Modifier.fillMaxSize()
                                         )
                                         
@@ -179,10 +186,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                                             verticalAlignment = Alignment.CenterVertically,
                                             modifier = Modifier.fillMaxSize()
                                         ) {
-                                            // Left aligned circular portrait socket
+                                            // Left aligned circular portrait socket (occupies exactly 50dp x 50dp)
                                             Box(
                                                 modifier = Modifier
-                                                    .width(58.dp)
+                                                    .width(50.dp)
                                                     .fillMaxHeight(),
                                                 contentAlignment = Alignment.Center
                                             ) {
@@ -190,7 +197,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                                     playerColor = player.color,
                                                     playerIndex = index,
                                                     modifier = Modifier
-                                                        .size(40.dp)
+                                                        .size(36.dp)
                                                         .clickable {
                                                             viewModel.activeColorPickerIndex = 
                                                                 if (viewModel.activeColorPickerIndex == index) -1 else index
@@ -198,7 +205,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                                 )
                                             }
                                             
-                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Spacer(modifier = Modifier.width(4.dp))
                                             
                                             // Player name text field
                                             TextField(
@@ -215,7 +222,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                                     unfocusedIndicatorColor = Color.Transparent
                                                 ),
                                                 textStyle = LocalTextStyle.current.copy(
-                                                    fontSize = 14.sp,
+                                                    fontSize = 13.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     fontFamily = FontFamily.Serif
                                                 ),
@@ -226,12 +233,13 @@ fun SetupScreen(viewModel: GameViewModel) {
                                             if (viewModel.players.size > 2) {
                                                 IconButton(
                                                     onClick = { viewModel.removePlayer(player) },
-                                                    modifier = Modifier.padding(end = 12.dp)
+                                                    modifier = Modifier.padding(end = 8.dp)
                                                 ) {
                                                     Icon(
                                                         Icons.Default.Delete,
                                                         contentDescription = "Delete",
-                                                        tint = SteelGrey
+                                                        tint = SteelGrey,
+                                                        modifier = Modifier.size(20.dp)
                                                     )
                                                 }
                                             }
@@ -249,13 +257,13 @@ fun SetupScreen(viewModel: GameViewModel) {
                                             border = BorderStroke(1.dp, SeductiveViolet.copy(alpha = 0.3f)),
                                             shape = RoundedCornerShape(8.dp),
                                             modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                                                .width(248.dp)
+                                                .padding(vertical = 4.dp)
                                         ) {
                                             Row(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
-                                                    .padding(8.dp),
+                                                    .padding(6.dp),
                                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
@@ -611,38 +619,50 @@ fun SetupScreen(viewModel: GameViewModel) {
                             }
                         }
                         
-                        OrnateGothicDivider(modifier = Modifier.padding(vertical = 12.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
                         
-                        // === 6. Spellbook Editor Button ===
-                        Image(
-                            painter = painterResource(id = R.drawable.open_creation_btn),
-                            contentDescription = "Open Creation Mode",
-                            contentScale = ContentScale.Fit,
+                        // === 6. Dynamic Responsive Bottom Box holding transparent clickable buttons ===
+                        // Calculates pixel-perfect positions mapping to 'Spellbook Editor' and 'BEGIN SESSION' background image buttons
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(100.dp)
-                                .clickable {
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    viewModel.currentScreen = GameScreen.Editor
-                                }
-                        )
-                        
-                        Spacer(modifier = Modifier.height(20.dp))
-                        
-                        // === 7. Begin Session Button ===
-                        LeatherStrapButton(
-                            text = "Begin Session",
-                            onClick = {
-                                viewModel.board.clear()
-                                viewModel.board.addAll(BoardCreator.createBoardForPacks(
-                                    viewModel.gridSize,
-                                    viewModel.selectedSpellbooks.toSet(),
-                                    viewModel.isBoardRandomized
-                                ))
-                                viewModel.currentPlayerIndex = 0
-                                viewModel.currentScreen = GameScreen.Board
+                                .height(dstBotH.dp)
+                        ) {
+                            val scalingFactor = wDp.value / imgW
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                // Transparent hot-spot for 'Spellbook Editor' button (exactly 1060px to 1160px vertically)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height((100f * scalingFactor).dp)
+                                        .clickable {
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            viewModel.currentScreen = GameScreen.Editor
+                                        }
+                                )
+                                
+                                // Spacer between 'Spellbook Editor' and 'BEGIN SESSION' buttons (exactly 40px vertically)
+                                Spacer(modifier = Modifier.height((40f * scalingFactor).dp))
+                                
+                                // Transparent hot-spot for 'BEGIN SESSION' button (exactly 1200px to 1280px vertically)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height((80f * scalingFactor).dp)
+                                        .clickable {
+                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            viewModel.board.clear()
+                                            viewModel.board.addAll(BoardCreator.createBoardForPacks(
+                                                viewModel.gridSize,
+                                                viewModel.selectedSpellbooks.toSet(),
+                                                viewModel.isBoardRandomized
+                                            ))
+                                            viewModel.currentPlayerIndex = 0
+                                            viewModel.currentScreen = GameScreen.Board
+                                        }
+                                )
                             }
-                        )
+                        }
                     }
                 }
             }
