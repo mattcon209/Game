@@ -1,32 +1,31 @@
 package com.polylove.marble
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import com.polylove.marble.ui.GameViewModel
-import com.polylove.marble.ui.MainGameNavigator
-import com.polylove.marble.ui.theme.PolyLoveMarbleTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Initialize the game state model
-        val gameViewModel = GameViewModel()
-        
-        setContent {
-            PolyLoveMarbleTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainGameNavigator(gameViewModel)
-                }
+        // Create full screen high-performance WebView
+        val webView = WebView(this).apply {
+            webViewClient = WebViewClient()
+            settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                allowFileAccess = true
+                allowContentAccess = true
+                mediaPlaybackRequiresUserGesture = false
+                mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             }
+            loadUrl("file:///android_asset/index.html")
         }
+        
+        setContentView(webView)
     }
 }

@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chains of Desire — Seductive Board Game</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;700;900&family=Faustina:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #07040b;
+            --bg-card: rgba(20, 13, 30, 0.85);
+            --border-primary: #8b0000;
+            --accent-glow: #ff2a4b;
+            --accent-gold: #c5a059;
+            --accent-purple: #5c1d8d;
+            --text-main: #f5f5f5;
+            --text-muted: #7a7a8a;
+            --font-title: 'Cinzel Decorative', 'Cinzel', serif;
+            --font-body: 'Cinzel', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow: hidden;
+            min-height: 100vh;
+            width: 100vw;
+            background-image: url('seductive_bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Ambient Ember Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* App Wrapper */
+        #app {
+            position: relative;
+            z-index: 5;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* SCREEN 1: LOBBY SETUP SCREEN */
+        .screen-view {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .screen-view.active {
+            display: flex;
+        }
+
+        /* Scrollable Gothic Long Frame Panel */
+        .gothic-scroll-panel {
+            width: 100%;
+            max-width: 440px;
+            height: 100%;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .gothic-scroll-panel::-webkit-scrollbar {
+            display: none; /* Hide scrollbar Chrome/Safari */
+        }
+
+        .gothic-backdrop-container {
+            width: 100%;
+            min-height: 110%;
+            position: relative;
+            background-image: url('gothic_long_frame.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        .form-content {
+            padding: 135px 38px 110px 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Titles & Labels */
+        .section-header {
+            font-family: var(--font-title);
+            font-size: 15px;
+            color: var(--accent-gold);
+            text-align: left;
+            width: 100%;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Dividers */
+        .gothic-divider {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-gold) 50%, transparent 100%);
+            margin: 16px 0;
+            position: relative;
+            opacity: 0.6;
+        }
+        .gothic-divider::after {
+            content: '✦';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-gold);
+            font-size: 10px;
+        }
+
+        /* Players list */
+        .players-lobby-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-height: 175px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .players-lobby-list::-webkit-scrollbar { display: none; }
+
+        .player-bar-row {
+            width: 288px;
+            height: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-image: url('session_partner_bar.png');
+            background-size: 100% 100%;
+            margin: 0 auto;
+        }
+
+        .player-gem-circle {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gemstone-glow {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor, inset 0 2px 4px rgba(255,255,255,0.4);
+            transition: transform 0.2s ease;
+        }
+        .gemstone-glow:active {
+            transform: scale(0.9);
+        }
+
+        .player-name-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 700;
+            padding-left: 8px;
+        }
+
+        .delete-player-btn {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: color 0.2s;
+        }
+        .delete-player-btn:hover { color: var(--accent-glow); }
+
+        /* Color Picker Dialog Overlay */
+        .color-picker-overlay {
+            display: none;
+            position: absolute;
+            z-index: 100;
+            background: rgba(7, 4, 11, 0.95);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+            padding: 8px;
+            width: 248px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 4px;
+        }
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+        .picker-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4);
+            transition: transform 0.2s;
+        }
+        .picker-dot:hover { transform: scale(1.1); border-color: #fff; }
+
+        /* Custom Padlock checkbox style */
+        .padlock-chk-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .padlock-chk-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--accent-gold);
+        }
+        .padlock-chk-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .padlock-chk-desc {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Toggle Switches */
+        .settings-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 4px 0;
+        }
+        .toggle-switch-container {
+            width: 44px;
+            height: 22px;
+            background: #1a0a22;
+            border: 1.5px solid var(--accent-gold);
+            border-radius: 11px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .toggle-switch-container.active {
+            background: var(--accent-glow);
+            border-color: #ffffff;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .toggle-handle {
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 1.5px;
+            left: 2px;
+            transition: left 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .toggle-switch-container.active .toggle-handle {
+            left: 23px;
+        }
+
+        /* Incrementer row */
+        .settings-inc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 6px;
+        }
+        .inc-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .inc-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1.5px solid var(--border-primary);
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .inc-btn:active { background: var(--border-primary); transform: scale(0.9); }
+        .inc-val { font-size: 14px; font-weight: bold; width: 16px; text-align: center; }
+
+        /* Segmented cards selector */
+        .segmented-row {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+        }
+        .segment-card {
+            flex: 1;
+            height: 38px;
+            background: rgba(0,0,0,0.6);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+        .segment-card.active {
+            border-color: var(--accent-gold);
+            background: rgba(92, 29, 141, 0.4);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(92, 29, 141, 0.5);
+        }
+
+        /* Transparent Hotspots overlay for buttons baked in gothic_long_frame */
+        .baked-buttons-hotspot-container {
+            width: 100%;
+            height: 120px;
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .baked-hotspot {
+            width: 100%;
+            cursor: pointer;
+            border-radius: 27px;
+            transition: transform 0.1s;
+        }
+        .baked-hotspot:active {
+            transform: scale(0.97);
+        }
+        .hotspot-editor { height: 48px; }
+        .hotspot-begin { height: 48px; }
+
+        /* SCREEN 2: GAME BOARD VIEW SCREEN */
+        .board-screen-view {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            position: relative;
+            background-image: radial-gradient(circle at 50% 50%, rgba(10, 8, 16, 0.3) 0%, rgba(7, 4, 11, 0.92) 100%);
+        }
+        .board-screen-view.active { display: flex; }
+
+        /* Top HUD Bar */
+        .hud-bar {
+            width: 100%;
+            background: linear-gradient(180deg, rgba(7, 4, 11, 0.95) 0%, rgba(7, 4, 11, 0.7) 100%);
+            border-bottom: 2px solid var(--border-primary);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+        .hud-turn-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hud-pawn-indicator {
+            width: 24px;
+            height: 24px;
+            position: relative;
+        }
+        .hud-turn-text {
+            font-family: var(--font-title);
+            font-size: 15px;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+        }
+        .hud-stats-text {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Board Camera Viewport */
+        .board-viewport {
+            flex: 1;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3D Isometric Board Grid */
+        .isometric-board-grid {
+            position: relative;
+            width: 480px;
+            height: 480px;
+            transform-style: preserve-3d;
+            transform: rotateX(54deg) rotateZ(-45deg);
+            transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Grid Pillar Columns */
+        .grid-pillar-cell {
+            position: absolute;
+            width: 72px;
+            height: 72px;
+            transform-style: preserve-3d;
+        }
+
+        .pillar-3d-model {
+            position: absolute;
+            width: 72px;
+            height: 120px;
+            transform: translateZ(-35px);
+            background-image: url('gothic_pillar.png');
+            background-size: 300% 200%; /* Representing 3x2 grid */
+            background-repeat: no-repeat;
+            pointer-events: none;
+        }
+
+        /* Glow and highlight rings */
+        .pillar-glow-ring {
+            position: absolute;
+            width: 64px;
+            height: 38px;
+            transform: rotateX(-54deg) rotateY(45deg) translateZ(48px);
+            border-radius: 50%;
+            border: 2px solid transparent;
+            pointer-events: none;
+            box-shadow: inset 0 0 10px currentColor, 0 0 10px currentColor;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .pillar-glow-ring.active {
+            opacity: 0.85;
+            color: var(--accent-gold);
+            animation: pulse-ring 1.5s infinite alternate;
+        }
+
+        /* Player pieces on Board */
+        .board-meeple {
+            position: absolute;
+            width: 32px;
+            height: 44px;
+            background-image: url('player_statue.png');
+            background-size: 100% 100%;
+            pointer-events: none;
+            z-index: 10;
+            filter: drop-shadow(0 0 4px var(--accent-glow));
+            transform-origin: bottom center;
+        }
+
+        /* Bottom Control Panel overlay */
+        .board-bottom-controls-bar {
+            width: 100%;
+            background: linear-gradient(0deg, rgba(7, 4, 11, 0.95) 0%, rgba(7, 4, 11, 0.7) 100%);
+            border-top: 2px solid var(--border-primary);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.8);
+        }
+
+        .unicode-dice-box {
+            display: flex;
+            gap: 8px;
+        }
+        .dice-face-3d {
+            width: 44px;
+            height: 44px;
+            background: #1c102a;
+            border: 1.5px solid var(--accent-gold);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            color: #ffffff;
+            text-shadow: 0 0 6px var(--accent-gold);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: transform 0.4s;
+        }
+        .dice-face-3d.rolling {
+            animation: roll-die 0.5s infinite linear;
+        }
+
+        /* Giant Roll Button styled like premium strap button */
+        .btn-roll-tactile {
+            width: 110px;
+            height: 44px;
+            background: linear-gradient(180deg, var(--border-primary) 0%, #300 100%);
+            border: 2px solid var(--accent-gold);
+            border-radius: 22px;
+            color: var(--accent-gold);
+            font-family: var(--font-title);
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(139,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.4);
+            transition: all 0.2s;
+        }
+        .btn-roll-tactile:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 5px rgba(139,0,0,0.3);
+        }
+
+        /* HUD Panels at bottom of screen */
+        .hud-panels-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 8px 16px;
+            z-index: 5;
+        }
+        .hud-panel-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 10px 14px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+        }
+        .hud-panel-title {
+            font-family: var(--font-title);
+            font-size: 11px;
+            color: var(--accent-gold);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 4px;
+        }
+
+        /* STANDINGS STATS */
+        .standing-pawn-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+        .standing-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 5px currentColor;
+        }
+
+        /* POPUP OVERLAY DIALOGS (Seductive Prompt Dialog) */
+        .dialog-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .dialog-popup-overlay.active { display: flex; }
+
+        .dialog-card {
+            width: 100%;
+            max-width: 380px;
+            background: #0f0b18;
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(139,0,0,0.4);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.2);
+        }
+        .dialog-popup-overlay.active .dialog-card { transform: scale(1); }
+
+        .dialog-header {
+            font-family: var(--font-title);
+            font-size: 18px;
+            letter-spacing: 1.5px;
+            color: var(--accent-glow);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+        .dialog-subheader {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .dialog-body-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin: 20px 0;
+            font-style: italic;
+        }
+        .dialog-timer {
+            font-family: var(--font-title);
+            font-size: 26px;
+            color: var(--accent-gold);
+            text-shadow: 0 0 8px var(--accent-gold);
+            margin: 12px 0;
+        }
+        .dialog-btn-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-top: 16px;
+        }
+        .dialog-action-btn {
+            flex: 1;
+            height: 44px;
+            border-radius: 22px;
+            font-family: var(--font-title);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-success {
+            background: linear-gradient(180deg, #5c1d8d 0%, #1c0634 100%);
+            border: 2.5px solid var(--accent-gold);
+            color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(92,29,141,0.5);
+        }
+        .btn-fail {
+            background: linear-gradient(180deg, var(--border-primary) 0%, #300 100%);
+            border: 2.5px solid var(--border-primary);
+            color: #ffffff;
+        }
+        .dialog-action-btn:active { transform: scale(0.96); }
+
+        /* SCREEN 3: WINNER SCREEN */
+        .win-screen-view {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: radial-gradient(circle, rgba(139,0,0,0.25) 0%, #07040b 100%);
+        }
+        .win-screen-view.active { display: flex; }
+
+        .victory-title {
+            font-family: var(--font-title);
+            font-size: 28px;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            text-shadow: 0 0 15px var(--accent-gold);
+            text-align: center;
+        }
+        .victory-badge-box {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            max-width: 360px;
+            margin-top: 20px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+        .victory-pawn-portrait {
+            width: 54px;
+            height: 72px;
+            background-image: url('player_statue.png');
+            background-size: 100% 100%;
+            margin: 0 auto 12px auto;
+        }
+        .badge-list-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+            text-align: left;
+        }
+        .badge-item {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        .badge-title {
+            font-weight: bold;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+        }
+
+        /* Keyframes */
+        @keyframes pulse-ring {
+            from { transform: rotateX(-54deg) rotateY(45deg) translateZ(48px) scale(0.9); opacity: 0.6; }
+            to { transform: rotateX(-54deg) rotateY(45deg) translateZ(48px) scale(1.1); opacity: 0.95; }
+        }
+
+        @keyframes roll-die {
+            0% { transform: scale(0.9) rotate(0deg); }
+            100% { transform: scale(0.9) rotate(360deg); }
+        }
+
+        .back-btn-top {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 100;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--accent-gold);
+            border-radius: 4px;
+            color: var(--accent-gold);
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: bold;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div id="app">
+        <!-- 1. LOBBY SETUP SCREEN -->
+        <section class="screen-view active" id="setupView">
+            <div class="gothic-scroll-panel">
+                <div class="gothic-backdrop-container">
+                    <div class="form-content">
+                        <!-- Redesigned Logo Branded Header -->
+                        <div style="text-align: center; margin-bottom: 8px; width:100%;">
+                            <svg class="brand-logo-svg" style="width:52px; height:52px; color:var(--border-primary); filter:drop-shadow(0 0 10px var(--accent-glow));" viewBox="0 0 32 32">
+                                <path d="M 16 2 L 28 8 V 18 C 28 25 16 30 16 30 C 16 30 4 25 4 18 V 8 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12,12 C12,12 8,6 16,6 C24,6 20,12 20,12 Z" fill="currentColor"/>
+                                <circle cx="16" cy="16" r="5" fill="currentColor"/>
+                            </svg>
+                            <h1 style="font-family: var(--font-title); font-size: 20px; letter-spacing: 2px; color: var(--accent-gold); margin-top: 4px; text-shadow: 0 0 10px rgba(255,42,75,0.4);">CHAINS OF DESIRE</h1>
+                            <div style="font-size: 8px; color: var(--border-primary); letter-spacing: 1px; font-weight: bold; margin-top: 2px;">AN INTIMATE POLY-BDSM SUMMONING RITUAL</div>
+                        </div>
+
+                        <div class="gothic-divider"></div>
+
+                        <!-- Partners Card -->
+                        <div class="section-header">
+                            <span>SESSION PARTNERS (<span id="partnerCount">3</span>/8)</span>
+                            <span style="cursor: pointer; color: var(--accent-glow); font-size:18px;" onclick="addPlayer()">⊕</span>
+                        </div>
+                        
+                        <div class="players-lobby-list" id="playersLobbyList">
+                            <!-- Populated via JS -->
+                        </div>
+
+                        <div class="gothic-divider"></div>
+
+                        <!-- Map Settings -->
+                        <div class="section-header">MAP SETTINGS &amp; LAYOUT</div>
+                        <div class="settings-toggle-row">
+                            <span style="font-size: 13px; font-weight: 700;">Map Size:</span>
+                            <div class="segmented-row" style="width: 140px;">
+                                <div class="segment-card active" onclick="setGridSize(5, this)">5x5</div>
+                                <div class="segment-card" onclick="setGridSize(6, this)">6x6</div>
+                                <div class="segment-card" onclick="setGridSize(7, this)">7x7</div>
+                            </div>
+                        </div>
+
+                        <div class="settings-toggle-row" style="margin-top: 10px;">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700;">Infinite Play Session</div>
+                                <div style="font-size: 9px; color: var(--text-muted);">Play with no lap limits.</div>
+                            </div>
+                            <div class="toggle-switch-container" id="infiniteToggle" onclick="toggleInfinite()">
+                                <div class="toggle-handle"></div>
+                            </div>
+                        </div>
+
+                        <div class="settings-inc-row" id="lapsIncRow">
+                            <span style="font-size: 13px; font-weight: 700;">Target Laps:</span>
+                            <div class="inc-controls">
+                                <button class="inc-btn" onclick="adjustLaps(-1)">-</button>
+                                <span class="inc-val" id="lapsVal">2</span>
+                                <button class="inc-btn" onclick="adjustLaps(1)">+</button>
+                            </div>
+                        </div>
+
+                        <div class="gothic-divider"></div>
+
+                        <!-- Decks -->
+                        <div class="section-header">SELECT SPELL BOOKS</div>
+                        <div class="padlock-chk-row" onclick="toggleDeck('Base Deck')">
+                            <span class="padlock-chk-icon" id="deck-Base-Deck">🔒</span>
+                            <div>
+                                <div class="padlock-chk-label">Base Deck</div>
+                                <div class="padlock-chk-desc">Boundary negotiations, seductive queries.</div>
+                            </div>
+                        </div>
+                        <div class="padlock-chk-row" onclick="toggleDeck('Kinky Rituals')">
+                            <span class="padlock-chk-icon" id="deck-Kinky-Rituals">🔓</span>
+                            <div>
+                                <div class="padlock-chk-label">Kinky Rituals</div>
+                                <div class="padlock-chk-desc">Restraints, sensory deprivation, and teasing.</div>
+                            </div>
+                        </div>
+
+                        <div class="gothic-divider"></div>
+
+                        <!-- Levels -->
+                        <div class="section-header">KINK INTENSITY LEVELS</div>
+                        <div class="players-lobby-list" style="max-height: 120px;">
+                            <div class="padlock-chk-row" onclick="toggleLevel('Level 1')">
+                                <span class="padlock-chk-icon" id="lvl-Level-1">🔓</span>
+                                <div>
+                                    <div class="padlock-chk-label">Level 1 — Light Sensations</div>
+                                    <div class="padlock-chk-desc">Light physical contact, soft whispers.</div>
+                                </div>
+                            </div>
+                            <div class="padlock-chk-row" onclick="toggleLevel('Level 2')">
+                                <span class="padlock-chk-icon" id="lvl-Level-2">🔓</span>
+                                <div>
+                                    <div class="padlock-chk-label">Level 2 — Restraints &amp; Masks</div>
+                                    <div class="padlock-chk-desc">Teasing, blindfolds, strict boundaries.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clickable Hotspots mapped directly on gothic_long_frame buttons -->
+                        <div class="baked-buttons-hotspot-container">
+                            <div class="baked-hotspot hotspot-editor" onclick="openEditor()"></div>
+                            <div class="baked-hotspot hotspot-begin" onclick="beginGameSession()"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. GAME BOARD SCREEN -->
+        <section class="screen-view" id="boardView">
+            <button class="back-btn-top" onclick="quitToSetup()">← EXIT</button>
+            
+            <div class="board-screen-view active">
+                <div class="hud-bar">
+                    <div class="hud-turn-info">
+                        <div class="hud-pawn-indicator">
+                            <div class="board-meeple" id="hudActivePawn" style="width:20px; height:28px; top:0; left:2px;"></div>
+                        </div>
+                        <div>
+                            <div class="hud-turn-text" id="hudActivePlayerName">It's Alex's turn!</div>
+                            <div class="hud-stats-text" id="hudActivePlayerStats">Lap: 1/2 | Tasks: 0 | Curses: 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="board-viewport">
+                    <div class="isometric-board-grid" id="boardGrid">
+                        <!-- Dynamic Columns and meeples loaded here -->
+                    </div>
+                </div>
+
+                <div class="hud-panels-grid">
+                    <div class="hud-panel-card">
+                        <div class="hud-panel-title">STANDINGS</div>
+                        <div id="standingsContainer">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                    <div class="hud-panel-card">
+                        <div class="hud-panel-title">ACTIVE CONSTRAINTS</div>
+                        <div id="constraintsContainer" style="font-size: 10px; color: var(--text-muted); font-style: italic;">
+                            No constraints active
+                        </div>
+                    </div>
+                </div>
+
+                <div class="board-bottom-controls-bar">
+                    <div class="unicode-dice-box">
+                        <div class="dice-face-3d" id="dieDisplay">⚀</div>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">Dominance: <span id="dominanceDisplay">1</span></div>
+                    <button class="btn-roll-tactile" id="btnRoll" onclick="rollDice3D()">ROLL</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SPELLBOOK BOOKLET EDITOR -->
+        <section class="screen-view" id="editorView">
+            <button class="back-btn-top" onclick="quitToSetup()">← BACK</button>
+            <div style="width: 100%; max-width: 420px; background: var(--bg-card); border: 2px solid var(--accent-gold); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); height: 85%; display: flex; flex-direction: column;">
+                <h1 style="font-family: var(--font-title); font-size: 18px; color: var(--accent-gold); text-align: center; margin-bottom: 12px;">SPELLBOOK EDITOR</h1>
+                
+                <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none;">
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size: 11px; color: var(--accent-gold); font-weight: bold; letter-spacing: 1px;">SPELL TEXT (PROMPT)</label>
+                        <textarea id="spellText" placeholder="Write your kinky truth or dare spell here... Use {target1} or {caster} for player names!" style="background:#130b1c; border:1px solid var(--border-primary); border-radius:6px; color:#fff; font-family:var(--font-body); font-size:12px; padding:10px; height:80px; resize:none; outline:none;"></textarea>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                            <label style="font-size: 11px; color: var(--accent-gold); font-weight: bold; letter-spacing: 1px;">CATEGORY</label>
+                            <select id="spellCategory" style="background:#130b1c; border:1px solid var(--border-primary); border-radius:6px; color:#fff; font-family:var(--font-body); font-size:12px; padding:8px; outline:none;">
+                                <option value="TRUTH">Rune of Whispers (Truth)</option>
+                                <option value="DARE">Rune of Hellfire (Dare)</option>
+                                <option value="KINKY_LIGHT">Rune of Sensation (Light)</option>
+                                <option value="TEASE_DENIAL">Rune of the Mask (Tease)</option>
+                            </select>
+                        </div>
+                        <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                            <label style="font-size: 11px; color: var(--accent-gold); font-weight: bold; letter-spacing: 1px;">SPICE LEVEL</label>
+                            <select id="spellLevel" style="background:#130b1c; border:1px solid var(--border-primary); border-radius:6px; color:#fff; font-family:var(--font-body); font-size:12px; padding:8px; outline:none;">
+                                <option value="Level 1">Level 1</option>
+                                <option value="Level 2">Level 2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="dialog-action-btn btn-success" style="height: 40px; margin-top: 10px;" onclick="saveCustomSpell()">SAVE SPELL</button>
+
+                    <div class="gothic-divider"></div>
+
+                    <label style="font-size: 11px; color: var(--accent-gold); font-weight: bold; letter-spacing: 1px;">YOUR CUSTOM SPELLS</label>
+                    <div id="customSpellsContainer" style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- List of custom spells loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. WINNER VICTORY VIEW -->
+        <section class="screen-view" id="winView">
+            <h1 class="victory-title">RITUAL COMPLETE!</h1>
+            <div class="victory-badge-box">
+                <div class="victory-pawn-portrait" id="winPawnPortrait"></div>
+                <h2 style="font-family: var(--font-title); font-size: 20px; color: #fff;" id="winnerName">Alex wins!</h2>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="winnerStats">Completed 2 Laps &amp; 14 Tasks</div>
+
+                <div class="gothic-divider"></div>
+
+                <h3 style="font-family: var(--font-title); font-size: 13px; color: var(--accent-gold);">RITUAL DOMINANCE BADGES</h3>
+                <div class="badge-list-row" id="winBadgesList">
+                    <!-- Badges listed dynamically -->
+                </div>
+
+                <button class="dialog-action-btn btn-success" style="height: 44px; margin-top: 24px; width:100%;" onclick="quitToSetup()">SETUP NEW SESSION</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Seductive Prompt Pop-up Dialog -->
+    <div class="dialog-popup-overlay" id="promptDialogOverlay">
+        <div class="dialog-card">
+            <div class="dialog-header" id="dlgTitle">RUNE OF HELLFIRE</div>
+            <div class="dialog-subheader" id="dlgCategory">LEVEL 2 DARE SPELL</div>
+            <div class="gothic-divider" style="margin: 8px 0;"></div>
+            
+            <div style="font-size: 11px; color: var(--accent-gold); letter-spacing: 1px; font-weight: bold;" id="dlgCaster">Alex casts on Sam:</div>
+            <div class="dialog-body-text" id="dlgBody">"Tie your partner's hands behind their back. Blindfold them for the next 2 turns. If they move, they take 1 curse."</div>
+            
+            <div class="dialog-timer" id="dlgTimer">30s</div>
+            
+            <div class="dialog-btn-row">
+                <button class="dialog-action-btn btn-success" onclick="completePromptTask(true)">TASKS DONE</button>
+                <button class="dialog-action-btn btn-fail" onclick="completePromptTask(false)">TAKE PUNISHMENT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Spell saved!</div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playAudio(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const now = audioCtx.currentTime;
+
+            if (type === 'hover') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(140, now);
+                osc.frequency.exponentialRampToValueAtTime(70, now + 0.08);
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.08);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'select') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(240, now);
+                osc.frequency.exponentialRampToValueAtTime(480, now + 0.12);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.12);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } else if (type === 'upgrade') {
+                const notes = [196.00, 246.94, 293.66, 392.00, 493.88];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                    gain.gain.setValueAtTime(0.1, now + idx * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.06);
+                    osc.stop(now + idx * 0.06 + 0.2);
+                });
+            } else if (type === 'roll') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(110, now);
+                osc.frequency.linearRampToValueAtTime(330, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        }
+
+        // --- GAME STATES & CONSTANTS ---
+        const GemstoneColors = [
+            { name: "Ruby", colorHex: "#E50914" },
+            { name: "Amber", colorHex: "#FF7F00" },
+            { name: "Sunstone", colorHex: "#FFD700" },
+            { name: "Emerald", colorHex: "#00D26A" },
+            { name: "Sapphire", colorHex: "#0070FF" },
+            { name: "Amethyst", colorHex: "#8A2BE2" },
+            { name: "Rose", colorHex: "#FF007F" },
+            { name: "Obsidian", colorHex: "#333333" },
+            { name: "Silk", colorHex: "#F5F5F5" }
+        ];
+
+        let players = [
+            { id: 1, name: "Alex", color: "#E50914", colorName: "Ruby", laps: 0, tasks: 0, curses: 0, tileIndex: 0 },
+            { id: 2, name: "Sam", color: "#0070FF", colorName: "Sapphire", laps: 0, tasks: 0, curses: 0, tileIndex: 0 },
+            { id: 3, name: "Charlie", color: "#8A2BE2", colorName: "Amethyst", laps: 0, tasks: 0, curses: 0, tileIndex: 0 }
+        ];
+
+        let activeColorPickerIndex = -1;
+        let gridSize = 5;
+        let isInfiniteMode = false;
+        let targetLaps = 2;
+        let selectedSpellbooks = ['Base Deck', 'Kinky Rituals'];
+        let selectedSpiceLevels = ['Level 1', 'Level 2'];
+        let customSpells = [];
+
+        // --- CORE PROMPTS DATABASE ---
+        const basePrompts = [
+            { category: "TRUTH", text: "{target1}, describe your most intense fantasy involving {caster} in detail." },
+            { category: "DARE", text: "{target1}, let {caster} trace a finger along your bare skin. Guess the object or take a punishment!" },
+            { category: "KINKY_LIGHT", text: "{target1}, blindfold yourself for the next 2 turns. {caster} can whisper instructions to you." },
+            { category: "TEASE_DENIAL", text: "{target1}, let {caster} gently touch your lips with a cold object. Try not to make a sound!" }
+        ];
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', () => {
+            loadSavedCustomSpells();
+            renderPlayersLobby();
+        });
+
+        // --- LOBBY PROCEDURES ---
+        function renderPlayersLobby() {
+            const list = document.getElementById('playersLobbyList');
+            list.innerHTML = '';
+            document.getElementById('partnerCount').innerText = players.size || players.length;
+
+            players.forEach((p, idx) => {
+                const row = document.createElement('div');
+                row.className = 'player-bar-row';
+                
+                row.innerHTML = `
+                    <div class="player-gem-circle" onclick="toggleColorPicker(${idx})">
+                        <div class="gemstone-glow" style="background: ${p.color}; color: ${p.color};"></div>
+                    </div>
+                    <input type="text" class="player-name-input" value="${p.name}" onchange="updatePlayerName(${idx}, this.value)">
+                    ${players.length > 2 ? `<button class="delete-player-btn" onclick="deletePlayer(${idx})">🗑</button>` : ''}
+                `;
+                
+                // Color Picker dialog
+                const picker = document.createElement('div');
+                picker.className = 'color-picker-overlay';
+                picker.id = `picker-${idx}`;
+                
+                let pickerHtml = '<div class="color-picker-grid">';
+                GemstoneColors.forEach(g => {
+                    pickerHtml += `<div class="picker-dot" style="background: ${g.colorHex}; color: ${g.colorHex};" onclick="selectPlayerColor(${idx}, '${g.colorHex}', '${g.name}')"></div>`;
+                });
+                pickerHtml += '</div>';
+                picker.innerHTML = pickerHtml;
+                
+                row.appendChild(picker);
+                list.appendChild(row);
+            });
+        }
+
+        function addPlayer() {
+            if (players.length >= 8) return;
+            playAudio('select');
+            const availableGems = GemstoneColors.filter(g => !players.some(p => p.color === g.colorHex));
+            const gem = availableGems[0] || GemstoneColors[0];
+            players.push({
+                id: Date.now(),
+                name: `Kinkster ${players.length + 1}`,
+                color: gem.colorHex,
+                colorName: gem.name,
+                laps: 0,
+                tasks: 0,
+                curses: 0,
+                tileIndex: 0
+            });
+            renderPlayersLobby();
+        }
+
+        function deletePlayer(idx) {
+            playAudio('hover');
+            players.splice(idx, 1);
+            renderPlayersLobby();
+        }
+
+        function updatePlayerName(idx, val) {
+            players[idx].name = val.trim() || `Player ${idx + 1}`;
+        }
+
+        function toggleColorPicker(idx) {
+            playAudio('hover');
+            const overlays = document.querySelectorAll('.color-picker-overlay');
+            overlays.forEach(o => {
+                if (o.id !== `picker-${idx}`) o.style.display = 'none';
+            });
+            const picker = document.getElementById(`picker-${idx}`);
+            picker.style.display = picker.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function selectPlayerColor(idx, hex, name) {
+            playAudio('select');
+            players[idx].color = hex;
+            players[idx].colorName = name;
+            document.getElementById(`picker-${idx}`).style.display = 'none';
+            renderPlayersLobby();
+        }
+
+        function setGridSize(size, card) {
+            playAudio('select');
+            gridSize = size;
+            document.querySelectorAll('.segmented-row .segment-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        }
+
+        function toggleInfinite() {
+            playAudio('select');
+            isInfiniteMode = !isInfiniteMode;
+            const toggle = document.getElementById('infiniteToggle');
+            toggle.classList.toggle('active', isInfiniteMode);
+            document.getElementById('lapsIncRow').style.display = isInfiniteMode ? 'none' : 'flex';
+        }
+
+        function adjustLaps(amount) {
+            playAudio('hover');
+            targetLaps = Math.max(1, Math.min(10, targetLaps + amount));
+            document.getElementById('lapsVal').innerText = targetLaps;
+        }
+
+        function toggleDeck(name) {
+            playAudio('select');
+            const idx = selectedSpellbooks.indexOf(name);
+            if (idx > -1) {
+                if (selectedSpellbooks.length > 1) {
+                    selectedSpellbooks.splice(idx, 1);
+                    document.getElementById(`deck-${name.replace(' ', '-')}`).innerText = '🔓';
+                }
+            } else {
+                selectedSpellbooks.push(name);
+                document.getElementById(`deck-${name.replace(' ', '-')}`).innerText = '🔒';
+            }
+        }
+
+        function toggleLevel(name) {
+            playAudio('select');
+            const idx = selectedSpiceLevels.indexOf(name);
+            if (idx > -1) {
+                if (selectedSpiceLevels.length > 1) {
+                    selectedSpiceLevels.splice(idx, 1);
+                    document.getElementById(`lvl-${name.replace(' ', '-')}`).innerText = '🔓';
+                }
+            } else {
+                selectedSpiceLevels.push(name);
+                document.getElementById(`lvl-${name.replace(' ', '-')}`).innerText = '🔒';
+            }
+        }
+
+        // --- SCREEN ROUTING ---
+        function openEditor() {
+            playAudio('select');
+            document.getElementById('setupView').classList.remove('active');
+            document.getElementById('editorView').classList.add('active');
+            renderCustomSpellsList();
+        }
+
+        function quitToSetup() {
+            playAudio('select');
+            document.getElementById('boardView').classList.remove('active');
+            document.getElementById('editorView').classList.remove('active');
+            document.getElementById('winView').classList.remove('active');
+            document.getElementById('setupView').classList.add('active');
+        }
+
+        // --- BOOKLET EDITOR PROCEDURES ---
+        function loadSavedCustomSpells() {
+            const saved = localStorage.getItem('custom_spells_pack');
+            customSpells = saved ? JSON.parse(saved) : [];
+        }
+
+        function saveCustomSpell() {
+            const txt = document.getElementById('spellText').value.trim();
+            const cat = document.getElementById('spellCategory').value;
+            const lvl = document.getElementById('spellLevel').value;
+            
+            if (!txt) {
+                showToast('Spell text cannot be empty!');
+                return;
+            }
+            
+            playAudio('upgrade');
+            customSpells.push({ id: Date.now(), category: cat, level: lvl, text: txt });
+            localStorage.setItem('custom_spells_pack', JSON.stringify(customSpells));
+            document.getElementById('spellText').value = '';
+            renderCustomSpellsList();
+            showToast('Spell saved successfully!');
+        }
+
+        function deleteCustomSpell(id) {
+            playAudio('hover');
+            customSpells = customSpells.filter(s => s.id !== id);
+            localStorage.setItem('custom_spells_pack', JSON.stringify(customSpells));
+            renderCustomSpellsList();
+        }
+
+        function renderCustomSpellsList() {
+            const container = document.getElementById('customSpellsContainer');
+            container.innerHTML = '';
+            if (customSpells.length === 0) {
+                container.innerHTML = '<div style="font-size:10px; color:var(--text-muted); font-style:italic;">No custom spells saved.</div>';
+                return;
+            }
+            customSpells.forEach(s => {
+                const row = document.createElement('div');
+                row.style.background = 'rgba(0,0,0,0.5)';
+                row.style.border = '1px solid rgba(255,255,255,0.05)';
+                row.style.padding = '8px 12px';
+                row.style.borderRadius = '6px';
+                row.style.fontSize = '11px';
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.alignItems = 'center';
+                
+                row.innerHTML = `
+                    <div style="flex:1; padding-right:8px;">
+                        <span style="color:var(--accent-gold); font-weight:bold;">[${s.category}]</span> ${s.text}
+                    </div>
+                    <button style="background:transparent; border:none; color:var(--accent-glow); cursor:pointer;" onclick="deleteCustomSpell(${s.id})">🗑</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // --- BOARD ENGINE PROCEDURES ---
+        let boardTiles = [];
+        let currentPlayerIndex = 0;
+        let activeConstraint = null;
+
+        function beginGameSession() {
+            playAudio('upgrade');
+            document.getElementById('setupView').classList.remove('active');
+            document.getElementById('boardView').classList.add('active');
+            
+            // Build board tiles
+            boardTiles = [];
+            const tileCount = gridSize * 4 - 4;
+            const categories = ["TRUTH", "DARE", "KINKY_LIGHT", "TEASE_DENIAL"];
+            
+            for (let i = 0; i < tileCount; i++) {
+                if (i === 0) {
+                    boardTiles.push({ index: 0, category: "START", colorHex: "#8B0000", action: "NONE" });
+                } else {
+                    const cat = categories[i % categories.length];
+                    let col = "#5c1d8d";
+                    if (cat === "TRUTH") col = "#7A7A8A";
+                    if (cat === "DARE") col = "#D32F2F";
+                    if (cat === "TEASE_DENIAL") col = "#B100CD";
+                    
+                    let act = "NONE";
+                    if (i % 5 === 0) act = "PUNISHMENT";
+                    if (i % 7 === 0) act = "ROLL_AGAIN";
+                    
+                    boardTiles.push({ index: i, category: cat, colorHex: col, action: act });
+                }
+            }
+
+            // Reset player positions on the board
+            players.forEach(p => {
+                p.tileIndex = 0;
+                p.laps = 0;
+                p.tasks = 0;
+                p.curses = 0;
+            });
+            
+            currentPlayerIndex = 0;
+            activeConstraint = null;
+            document.getElementById('constraintsContainer').innerHTML = '<div style="font-size: 10px; color: var(--text-muted); font-style: italic;">No constraints active</div>';
+            
+            renderIsometricBoard();
+            updateTurnHUD();
+            renderStandings();
+        }
+
+        function renderIsometricBoard() {
+            const grid = document.getElementById('boardGrid');
+            grid.innerHTML = '';
+            
+            // Positioning variables for isometric coordinate conversion
+            // Sizing matched cleanly to fit inside viewport
+            const stepSize = 480 / gridSize;
+            
+            boardTiles.forEach((tile, idx) => {
+                let row = 0;
+                let col = 0;
+                
+                // Convert 1D path index to 2D perimeter coordinate of grid
+                if (idx < gridSize) {
+                    row = 0;
+                    col = idx;
+                } else if (idx < gridSize * 2 - 1) {
+                    row = idx - gridSize + 1;
+                    col = gridSize - 1;
+                } else if (idx < gridSize * 3 - 2) {
+                    row = gridSize - 1;
+                    col = gridSize - 1 - (idx - (gridSize * 2 - 2));
+                } else {
+                    row = gridSize - 1 - (idx - (gridSize * 3 - 3));
+                    col = 0;
+                }
+                
+                const left = col * stepSize;
+                const top = row * stepSize;
+                
+                const cell = document.createElement('div');
+                cell.className = 'grid-pillar-cell';
+                cell.style.left = `${left}px`;
+                cell.style.top = `${top}px`;
+                
+                // Pillar representation
+                const pillar = document.createElement('div');
+                pillar.className = 'pillar-3d-model';
+                
+                // Slicing 3x2 grid of columns
+                const colIdx = idx % 3;
+                const rowIdx = Math.floor(idx / 3) % 2;
+                pillar.style.backgroundPosition = `-${colIdx * 100}% -${rowIdx * 100}%`;
+                
+                // Active column radial highlight glow ring
+                const glow = document.createElement('div');
+                glow.className = 'pillar-glow-ring';
+                glow.id = `glow-ring-${idx}`;
+                glow.style.color = tile.colorHex;
+                
+                cell.appendChild(pillar);
+                cell.appendChild(glow);
+                grid.appendChild(cell);
+            });
+
+            // Render Meeples on top of columns
+            players.forEach((p, idx) => {
+                const meeple = document.createElement('div');
+                meeple.className = 'board-meeple';
+                meeple.id = `pawn-player-${p.id}`;
+                meeple.style.color = p.color; // Used for mix-blend-mode colorization inside CSS!
+                
+                // Colorization using webkit tint filters
+                meeple.style.filter = `drop-shadow(0 0 6px ${p.color})`;
+                
+                grid.appendChild(meeple);
+                positionMeepleOnTile(p);
+            });
+        }
+
+        function positionMeepleOnTile(player) {
+            const meeple = document.getElementById(`pawn-player-${player.id}`);
+            if (!meeple) return;
+            
+            const idx = player.tileIndex;
+            const stepSize = 480 / gridSize;
+            
+            let row = 0;
+            let col = 0;
+            if (idx < gridSize) {
+                row = 0; col = idx;
+            } else if (idx < gridSize * 2 - 1) {
+                row = idx - gridSize + 1; col = gridSize - 1;
+            } else if (idx < gridSize * 3 - 2) {
+                row = gridSize - 1; col = gridSize - 1 - (idx - (gridSize * 2 - 2));
+            } else {
+                row = gridSize - 1 - (idx - (gridSize * 3 - 3)); col = 0;
+            }
+            
+            // Calculate isometric meeple offset sit perfectly on 3D column caps
+            const left = col * stepSize + (stepSize / 2) - 16;
+            const top = row * stepSize + (stepSize / 2) - 52;
+            
+            meeple.style.left = `${left}px`;
+            meeple.style.top = `${top}px`;
+        }
+
+        function updateTurnHUD() {
+            const activePlayer = players[currentPlayerIndex];
+            document.getElementById('hudActivePlayerName').innerText = `It's ${activePlayer.name}'s turn!`;
+            document.getElementById('hudActivePlayerName').style.color = activePlayer.color;
+            document.getElementById('hudActivePlayerStats').innerText = `Lap: ${activePlayer.laps + 1}/${targetLaps} | Tasks: ${activePlayer.tasks} | Curses: ${activePlayer.curses}`;
+            
+            const activeHudPawn = document.getElementById('hudActivePawn');
+            activeHudPawn.style.color = activePlayer.color;
+            activeHudPawn.style.filter = `drop-shadow(0 0 4px ${activePlayer.color})`;
+            
+            // Glow current active tile
+            document.querySelectorAll('.pillar-glow-ring').forEach(r => r.classList.remove('active'));
+            const activeRing = document.getElementById(`glow-ring-${activePlayer.tileIndex}`);
+            if (activeRing) activeRing.classList.add('active');
+        }
+
+        function renderStandings() {
+            const container = document.getElementById('standingsContainer');
+            container.innerHTML = '';
+            
+            players.forEach(p => {
+                const row = document.createElement('div');
+                row.className = 'standing-pawn-row';
+                row.innerHTML = `
+                    <div class="standing-circle" style="background: ${p.color}; color: ${p.color};"></div>
+                    <span style="font-weight:bold; color:#fff; width:64px;">${p.name}</span>
+                    <span style="color:var(--text-muted)">Laps: ${p.laps} | Tasks: ${p.tasks} | Curses: ${p.curses}</span>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // --- DICE ROLLING ---
+        let isRolling = false;
+        function rollDice3D() {
+            if (isRolling) return;
+            isRolling = true;
+            playAudio('roll');
+            
+            const die = document.getElementById('dieDisplay');
+            die.classList.add('rolling');
+            
+            let rollsCount = 0;
+            const rollInterval = setInterval(() => {
+                const faces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+                const val = Math.floor(Math.random() * 6) + 1;
+                die.innerText = faces[val - 1];
+                rollsCount++;
+                if (rollsCount > 6) {
+                    clearInterval(rollInterval);
+                    die.classList.remove('rolling');
+                    isRolling = false;
+                    executePlayerMove(val);
+                }
+            }, 100);
+        }
+
+        function executePlayerMove(steps) {
+            const player = players[currentPlayerIndex];
+            const tileCount = boardTiles.length;
+            
+            let targetIdx = player.tileIndex + steps;
+            if (targetIdx >= tileCount) {
+                targetIdx = targetIdx - tileCount;
+                player.laps++;
+                showToast(`${player.name} completed a Lap!`);
+                if (!isInfiniteMode && player.laps >= targetLaps) {
+                    declareWinner(player);
+                    return;
+                }
+            }
+            
+            // Hopping animation sequences
+            let hopIdx = player.tileIndex;
+            const hopInterval = setInterval(() => {
+                hopIdx = (hopIdx + 1) % tileCount;
+                player.tileIndex = hopIdx;
+                positionMeepleOnTile(player);
+                playAudio('hover');
+                if (hopIdx === targetIdx) {
+                    clearInterval(hopInterval);
+                    triggerPromptDialogOnTile(player, boardTiles[targetIdx]);
+                }
+            }, 300);
+        }
+
+        // --- PROMPTS AND DIALOG FLOWS ---
+        let activeDialogPlayer = null;
+        let activeDialogTile = null;
+        let dialogCountdownTimer = null;
+
+        function triggerPromptDialogOnTile(player, tile) {
+            activeDialogPlayer = player;
+            activeDialogTile = tile;
+            
+            // Set up prompt dialog text
+            document.getElementById('dlgTitle').innerText = tile.category.replace('_', ' ');
+            document.getElementById('dlgCategory').innerText = `LEVEL 2 ${tile.action === 'PUNISHMENT' ? 'PUNISHMENT' : 'SPELL'}`;
+            
+            // Select random caster
+            const otherPlayers = players.filter(p => p.id !== player.id);
+            const caster = otherPlayers[Math.floor(Math.random() * otherPlayers.length)] || player;
+            
+            document.getElementById('dlgCaster').innerText = `${caster.name} casts on ${player.name}:`;
+            
+            // Select prompt text
+            let promptText = "";
+            const customForCat = customSpells.filter(s => s.category === tile.category);
+            if (customForCat.length > 0 && Math.random() < 0.4) {
+                promptText = customForCat[Math.floor(Math.random() * customForCat.length)].text;
+            } else {
+                const catPrompts = basePrompts.filter(p => p.category === tile.category);
+                promptText = catPrompts[Math.floor(Math.random() * catPrompts.length)].text;
+            }
+            
+            promptText = promptText.replace('{target1}', player.name).replace('{caster}', caster.name);
+            document.getElementById('dlgBody').innerText = promptText;
+            
+            // Open Dialog
+            document.getElementById('promptDialogOverlay').classList.add('active');
+            
+            // Countdown timer
+            let secondsLeft = 30;
+            document.getElementById('dlgTimer').innerText = `${secondsLeft}s`;
+            if (dialogCountdownTimer) clearInterval(dialogCountdownTimer);
+            dialogCountdownTimer = setInterval(() => {
+                secondsLeft--;
+                document.getElementById('dlgTimer').innerText = `${secondsLeft}s`;
+                if (secondsLeft <= 0) {
+                    clearInterval(dialogCountdownTimer);
+                    completePromptTask(false);
+                }
+            }, 1000);
+        }
+
+        function completePromptTask(success) {
+            clearInterval(dialogCountdownTimer);
+            document.getElementById('promptDialogOverlay').classList.remove('active');
+            
+            const player = activeDialogPlayer;
+            if (success) {
+                player.tasks++;
+                playAudio('upgrade');
+                showToast(`${player.name} successfully completed the Spell!`);
+            } else {
+                player.curses++;
+                playAudio('hover');
+                showToast(`${player.name} failed and took 1 Curse.`);
+            }
+            
+            // Cycle turn
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            updateTurnHUD();
+            renderStandings();
+        }
+
+        // --- WINNER DECLARATION ---
+        function declareWinner(player) {
+            playAudio('upgrade');
+            document.getElementById('boardView').classList.remove('active');
+            document.getElementById('winView').classList.add('active');
+            
+            document.getElementById('winnerName').innerText = `${player.name} wins!`;
+            document.getElementById('winnerName').style.color = player.color;
+            document.getElementById('winnerStats').innerText = `Completed ${player.laps} Laps & ${player.tasks} Spells`;
+            
+            const portrait = document.getElementById('winPawnPortrait');
+            portrait.style.color = player.color;
+            portrait.style.filter = `drop-shadow(0 0 8px ${player.color})`;
+            
+            // Generate Dominance Badges
+            const list = document.getElementById('winBadgesList');
+            list.innerHTML = '';
+            
+            const maxTasks = players.reduce((max, p) => p.tasks > max.tasks ? p : max, players[0]);
+            const maxCurses = players.reduce((max, p) => p.curses > max.curses ? p : max, players[0]);
+            
+            list.innerHTML += `
+                <div class="badge-item">
+                    <span class="badge-title">👑 MASTER DEMON:</span> ${maxTasks.name} (Completed ${maxTasks.tasks} spells with strict discipline!)
+                </div>
+                <div class="badge-item">
+                    <span class="badge-title">🌶️ MASOCHIST DISCIPLE:</span> ${maxCurses.name} (Took ${maxCurses.curses} punishments and stood strong!)
+                </div>
+            `;
+            
+            // Trigger endless celebration particles!
+            for (let i = 0; i < 40; i++) {
+                triggerBurst();
+            }
+        }
+    </script>
+</body>
+</html>
