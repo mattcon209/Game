@@ -215,20 +215,19 @@
 
         .player-bar-row {
             width: 288px;
-            height: 50px;
+            height: 58px;
             position: relative;
             display: flex;
             align-items: center;
             background-image: url('session_partner_bar.png');
-            background-size: contain;
+            background-size: 100% 100%; /* Forces exact matching without alignment offsets! */
             background-repeat: no-repeat;
-            background-position: center;
             margin: 0 auto;
         }
 
         .player-gem-circle {
-            width: 50px;
-            height: 50px;
+            width: 58px;
+            height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -237,10 +236,13 @@
         }
 
         .gemstone-glow {
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            box-shadow: 0 0 10px currentColor, inset 0 2px 4px rgba(255,255,255,0.4);
+            /* 3D Glass Gemstone Shader (specular white highlights, dark edges) */
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.65) 0%, currentColor 45%, #000000 100%);
+            box-shadow: 0 0 12px currentColor, inset 0 2px 4px rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.25);
             transition: transform 0.2s ease;
         }
         .gemstone-glow:active {
@@ -301,7 +303,9 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4);
+            /* 3D Glass Gemstone Shader */
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.65) 0%, currentColor 45%, #000000 100%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             transition: transform 0.2s;
         }
         .picker-dot:hover { transform: scale(1.1); border-color: #fff; }
