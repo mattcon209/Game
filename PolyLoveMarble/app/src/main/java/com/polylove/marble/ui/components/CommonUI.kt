@@ -1,6 +1,7 @@
 package com.polylove.marble.ui.components
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,15 +16,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.polylove.marble.R
 import com.polylove.marble.ui.theme.*
 
 @Composable
@@ -99,5 +110,53 @@ fun PremiumGothicButton(text: String, onClick: () -> Unit, modifier: Modifier = 
             haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick()
         }, contentAlignment = Alignment.Center) {
         Text(text = text, fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold, fontSize = 14.sp, letterSpacing = 2.sp, color = Color.White)
+    }
+}
+
+// KinkyCard component used by multiple files
+@Composable
+fun KinkyCard(
+    modifier: Modifier = Modifier,
+    borderColor: Color = Color.Transparent,
+    isShort: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = if (isShort) 150.dp else 240.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .shadow(12.dp, RoundedCornerShape(16.dp))
+            .padding(vertical = 4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        val bgRes = if (isShort) R.drawable.gothic_frame_short else R.drawable.gothic_frame_large
+        val bitmap = ImageBitmap.imageResource(id = bgRes)
+        
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val w = size.width
+            val h = size.height
+            val imgW = bitmap.width.toFloat()
+            val imgH = bitmap.height.toFloat()
+            val srcTopH = 115f
+            val srcBotH = 88f
+            val srcMidH = imgH - srcTopH - srcBotH
+            val dstTopH = srcTopH * (w / imgW)
+            val dstBotH = srcBotH * (w / imgW)
+            val dstMidH = h - dstTopH - dstBotH
+            
+            drawImage(image = bitmap, srcOffset = IntOffset(0, 0), srcSize = IntSize(bitmap.width, srcTopH.toInt()), dstOffset = IntOffset(0, 0), dstSize = IntSize(w.toInt(), dstTopH.toInt()))
+            if (dstMidH > 0) {
+                drawImage(image = bitmap, srcOffset = IntOffset(0, srcTopH.toInt()), srcSize = IntSize(bitmap.width, srcMidH.toInt()), dstOffset = IntOffset(0, dstTopH.toInt()), dstSize = IntSize(w.toInt(), dstMidH.toInt()))
+            }
+            drawImage(image = bitmap, srcOffset = IntOffset(0, (imgH - srcBotH).toInt()), srcSize = IntSize(bitmap.width, srcBotH.toInt()), dstOffset = IntOffset(0, (h - dstBotH).toInt()), dstSize = IntSize(w.toInt(), dstBotH.toInt()))
+        }
+        
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(start = 48.dp, end = 48.dp, top = 54.dp, bottom = 42.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            content()
+        }
     }
 }
