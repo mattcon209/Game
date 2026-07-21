@@ -40,7 +40,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.polylove.marble.R
-import com.polylove.marble.ui.ChainsOfDesireLogo
 import com.polylove.marble.ui.GameScreen
 import com.polylove.marble.ui.GameViewModel
 import com.polylove.marble.ui.components.*
