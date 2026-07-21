@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chains of Desire — Seductive Board Game</title>
+    <title>Chains of Desire — Premium Seductive Board Game</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
     <style>
         :root {
             --bg-dark: #07040b;
-            --bg-card: rgba(20, 13, 30, 0.85);
+            --bg-card: rgba(20, 13, 30, 0.9);
             --border-primary: #8b0000;
             --accent-glow: #ff2a4b;
             --accent-gold: #c5a059;
@@ -66,7 +66,7 @@
             align-items: center;
         }
 
-        /* SCREEN 1: LOBBY SETUP SCREEN */
+        /* SCREEN VIEWS */
         .screen-view {
             width: 100%;
             height: 100%;
@@ -74,89 +74,144 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 16px;
         }
 
         .screen-view.active {
             display: flex;
         }
 
-        /* Scrollable Gothic Long Frame Panel */
-        .gothic-scroll-panel {
+        /* PREMIUM TABBED CARD CONTAINER: Obsidian leather gradient background with gold gilded corners! */
+        .gothic-tabbed-card {
             width: 100%;
-            max-width: 440px;
-            height: 100%;
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
-        .gothic-scroll-panel::-webkit-scrollbar {
-            display: none; /* Hide scrollbar Chrome/Safari */
-        }
-
-        .gothic-backdrop-container {
-            width: 100%;
-            min-height: 110%;
-            position: relative;
-            background-image: url('gothic_long_frame.png');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-        }
-
-        .form-content {
-            padding: 135px 38px 110px 38px;
+            max-width: 400px;
+            height: 460px;
+            background: linear-gradient(180deg, rgba(20, 13, 30, 0.92) 0%, rgba(7, 4, 11, 0.96) 100%);
+            border: 2px solid var(--accent-gold);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 15px rgba(197, 160, 89, 0.3);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            width: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Titles & Labels */
+        /* Gold Gilded Corner Filigrees on Card Panel */
+        .gothic-tabbed-card::before, .gothic-tabbed-card::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 50;
+            border: 1.5px solid var(--accent-gold);
+            opacity: 0.7;
+        }
+        /* Top-Left Corner */
+        .gothic-tabbed-card::before {
+            top: 4px; left: 4px;
+            border-right: none; border-bottom: none;
+            border-top-left-radius: 10px;
+        }
+        /* Bottom-Right Corner */
+        .gothic-tabbed-card::after {
+            bottom: 4px; right: 4px;
+            border-left: none; border-top: none;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Navigation Tabs Row */
+        .gothic-tabs-row {
+            display: flex;
+            width: 100%;
+            border-bottom: 2.5px solid var(--border-primary);
+            background: rgba(10, 8, 16, 0.95);
+            z-index: 10;
+        }
+
+        .gothic-tab-btn {
+            flex: 1;
+            height: 48px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .gothic-tab-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .gothic-tab-btn.active {
+            color: #ffffff;
+            background: linear-gradient(180deg, rgba(139, 0, 0, 0.4) 0%, rgba(20, 5, 12, 0.9) 100%);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+        .gothic-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2.5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-glow);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Tab Contents Column */
+        .tab-content-container {
+            flex: 1;
+            width: 100%;
+            padding: 18px 24px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .tab-content-container::-webkit-scrollbar { display: none; }
+
+        .setup-tab-content {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+        }
+        .setup-tab-content.active {
+            display: flex;
+            animation: fade-in 0.4s ease-out;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Titles & Labels */
         .section-header {
             font-family: var(--font-title);
-            font-size: 15px;
+            font-size: 14px;
             color: var(--accent-gold);
-            text-align: left;
-            width: 100%;
-            letter-spacing: 1px;
+            text-shadow: 0 0 6px rgba(197, 160, 89, 0.4);
             margin-bottom: 12px;
-            text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        /* Dividers */
-        .gothic-divider {
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent 0%, var(--accent-gold) 50%, transparent 100%);
-            margin: 16px 0;
-            position: relative;
-            opacity: 0.6;
-        }
-        .gothic-divider::after {
-            content: '✦';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--accent-gold);
-            font-size: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 6px;
         }
 
         /* Players list */
         .players-lobby-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
-            max-height: 175px;
-            overflow-y: auto;
-            scrollbar-width: none;
         }
-        .players-lobby-list::-webkit-scrollbar { display: none; }
 
         .player-bar-row {
             width: 288px;
@@ -165,7 +220,9 @@
             display: flex;
             align-items: center;
             background-image: url('session_partner_bar.png');
-            background-size: 100% 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             margin: 0 auto;
         }
 
@@ -259,13 +316,11 @@
             padding: 4px 0;
         }
         .padlock-chk-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            color: var(--accent-gold);
         }
         .padlock-chk-label {
             font-size: 13px;
@@ -375,26 +430,38 @@
             box-shadow: 0 0 10px rgba(92, 29, 141, 0.5);
         }
 
-        /* Transparent Hotspots overlay for buttons baked in gothic_long_frame */
-        .baked-buttons-hotspot-container {
+        /* PREMIUM 3D TACTILE METALLIC STRAP BUTTON: Responsive BDSM-themed leather strap buttons with gold leaf gilding! */
+        .premium-strap-btn {
             width: 100%;
-            height: 120px;
-            margin-top: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .baked-hotspot {
-            width: 100%;
+            max-width: 320px;
+            height: 52px;
+            background: linear-gradient(180deg, var(--border-primary) 0%, #4a0000 100%);
+            border: 2px solid var(--accent-gold);
+            border-radius: 26px;
+            color: var(--accent-gold);
+            font-family: var(--font-title);
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 2.5px;
             cursor: pointer;
-            border-radius: 27px;
-            transition: transform 0.1s;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.5), inset 0 1.5px 3px rgba(255,255,255,0.5);
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
         }
-        .baked-hotspot:active {
-            transform: scale(0.97);
+        .premium-strap-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 2px 8px rgba(139, 0, 0, 0.3);
         }
-        .hotspot-editor { height: 48px; }
-        .hotspot-begin { height: 48px; }
+        .premium-strap-btn.purple-strap {
+            background: linear-gradient(180deg, var(--accent-purple) 0%, #150030 100%);
+            box-shadow: 0 4px 15px rgba(92, 29, 141, 0.5), inset 0 1.5px 3px rgba(255,255,255,0.4);
+        }
+        .premium-strap-btn.purple-strap:active {
+            box-shadow: 0 2px 8px rgba(92, 29, 141, 0.3);
+        }
 
         /* SCREEN 2: GAME BOARD VIEW SCREEN */
         .board-screen-view {
@@ -786,29 +853,524 @@
     </style>
 </head>
 <body>
+    <svg id='kit1' style='display:none;'><defs>
+    <defs>
+        <style>
+            .title { font-family: 'Cinzel', 'Georgia', serif; font-size: 28px; fill: #d4af37; font-weight: bold; letter-spacing: 2px; }
+            .subtitle { font-family: 'Cinzel', 'Georgia', serif; font-size: 16px; fill: #8a8aa3; letter-spacing: 1px; }
+            .section-head { font-family: 'Cinzel', 'Georgia', serif; font-size: 20px; fill: #ff2a4b; letter-spacing: 2px; font-weight: bold; }
+            .label { font-family: sans-serif; font-size: 11px; fill: #666; text-anchor: middle; }
+            .ui-element { color: #ffffff; transition: all 0.3s ease; }
+            .ui-element:hover { color: #ff2a4b; filter: drop-shadow(0 0 8px rgba(255,42,75,0.8)); }
+        </style>
+
+        <!-- GLOW FILTERS -->
+        <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Background Grid Effect -->
+    <rect width="1600" height="1200" fill="#09080e"/>
+    <circle cx="800" cy="600" r="700" fill="#1d0d24" opacity="0.4"/>
+
+    <!-- HEADER -->
+    <text x="800" y="50" class="title" text-anchor="middle">DARK FANTASY UI KIT</text>
+    <text x="800" y="75" class="subtitle" text-anchor="middle">125 High Quality Vector Game Elements</text>
+    <line x1="200" y1="90" x2="1400" y2="90" stroke="#332244" stroke-width="2"/>
+
+    <!-- 1. BUTTONS SECTION -->
+    <text x="50" y="125" class="section-head">BUTTONS &amp; TABS</text>
+    
+    <!-- Row 1 Buttons -->
+    <g transform="translate(50, 140)" class="ui-element" id="btn-1">
+        <path d="M 15 2 L 185 2 L 198 15 L 198 29 L 185 42 L 15 42 L 2 29 L 2 15 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M 18 6 L 182 6 L 194 18 L 194 26 L 182 38 L 18 38 L 6 26 L 6 18 Z" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
+        <path d="M 0 22 L 8 16 L 8 28 Z M 200 22 L 192 16 L 192 28 Z" fill="currentColor"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="13" fill="currentColor" text-anchor="middle" letter-spacing="1">BUTTON TEXT</text>
+    </g>
+
+    <g transform="translate(280, 140)" class="ui-element" id="btn-2">
+        <path d="M 22 2 L 178 2 C 190 2 198 10 198 22 C 198 34 190 42 178 42 L 22 42 C 10 42 2 34 2 22 C 2 10 10 2 22 2 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="10" cy="22" r="3" fill="currentColor"/>
+        <circle cx="190" cy="22" r="3" fill="currentColor"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="13" fill="currentColor" text-anchor="middle" letter-spacing="1">BUTTON TEXT</text>
+    </g>
+
+    <g transform="translate(510, 140)" class="ui-element" id="btn-3">
+        <path d="M 20 2 C 5 2 2 15 2 22 C 2 29 5 42 20 42 L 180 42 C 195 42 198 29 198 22 C 198 15 195 2 180 2 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+        <polygon points="100,2 96,6 104,6" fill="currentColor"/>
+        <polygon points="100,42 96,38 104,38" fill="currentColor"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="13" fill="currentColor" text-anchor="middle" letter-spacing="1">BUTTON TEXT</text>
+    </g>
+
+    <g transform="translate(740, 140)" class="ui-element" id="btn-4">
+        <rect x="2" y="2" width="196" height="40" fill="none" stroke="currentColor" stroke-width="2"/>
+        <rect x="6" y="6" width="188" height="32" fill="none" stroke="currentColor" stroke-width="1"/>
+        <path d="M 2 10 L 10 2 M 198 10 L 190 2 M 2 34 L 10 42 M 198 34 L 190 42" stroke="currentColor" stroke-width="2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="13" fill="currentColor" text-anchor="middle" letter-spacing="1">BUTTON TEXT</text>
+    </g>
+
+    <g transform="translate(970, 140)" class="ui-element" id="btn-5">
+        <path d="M 2 2 L 180 2 L 198 22 L 180 42 L 2 42 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+        <text x="90" y="26" font-family="Cinzel, serif" font-size="13" fill="currentColor" text-anchor="middle" letter-spacing="1">BUTTON TEXT</text>
+    </g>
+
+    <g transform="translate(1200, 140)" class="ui-element" id="btn-6">
+        <path d="M 12 2 L 188 2 L 198 12 L 198 32 L 188 42 L 12 42 L 2 32 L 2 12 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="13" fill="currentColor" text-anchor="middle" letter-spacing="1">BUTTON TEXT</text>
+    </g>
+
+    <!-- 2. MAGIC SIGILS & CIRCLES SECTION -->
+    <text x="50" y="230" class="section-head">MAGIC SIGILS &amp; ARCANE CIRCLES</text>
+
+    <g transform="translate(50, 250)" class="ui-element" id="sigil-1">
+        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="1"/>
+        <polygon points="60,8 102,88 18,88" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="60,112 102,32 18,32" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="60" cy="60" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <g transform="translate(200, 250)" class="ui-element" id="sigil-2">
+        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="2"/>
+        <rect x="25" y="25" width="70" height="70" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(45 60 60)"/>
+        <line x1="10" y1="10" x2="110" y2="110" stroke="currentColor" stroke-width="1"/>
+        <line x1="110" y1="10" x2="10" y2="110" stroke="currentColor" stroke-width="1"/>
+        <circle cx="60" cy="60" r="24" fill="none" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(350, 250)" class="ui-element" id="sigil-3">
+        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="60" cy="25" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="60" cy="95" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="25" cy="60" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="95" cy="60" r="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="60,35 85,60 60,85 35,60" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <g transform="translate(500, 250)" class="ui-element" id="sigil-4">
+        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="2"/>
+        <polygon points="60,10 105,95 15,95" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="60" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
+        <path d="M 60 0 L 60 120 M 0 60 L 120 60" stroke="currentColor" stroke-width="1"/>
+    </g>
+
+    <g transform="translate(650, 250)" class="ui-element" id="circ-1">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="6,3"/>
+        <polygon points="60,2 54,10 66,10" fill="currentColor"/>
+        <polygon points="60,118 54,110 66,110" fill="currentColor"/>
+        <polygon points="2,60 10,54 10,66" fill="currentColor"/>
+        <polygon points="118,60 110,54 110,66" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(800, 250)" class="ui-element" id="circ-2">
+        <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" stroke-width="1"/>
+        <circle cx="60" cy="60" r="40" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <!-- 3. ICONS SECTION -->
+    <text x="50" y="410" class="section-head">GAME ICONS</text>
+    
+    <g transform="translate(50, 430)" class="ui-element" id="icon-shield">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 25 6 L 42 12 V 27 C 42 37 25 44 25 44 C 25 44 8 37 8 27 V 12 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M 25 12 L 36 16 V 25 C 36 32 25 37 25 37 C 25 37 14 32 14 25 V 16 Z" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(120, 430)" class="ui-element" id="icon-swords">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 8 8 L 42 42 M 42 8 L 8 42" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="25" cy="25" r="4" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(190, 430)" class="ui-element" id="icon-skull">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 25 6 C 14 6 8 14 8 25 C 8 31 12 36 15 38 V 44 H 35 V 38 C 38 36 42 31 42 25 C 42 14 36 6 25 6 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="17" cy="23" r="4" fill="currentColor"/>
+        <circle cx="33" cy="23" r="4" fill="currentColor"/>
+        <path d="M 20 39 V 44 M 25 39 V 44 M 30 39 V 44" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(260, 430)" class="ui-element" id="icon-axes">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <line x1="8" y1="42" x2="42" y2="8" stroke="currentColor" stroke-width="3"/>
+        <path d="M 28 8 C 36 5 42 12 42 18 C 36 21 28 15 28 8 Z M 14 28 C 8 35 15 42 21 42 C 24 35 18 28 14 28 Z" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(330, 430)" class="ui-element" id="icon-scroll">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 10 12 C 6 12 6 6 12 6 H 38 C 44 6 44 12 40 15 V 38 C 44 38 44 44 38 44 H 12 C 6 44 6 38 10 35 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="16" y1="17" x2="34" y2="17" stroke="currentColor" stroke-width="2"/>
+        <line x1="16" y1="25" x2="34" y2="25" stroke="currentColor" stroke-width="2"/>
+        <line x1="16" y1="33" x2="26" y2="33" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(400, 430)" class="ui-element" id="icon-potion">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 20 6 H 30 V 16 L 41 34 C 44 40 39 45 32 45 H 18 C 11 45 6 40 9 34 L 20 16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M 13 32 C 19 29 31 35 37 32 L 38 35 C 41 40 37 43 32 43 H 18 C 13 43 9 40 11 35 Z" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(470, 430)" class="ui-element" id="icon-helm">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 25 6 C 12 6 9 18 9 27 V 40 H 41 V 27 C 41 18 38 6 25 6 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M 12 22 H 38 M 25 22 V 40" stroke="currentColor" stroke-width="2.5"/>
+    </g>
+
+    <g transform="translate(540, 430)" class="ui-element" id="icon-crown">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <polygon points="6,38 9,15 18,27 25,9 32,27 41,15 44,38" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <rect x="6" y="38" width="38" height="6" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(610, 430)" class="ui-element" id="icon-flame">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 25 5 C 25 5 38 16 38 29 C 38 38 32 44 25 44 C 18 44 12 38 12 29 C 12 19 20 13 20 13 C 20 13 18 19 21 22 C 25 19 25 5 25 5 Z" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(680, 430)" class="ui-element" id="icon-heart">
+        <rect x="0" y="0" width="50" height="50" fill="none" stroke="#221e33" stroke-width="1"/>
+        <path d="M 25 43 C 25 43 6 30 6 18 C 6 10 12 6 18 6 C 22 6 25 9 25 9 C 25 9 28 6 32 6 C 38 6 44 10 44 18 C 44 30 25 43 25 43 Z" fill="currentColor"/>
+    </g>
+
+    <!-- 4. DIVIDERS & LINES SECTION -->
+    <text x="50" y="520" class="section-head">DIVIDERS &amp; ACCENTS</text>
+    
+    <g transform="translate(50, 540)" class="ui-element" id="div-1">
+        <path d="M 0 15 L 300 15 M 400 15 L 700 15" stroke="currentColor" stroke-width="2"/>
+        <polygon points="350,2 335,15 350,28 365,15" fill="currentColor"/>
+        <polygon points="350,15 320,8 320,22" fill="currentColor"/>
+        <polygon points="350,15 380,8 380,22" fill="currentColor"/>
+    </g>
+
+    <g transform="translate(800, 540)" class="ui-element" id="div-2">
+        <path d="M 0 15 L 320 15 M 380 15 L 700 15" stroke="currentColor" stroke-width="2"/>
+        <circle cx="350" cy="15" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="350" cy="15" r="4" fill="currentColor"/>
+    </g>
+
+    <!-- 5. PROGRESS BARS SECTION -->
+    <text x="50" y="610" class="section-head">PROGRESS &amp; HP/MP BARS</text>
+
+    <g transform="translate(50, 630)" class="ui-element" id="bar-1">
+        <path d="M 12 2 L 488 2 L 498 16 L 488 30 L 12 30 L 2 16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <rect x="20" y="7" width="340" height="16" fill="#ff2a4b" rx="2"/>
+        <text x="250" y="20" font-family="Cinzel, serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">HP: 850 / 1000</text>
+    </g>
+
+    <g transform="translate(580, 630)" class="ui-element" id="bar-2">
+        <path d="M 12 2 L 488 2 L 498 16 L 488 30 L 12 30 L 2 16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <rect x="20" y="7" width="280" height="16" fill="#00d2ff" rx="2"/>
+        <text x="250" y="20" font-family="Cinzel, serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">MP: 420 / 600</text>
+    </g>
+
+    <g transform="translate(1110, 630)" class="ui-element" id="bar-3">
+        <path d="M 12 2 L 428 2 L 438 16 L 428 30 L 12 30 L 2 16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <rect x="20" y="7" width="180" height="16" fill="#ffd700" rx="2"/>
+        <text x="220" y="20" font-family="Cinzel, serif" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">XP: 18 / 100</text>
+    </g>
+
+    <!-- 6. WINDOWS & BANNERS SECTION -->
+    <text x="50" y="710" class="section-head">FRAMES &amp; WINDOWS</text>
+
+    <g transform="translate(50, 730)" class="ui-element" id="win-1">
+        <rect x="10" y="10" width="360" height="240" fill="#0d0a14" stroke="currentColor" stroke-width="2.5"/>
+        <rect x="18" y="18" width="344" height="224" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
+        <path d="M 10 30 L 30 10 M 370 30 L 350 10 M 10 230 L 30 250 M 370 230 L 350 250" stroke="currentColor" stroke-width="2"/>
+        <text x="190" y="45" font-family="Cinzel, serif" font-size="16" fill="#d4af37" text-anchor="middle" font-weight="bold">FRAME WINDOW</text>
+    </g>
+
+</defs></svg>
+    <svg id='kit2' style='display:none;'><defs>
+    <defs>
+        <style>
+            .header-title { font-family: 'Cinzel Decorative', 'Cinzel', serif; font-size: 36px; fill: #ffd700; font-weight: 900; letter-spacing: 3px; text-anchor: middle; }
+            .header-sub { font-family: 'Cinzel', serif; font-size: 18px; fill: #a89bb8; letter-spacing: 2px; text-anchor: middle; }
+            .cat-title { font-family: 'Cinzel', serif; font-size: 22px; fill: #ff2a4b; font-weight: bold; letter-spacing: 2px; }
+            .elem-label { font-family: sans-serif; font-size: 10px; fill: #776e82; text-anchor: middle; }
+            .ui-elem { color: #ffffff; transition: all 0.25s ease; cursor: pointer; }
+            .ui-elem:hover { color: #ff2a4b; filter: drop-shadow(0 0 10px rgba(255,42,75,0.9)); }
+        </style>
+
+        <filter id="glow-crimson" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="glow-gold" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- REUSABLE SYMBOLS -->
+        <g id="sym-btn-1">
+            <path d="M 15 2 L 185 2 L 198 15 L 198 29 L 185 42 L 15 42 L 2 29 L 2 15 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <path d="M 18 6 L 182 6 L 194 18 L 194 26 L 182 38 L 18 38 L 6 26 L 6 18 Z" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
+            <path d="M 0 22 L 8 16 L 8 28 Z M 200 22 L 192 16 L 192 28 Z" fill="currentColor"/>
+        </g>
+        <g id="sym-btn-2">
+            <path d="M 22 2 L 178 2 C 190 2 198 10 198 22 C 198 34 190 42 178 42 L 22 42 C 10 42 2 34 2 22 C 2 10 10 2 22 2 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <circle cx="10" cy="22" r="3" fill="currentColor"/>
+            <circle cx="190" cy="22" r="3" fill="currentColor"/>
+        </g>
+        <g id="sym-btn-3">
+            <path d="M 20 2 C 5 2 2 15 2 22 C 2 29 5 42 20 42 L 180 42 C 195 42 198 29 198 22 C 198 15 195 2 180 2 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <polygon points="100,2 96,6 104,6" fill="currentColor"/>
+            <polygon points="100,42 96,38 104,38" fill="currentColor"/>
+        </g>
+        <g id="sym-btn-4">
+            <rect x="2" y="2" width="196" height="40" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <rect x="6" y="6" width="188" height="32" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 2 10 L 10 2 M 198 10 L 190 2 M 2 34 L 10 42 M 198 34 L 190 42" stroke="currentColor" stroke-width="2"/>
+        </g>
+    </defs>
+
+    <!-- Canvas Grid -->
+    <rect width="2400" height="2200" fill="#07050a"/>
+    <circle cx="1200" cy="1100" r="1000" fill="#1b0826" opacity="0.3"/>
+
+    <!-- HEADER -->
+    <text x="1200" y="60" class="header-title">DARK FANTASY MASTER EXPANDED UI SUITE</text>
+    <text x="1200" y="90" class="header-sub">Complete Master Collection — Over 150 Game UI Vector Assets</text>
+    <line x1="100" y1="110" x2="2300" y2="110" stroke="#442255" stroke-width="2"/>
+
+    <!-- SECTION 1: BUTTONS & TABS -->
+    <text x="60" y="150" class="cat-title">1. BUTTONS, TABS &amp; ACTION CONTROLS</text>
+
+    <g transform="translate(60, 170)" class="ui-elem" id="btn-1">
+        <use href="#sym-btn-1"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">ACCEPT QUEST</text>
+    </g>
+    <g transform="translate(280, 170)" class="ui-elem" id="btn-2">
+        <use href="#sym-btn-2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">INVENTORY</text>
+    </g>
+    <g transform="translate(500, 170)" class="ui-elem" id="btn-3">
+        <use href="#sym-btn-3"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">SPELLBOOK</text>
+    </g>
+    <g transform="translate(720, 170)" class="ui-elem" id="btn-4">
+        <use href="#sym-btn-4"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">EQUIP ALL</text>
+    </g>
+    <g transform="translate(940, 170)" class="ui-elem" id="btn-5">
+        <path d="M 2 2 L 180 2 L 198 22 L 180 42 L 2 42 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="90" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">NEXT TAB ►</text>
+    </g>
+    <g transform="translate(1160, 170)" class="ui-elem" id="btn-6">
+        <path d="M 20 2 L 198 2 L 198 42 L 20 42 L 2 22 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="110" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">◄ PREV TAB</text>
+    </g>
+    <g transform="translate(1380, 170)" class="ui-elem" id="btn-7">
+        <path d="M 10 2 L 90 2 L 100 8 L 110 2 L 190 2 L 198 10 L 198 34 L 190 42 L 110 42 L 100 36 L 90 42 L 10 42 L 2 34 L 2 10 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">CAST SPELL</text>
+    </g>
+    <g transform="translate(1600, 170)" class="ui-elem" id="btn-8">
+        <path d="M 25 2 C 10 2 2 12 2 22 C 2 32 10 42 25 42 L 175 42 C 190 42 198 32 198 22 C 198 12 190 2 175 2 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">PURCHASE</text>
+    </g>
+    <g transform="translate(1820, 170)" class="ui-elem" id="btn-9">
+        <rect x="4" y="4" width="192" height="36" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <path d="M 0 22 L 8 18 L 4 22 L 8 26 Z M 200 22 L 192 18 L 196 22 L 192 26 Z" fill="currentColor"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">DECLINE</text>
+    </g>
+
+    <!-- SECTION 2: ITEM SLOTS & RARITY TIERS -->
+    <text x="60" y="240" class="cat-title">2. ITEM SLOTS, INVENTORY TIERS &amp; RARITY FRAMES</text>
+
+    <g transform="translate(60, 260)" class="ui-elem" id="sq-1">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(12,10,18,0.9)" stroke="#555566" stroke-width="2"/>
+        <rect x="6" y="6" width="48" height="48" fill="none" stroke="#333344" stroke-width="1"/>
+        <text x="30" y="68" class="elem-label">Common</text>
+    </g>
+    <g transform="translate(140, 260)" class="ui-elem" id="sq-2">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(12,10,18,0.9)" stroke="#00d2ff" stroke-width="2"/>
+        <rect x="6" y="6" width="48" height="48" fill="none" stroke="#005588" stroke-width="1"/>
+        <path d="M 2 10 L 10 2 M 50 2 L 58 10 M 58 50 L 50 58 M 10 58 L 2 50" stroke="#00d2ff" stroke-width="2"/>
+        <text x="30" y="68" class="elem-label">Rare</text>
+    </g>
+    <g transform="translate(220, 260)" class="ui-elem" id="sq-3">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(12,10,18,0.9)" stroke="#a855f7" stroke-width="2"/>
+        <polygon points="30,2 24,8 36,8" fill="#a855f7"/>
+        <polygon points="30,58 24,52 36,52" fill="#a855f7"/>
+        <text x="30" y="68" class="elem-label">Epic</text>
+    </g>
+    <g transform="translate(300, 260)" class="ui-elem" id="sq-4" filter="url(#glow-gold)">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(20,15,5,0.9)" stroke="#ffd700" stroke-width="2.5"/>
+        <polygon points="2,30 8,24 8,36" fill="#ffd700"/>
+        <polygon points="58,30 52,24 52,36" fill="#ffd700"/>
+        <text x="30" y="68" class="elem-label">Legendary</text>
+    </g>
+    <g transform="translate(380, 260)" class="ui-elem" id="sq-5" filter="url(#glow-crimson)">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(25,5,10,0.9)" stroke="#ff2a4b" stroke-width="2.5"/>
+        <circle cx="6" cy="6" r="3" fill="#ff2a4b"/>
+        <circle cx="54" cy="6" r="3" fill="#ff2a4b"/>
+        <circle cx="6" cy="54" r="3" fill="#ff2a4b"/>
+        <circle cx="54" cy="54" r="3" fill="#ff2a4b"/>
+        <text x="30" y="68" class="elem-label">Mythic</text>
+    </g>
+
+    <!-- SECTION 3: CIRCULAR HUD & MINIMAP FRAMES -->
+    <text x="60" y="360" class="cat-title">3. CIRCLE HUD FRAMES, PORTRAIT GAUGES &amp; MINIMAP</text>
+
+    <g transform="translate(60, 390)" class="ui-elem" id="circ-minimap">
+        <circle cx="80" cy="80" r="74" fill="rgba(8,6,12,0.9)" stroke="currentColor" stroke-width="3"/>
+        <circle cx="80" cy="80" r="66" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="80" y="22" font-family="Cinzel, serif" font-size="12" fill="#ff2a4b" font-weight="bold" text-anchor="middle">N</text>
+        <text x="80" y="152" font-family="Cinzel, serif" font-size="12" fill="currentColor" font-weight="bold" text-anchor="middle">S</text>
+        <text x="150" y="84" font-family="Cinzel, serif" font-size="12" fill="currentColor" font-weight="bold" text-anchor="middle">E</text>
+        <text x="12" y="84" font-family="Cinzel, serif" font-size="12" fill="currentColor" font-weight="bold" text-anchor="middle">W</text>
+        <polygon points="80,24 76,30 84,30" fill="#ff2a4b"/>
+    </g>
+
+    <g transform="translate(240, 390)" class="ui-elem" id="circ-portrait">
+        <circle cx="80" cy="80" r="72" fill="rgba(8,6,12,0.9)" stroke="currentColor" stroke-width="2"/>
+        <path d="M 80 8 A 72 72 0 0 0 8 80" fill="none" stroke="#ff2a4b" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 80 8 A 72 72 0 0 1 152 80" fill="none" stroke="#00d2ff" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="80" cy="80" r="60" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <!-- SECTION 4: MAGIC SIGILS, PENTACLES & RUNES -->
+    <text x="60" y="580" class="cat-title">4. MAGIC SIGILS, PENTACLES &amp; RUNIC SEALS</text>
+
+    <g transform="translate(60, 610)" class="ui-elem" id="sigil-hexagram">
+        <circle cx="70" cy="70" r="66" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="70" cy="70" r="58" fill="none" stroke="currentColor" stroke-width="1"/>
+        <polygon points="70,10 118,100 22,100" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="70,130 118,40 22,40" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="70" cy="70" r="18" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <g transform="translate(220, 610)" class="ui-elem" id="sigil-sunburst">
+        <circle cx="70" cy="70" r="66" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M 70 0 L 70 140 M 0 70 L 140 70 M 20 20 L 120 120 M 120 20 L 20 120" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="70" cy="70" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(380, 610)" class="ui-elem" id="sigil-skull-seal">
+        <circle cx="70" cy="70" r="66" fill="none" stroke="#ff2a4b" stroke-width="2"/>
+        <polygon points="70,12 120,118 20,118" fill="none" stroke="#ff2a4b" stroke-width="1.5"/>
+        <circle cx="70" cy="70" r="28" fill="rgba(30,0,10,0.8)" stroke="#ff2a4b" stroke-width="2"/>
+        <path d="M 70 54 C 62 54 58 60 58 68 C 58 73 60 76 62 78 V 82 H 78 V 78 C 80 76 82 73 82 68 C 82 60 78 54 70 54 Z" fill="none" stroke="#ff2a4b" stroke-width="2"/>
+        <circle cx="65" cy="66" r="2" fill="#ff2a4b"/>
+        <circle cx="75" cy="66" r="2" fill="#ff2a4b"/>
+    </g>
+
+    <!-- SECTION 5: GAME ICONS -->
+    <text x="60" y="780" class="cat-title">5. EXPANDED GAME ICONS PACK</text>
+
+    <g transform="translate(60, 810)" class="ui-elem" id="icon-shield">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 30 8 L 50 16 V 34 C 50 46 30 54 30 54 C 30 54 10 46 10 34 V 16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M 30 16 L 42 21 V 32 C 42 40 30 46 30 46 C 30 46 18 40 18 32 V 21 Z" fill="currentColor"/>
+    </g>
+    <g transform="translate(130, 810)" class="ui-elem" id="icon-swords">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 10 10 L 50 50 M 50 10 L 10 50" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="30" cy="30" r="5" fill="currentColor"/>
+    </g>
+    <g transform="translate(200, 810)" class="ui-elem" id="icon-skull">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 30 8 C 18 8 12 18 12 30 C 12 38 16 43 20 45 V 52 H 40 V 45 C 44 43 48 38 48 30 C 48 18 42 8 30 8 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="21" cy="28" r="5" fill="currentColor"/>
+        <circle cx="39" cy="28" r="5" fill="currentColor"/>
+    </g>
+    <g transform="translate(270, 810)" class="ui-elem" id="icon-bow">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 12 10 C 35 10 48 25 48 30 C 48 35 35 50 12 50" fill="none" stroke="currentColor" stroke-width="3"/>
+        <line x1="12" y1="10" x2="12" y2="50" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="30" x2="52" y2="30" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <!-- SECTION 6: DIVIDERS -->
+    <text x="60" y="910" class="cat-title">6. GOTHIC DIVIDERS &amp; LINE ACCENTS</text>
+
+    <g transform="translate(60, 930)" class="ui-elem" id="div-barbed-wing">
+        <path d="M 0 20 L 400 20 M 500 20 L 900 20" stroke="currentColor" stroke-width="2.5"/>
+        <polygon points="450,2 430,20 450,38 470,20" fill="currentColor"/>
+        <polygon points="450,20 400,10 400,30" fill="currentColor"/>
+        <polygon points="450,20 500,10 500,30" fill="currentColor"/>
+    </g>
+
+    <!-- SECTION 7: GAUGES & STATUS BARS -->
+    <text x="60" y="1000" class="cat-title">7. BOSS HEALTH, MANA &amp; STAMINA BARS</text>
+
+    <g transform="translate(60, 1030)" class="ui-elem" id="bar-boss-hp">
+        <path d="M 20 2 L 780 2 L 798 22 L 780 42 L 20 42 L 2 22 Z" fill="rgba(10,8,15,0.95)" stroke="#ffd700" stroke-width="3"/>
+        <rect x="30" y="8" width="620" height="26" fill="#ff2a4b" rx="2"/>
+        <text x="400" y="26" font-family="Cinzel, serif" font-size="14" fill="#ffffff" font-weight="bold" text-anchor="middle" letter-spacing="2">MALAKOR THE VOIDLORD — 850,000 / 1,000,000 HP</text>
+        <circle cx="20" cy="22" r="16" fill="#800016" stroke="#ffd700" stroke-width="2"/>
+        <path d="M 20 12 L 14 26 H 26 Z" fill="#ffd700"/>
+    </g>
+
+    <!-- SECTION 8: WINDOW FRAMES, DIALOGS & TOOLTIPS -->
+    <text x="60" y="1120" class="cat-title">8. WINDOW FRAMES, QUEST LOGS &amp; ITEM TOOLTIPS</text>
+
+    <g transform="translate(60, 1150)" class="ui-elem" id="win-quest-log">
+        <rect x="10" y="10" width="540" height="380" fill="rgba(12,9,18,0.95)" stroke="currentColor" stroke-width="3" rx="4"/>
+        <rect x="20" y="20" width="520" height="360" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="6,3"/>
+        <path d="M 230 10 L 280 0 L 330 10 L 310 30 L 250 30 Z" fill="rgba(128,0,22,0.8)" stroke="currentColor" stroke-width="2"/>
+        <text x="280" y="55" font-family="Cinzel, serif" font-size="20" fill="#ffd700" font-weight="bold" text-anchor="middle" letter-spacing="2">QUEST LOG SHEET</text>
+        <line x1="50" y1="75" x2="510" y2="75" stroke="#442255" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(630, 1150)" class="ui-elem" id="win-tooltip">
+        <rect x="10" y="10" width="340" height="380" fill="rgba(15,10,22,0.95)" stroke="#a855f7" stroke-width="2.5" rx="6"/>
+        <text x="180" y="45" font-family="Cinzel, serif" font-size="16" fill="#a855f7" font-weight="bold" text-anchor="middle">VOIDMIST ROBE</text>
+        <text x="180" y="65" font-family="sans-serif" font-size="11" fill="#8888aa" text-anchor="middle">Epic Chest Armor</text>
+        <line x1="30" y1="80" x2="330" y2="80" stroke="#a855f7" stroke-width="1"/>
+        <text x="30" y="110" font-family="sans-serif" font-size="13" fill="#ffffff">+450 Armor Rating</text>
+        <text x="30" y="135" font-family="sans-serif" font-size="13" fill="#00d2ff">+85 Spell Power</text>
+        <text x="30" y="160" font-family="sans-serif" font-size="13" fill="#ffd700">+12% Critical Strike Chance</text>
+    </g>
+
+</defs></svg>
+
 
     <canvas id="particleCanvas"></canvas>
 
     <div id="app">
         <!-- 1. LOBBY SETUP SCREEN -->
         <section class="screen-view active" id="setupView">
-            <div class="gothic-scroll-panel">
-                <div class="gothic-backdrop-container">
-                    <div class="form-content">
-                        <!-- Redesigned Logo Branded Header -->
-                        <div style="text-align: center; margin-bottom: 8px; width:100%;">
-                            <svg class="brand-logo-svg" style="width:52px; height:52px; color:var(--border-primary); filter:drop-shadow(0 0 10px var(--accent-glow));" viewBox="0 0 32 32">
-                                <path d="M 16 2 L 28 8 V 18 C 28 25 16 30 16 30 C 16 30 4 25 4 18 V 8 Z" fill="none" stroke="currentColor" stroke-width="2"/>
-                                <path d="M12,12 C12,12 8,6 16,6 C24,6 20,12 20,12 Z" fill="currentColor"/>
-                                <circle cx="16" cy="16" r="5" fill="currentColor"/>
-                            </svg>
-                            <h1 style="font-family: var(--font-title); font-size: 20px; letter-spacing: 2px; color: var(--accent-gold); margin-top: 4px; text-shadow: 0 0 10px rgba(255,42,75,0.4);">CHAINS OF DESIRE</h1>
-                            <div style="font-size: 8px; color: var(--border-primary); letter-spacing: 1px; font-weight: bold; margin-top: 2px;">AN INTIMATE POLY-BDSM SUMMONING RITUAL</div>
-                        </div>
+            <!-- ORIGINAL PHOTOREALISTIC HEADER BANNER (Fits perfectly without cropping!) -->
+            <div style="text-align: center; margin-bottom: 12px; width: 100%; max-width: 400px; height: 180px; overflow: hidden; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.6);">
+                <img src="seductive_bg.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                <div style="position: absolute; top: 20px; left: 0; width: 100%; text-align: center;">
+                    <svg class="brand-logo-svg" style="width:52px; height:52px; color:var(--border-primary); filter:drop-shadow(0 0 10px var(--accent-glow)); margin:0 auto;" viewBox="0 0 32 32">
+                        <path d="M 16 2 L 28 8 V 18 C 28 25 16 30 16 30 C 16 30 4 25 4 18 V 8 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12,12 C12,12 8,6 16,6 C24,6 20,12 20,12 Z" fill="currentColor"/>
+                        <circle cx="16" cy="16" r="5" fill="currentColor"/>
+                    </svg>
+                    <h1 style="font-family: var(--font-title); font-size: 20px; letter-spacing: 2px; color: var(--accent-gold); margin-top: 4px; text-shadow: 0 0 10px rgba(255,42,75,0.4);">CHAINS OF DESIRE</h1>
+                </div>
+            </div>
 
-                        <div class="gothic-divider"></div>
+            <!-- TABBED NAVIGATION SETUP LOBBY CARD -->
+            <div class="gothic-tabbed-card">
+                <!-- Tabs Navigation Header Row -->
+                <div class="gothic-tabs-row">
+                    <button class="gothic-tab-btn active" onclick="switchSetupTab('partners', this)">LOBBY</button>
+                    <button class="gothic-tab-btn" onclick="switchSetupTab('settings', this)">MAP</button>
+                    <button class="gothic-tab-btn" onclick="switchSetupTab('decks', this)">DECKS</button>
+                </div>
 
-                        <!-- Partners Card -->
+                <!-- Tab Contents Container -->
+                <div class="tab-content-container">
+                    
+                    <!-- TAB 1: SESSION PARTNERS -->
+                    <div class="setup-tab-content active" id="setupTabPartners">
                         <div class="section-header">
                             <span>SESSION PARTNERS (<span id="partnerCount">3</span>/8)</span>
                             <span style="cursor: pointer; color: var(--accent-glow); font-size:18px;" onclick="addPlayer()">⊕</span>
@@ -817,11 +1379,11 @@
                         <div class="players-lobby-list" id="playersLobbyList">
                             <!-- Populated via JS -->
                         </div>
+                    </div>
 
-                        <div class="gothic-divider"></div>
-
-                        <!-- Map Settings -->
-                        <div class="section-header">MAP SETTINGS &amp; LAYOUT</div>
+                    <!-- TAB 2: MAP SETTINGS -->
+                    <div class="setup-tab-content" id="setupTabSettings">
+                        <div class="section-header">MAP CONFIGURATIONS</div>
                         <div class="settings-toggle-row">
                             <span style="font-size: 13px; font-weight: 700;">Map Size:</span>
                             <div class="segmented-row" style="width: 140px;">
@@ -831,7 +1393,7 @@
                             </div>
                         </div>
 
-                        <div class="settings-toggle-row" style="margin-top: 10px;">
+                        <div class="settings-toggle-row" style="margin-top: 14px;">
                             <div>
                                 <div style="font-size: 13px; font-weight: 700;">Infinite Play Session</div>
                                 <div style="font-size: 9px; color: var(--text-muted);">Play with no lap limits.</div>
@@ -841,7 +1403,7 @@
                             </div>
                         </div>
 
-                        <div class="settings-inc-row" id="lapsIncRow">
+                        <div class="settings-inc-row" id="lapsIncRow" style="margin-top: 14px;">
                             <span style="font-size: 13px; font-weight: 700;">Target Laps:</span>
                             <div class="inc-controls">
                                 <button class="inc-btn" onclick="adjustLaps(-1)">-</button>
@@ -852,17 +1414,26 @@
 
                         <div class="gothic-divider"></div>
 
-                        <!-- Decks -->
+                        <div class="section-header">ANIMATION SPEED</div>
+                        <div class="segmented-row">
+                            <div class="segment-card active" onclick="setSpeedMultiplier(1.0, this)">1x Cinematic</div>
+                            <div class="segment-card" onclick="setSpeedMultiplier(1.8, this)">1.8x Snappy</div>
+                            <div class="segment-card" onclick="setSpeedMultiplier(2.8, this)">2.8x Fast</div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: SPELL BOOKS & INTENSITIES -->
+                    <div class="setup-tab-content" id="setupTabDecks">
                         <div class="section-header">SELECT SPELL BOOKS</div>
                         <div class="padlock-chk-row" onclick="toggleDeck('Base Deck')">
-                            <span class="padlock-chk-icon" id="deck-Base-Deck"><svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--accent-gold); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 8 10 V 6 C 8 3, 16 3, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg></span>
+                            <span class="padlock-chk-icon" id="deck-Base-Deck"></span>
                             <div>
                                 <div class="padlock-chk-label">Base Deck</div>
                                 <div class="padlock-chk-desc">Boundary negotiations, seductive queries.</div>
                             </div>
                         </div>
-                        <div class="padlock-chk-row" onclick="toggleDeck('Kinky Rituals')">
-                            <span class="padlock-chk-icon" id="deck-Kinky-Rituals"><svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--text-muted); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 12 10 V 6 C 12 4, 16 4, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg></span>
+                        <div class="padlock-chk-row" style="margin-top: 8px;" onclick="toggleDeck('Kinky Rituals')">
+                            <span class="padlock-chk-icon" id="deck-Kinky-Rituals"></span>
                             <div>
                                 <div class="padlock-chk-label">Kinky Rituals</div>
                                 <div class="padlock-chk-desc">Restraints, sensory deprivation, and teasing.</div>
@@ -871,33 +1442,32 @@
 
                         <div class="gothic-divider"></div>
 
-                        <!-- Levels -->
                         <div class="section-header">KINK INTENSITY LEVELS</div>
-                        <div class="players-lobby-list" style="max-height: 120px;">
-                            <div class="padlock-chk-row" onclick="toggleLevel('Level 1')">
-                                <span class="padlock-chk-icon" id="lvl-Level-1"><svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--text-muted); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 12 10 V 6 C 12 4, 16 4, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg></span>
-                                <div>
-                                    <div class="padlock-chk-label">Level 1 — Light Sensations</div>
-                                    <div class="padlock-chk-desc">Light physical contact, soft whispers.</div>
-                                </div>
-                            </div>
-                            <div class="padlock-chk-row" onclick="toggleLevel('Level 2')">
-                                <span class="padlock-chk-icon" id="lvl-Level-2"><svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--text-muted); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 12 10 V 6 C 12 4, 16 4, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg></span>
-                                <div>
-                                    <div class="padlock-chk-label">Level 2 — Restraints &amp; Masks</div>
-                                    <div class="padlock-chk-desc">Teasing, blindfolds, strict boundaries.</div>
-                                </div>
+                        <div class="padlock-chk-row" onclick="toggleLevel('Level 1')">
+                            <span class="padlock-chk-icon" id="lvl-Level-1"></span>
+                            <div>
+                                <div class="padlock-chk-label">Level 1 — Light Sensations</div>
+                                <div class="padlock-chk-desc">Light physical contact, soft whispers.</div>
                             </div>
                         </div>
-
-                        <!-- Clickable Hotspots mapped directly on gothic_long_frame buttons -->
-                        <div class="baked-buttons-hotspot-container">
-                            <div class="baked-hotspot hotspot-editor" onclick="openEditor()"></div>
-                            <div class="baked-hotspot hotspot-begin" onclick="beginGameSession()"></div>
+                        <div class="padlock-chk-row" style="margin-top: 8px;" onclick="toggleLevel('Level 2')">
+                            <span class="padlock-chk-icon" id="lvl-Level-2"></span>
+                            <div>
+                                <div class="padlock-chk-label">Level 2 — Restraints &amp; Masks</div>
+                                <div class="padlock-chk-desc">Teasing, blindfolds, strict boundaries.</div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
+            <Spacer style="height: 16px; display: block;"></Spacer>
+
+            <!-- TACTILE INTERACTIVE 3D NAVIGATION BUTTONS -->
+            <button class="premium-strap-btn" style="border-color: var(--accent-purple);" onclick="openEditor()">SPELLBOOK EDITOR</button>
+            <Spacer style="height: 10px; display: block;"></Spacer>
+            <button class="premium-strap-btn purple-strap" onclick="beginGameSession()">BEGIN SESSION</button>
         </section>
 
         <!-- 2. GAME BOARD SCREEN -->
@@ -951,7 +1521,7 @@
         <!-- 3. SPELLBOOK BOOKLET EDITOR -->
         <section class="screen-view" id="editorView">
             <button class="back-btn-top" onclick="quitToSetup()">← BACK</button>
-            <div style="width: 100%; max-width: 420px; background: var(--bg-card); border: 2px solid var(--accent-gold); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); height: 85%; display: flex; flex-direction: column;">
+            <div style="width: 100%; max-width: 400px; background: var(--bg-card); border: 2px solid var(--accent-gold); border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); height: 85%; display: flex; flex-direction: column;">
                 <h1 style="font-family: var(--font-title); font-size: 18px; color: var(--accent-gold); text-align: center; margin-bottom: 12px;">SPELLBOOK EDITOR</h1>
                 
                 <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none;">
@@ -1120,6 +1690,7 @@
         let selectedSpellbooks = ['Base Deck', 'Kinky Rituals'];
         let selectedSpiceLevels = ['Level 1', 'Level 2'];
         let customSpells = [];
+        let gameSpeedMultiplier = 1.0;
 
         // --- CORE PROMPTS DATABASE ---
         const basePrompts = [
@@ -1129,17 +1700,28 @@
             { category: "TEASE_DENIAL", text: "{target1}, let {caster} gently touch your lips with a cold object. Try not to make a sound!" }
         ];
 
+        const open_padlock_svg = `<svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--text-muted); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 12 10 V 6 C 12 4, 16 4, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg>`;
+        const closed_padlock_svg = `<svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--accent-gold); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 8 10 V 6 C 8 3, 16 3, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg>`;
+
         // --- INITIALIZATION ---
         window.addEventListener('load', () => {
             loadSavedCustomSpells();
             renderPlayersLobby();
+            updatePadlockIcons();
         });
+
+        function updatePadlockIcons() {
+            document.getElementById('deck-Base-Deck').innerHTML = selectedSpellbooks.includes('Base Deck') ? closed_padlock_svg : open_padlock_svg;
+            document.getElementById('deck-Kinky-Rituals').innerHTML = selectedSpellbooks.includes('Kinky Rituals') ? closed_padlock_svg : open_padlock_svg;
+            document.getElementById('lvl-Level-1').innerHTML = selectedSpiceLevels.includes('Level 1') ? closed_padlock_svg : open_padlock_svg;
+            document.getElementById('lvl-Level-2').innerHTML = selectedSpiceLevels.includes('Level 2') ? closed_padlock_svg : open_padlock_svg;
+        }
 
         // --- LOBBY PROCEDURES ---
         function renderPlayersLobby() {
             const list = document.getElementById('playersLobbyList');
             list.innerHTML = '';
-            document.getElementById('partnerCount').innerText = players.size || players.length;
+            document.getElementById('partnerCount').innerText = players.length;
 
             players.forEach((p, idx) => {
                 const row = document.createElement('div');
@@ -1219,7 +1801,14 @@
         function setGridSize(size, card) {
             playAudio('select');
             gridSize = size;
-            document.querySelectorAll('.segmented-row .segment-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('#setupTabSettings .segment-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        }
+
+        function setSpeedMultiplier(multiplier, card) {
+            playAudio('select');
+            gameSpeedMultiplier = multiplier;
+            document.querySelectorAll('#setupTabSettings .segmented-row:last-child .segment-card').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
         }
 
@@ -1236,9 +1825,6 @@
             targetLaps = Math.max(1, Math.min(10, targetLaps + amount));
             document.getElementById('lapsVal').innerText = targetLaps;
         }
-
-        const open_padlock_svg = `<svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--text-muted); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 12 10 V 6 C 12 4, 16 4, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg>`;
-        const closed_padlock_svg = `<svg class='padlock-svg' viewBox='0 0 24 24' width='24' height='24' style='color: var(--accent-gold); fill: none; stroke: currentColor; stroke-width: 2;'><path d='M 8 10 V 6 C 8 3, 16 3, 16 6 V 10' /><rect x='6' y='10' width='12' height='10' rx='2' /><circle cx='12' cy='14' r='1.5' fill='currentColor' /><path d='M 12 15.5 V 18' stroke-width='2.5' /></svg>`;
 
         function toggleDeck(name) {
             playAudio('select');
@@ -1266,6 +1852,16 @@
                 selectedSpiceLevels.push(name);
                 document.getElementById(`lvl-${name.replace(' ', '-')}`).innerHTML = closed_padlock_svg;
             }
+        }
+
+        // --- TAB SWITCHER FOR SETUP ---
+        function switchSetupTab(tabId, btn) {
+            playAudio('select');
+            document.querySelectorAll('.gothic-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.querySelectorAll('.setup-tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`setupTab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).classList.add('active');
         }
 
         // --- SCREEN ROUTING ---
@@ -1456,9 +2052,7 @@
                 const meeple = document.createElement('div');
                 meeple.className = 'board-meeple';
                 meeple.id = `pawn-player-${p.id}`;
-                meeple.style.color = p.color; // Used for mix-blend-mode colorization inside CSS!
-                
-                // Colorization using webkit tint filters
+                meeple.style.color = p.color;
                 meeple.style.filter = `drop-shadow(0 0 6px ${p.color})`;
                 
                 grid.appendChild(meeple);
@@ -1576,7 +2170,7 @@
                     clearInterval(hopInterval);
                     triggerPromptDialogOnTile(player, boardTiles[targetIdx]);
                 }
-            }, 300);
+            }, 300 / gameSpeedMultiplier);
         }
 
         // --- PROMPTS AND DIALOG FLOWS ---
@@ -1679,10 +2273,15 @@
                 </div>
             `;
             
-            // Trigger endless celebration particles!
-            for (let i = 0; i < 40; i++) {
-                triggerBurst();
-            }
+            // Trigger celebration
+            playAudio('upgrade');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2200);
         }
     </script>
 </body>
