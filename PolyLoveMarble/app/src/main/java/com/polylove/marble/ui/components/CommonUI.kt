@@ -16,11 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -90,7 +88,7 @@ fun KinkyBoltToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifi
         Canvas(modifier = Modifier.fillMaxSize()) {
             val w = size.width; val h = size.height; val radius = h * 0.44f
             val startX = radius + 2f; val endX = w - radius - 2f; val currentX = startX + (endX - startX) * thumbOffset
-            drawRect(color = Color(0xFF221319), topLeft = Offset(startX - 2f, h/2 - 4f), size = androidx.compose.ui.geometry.Size(endX - startX + 4f, 8f))
+            drawRect(color = Color(0xFF221319), topLeft = Offset(startX - 2f, h/2 - 4f), size = Size(endX - startX + 4f, 8f))
             val gemstoneColors = if (checked) listOf(CyanGlow, Color(0xFF00008B), Color.Black) else listOf(CrimsonGlow, Color(0xFF8B0000), Color.Black)
             drawCircle(brush = Brush.radialGradient(colors = gemstoneColors, center = Offset(currentX - radius / 3f, h / 2f - radius / 3f), radius = radius * 1.1f), radius = radius, center = Offset(currentX, h / 2f))
         }
