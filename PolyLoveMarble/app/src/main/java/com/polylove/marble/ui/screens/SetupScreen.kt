@@ -55,11 +55,15 @@ fun SetupScreen(viewModel: GameViewModel) {
         ) {
             Spacer(modifier = Modifier.height(12.dp))
             
-            // 1. PREMIUM BRANDED LOGO HEADER (No clipping, completely vector-rendered!)
-            ChainsOfDesireLogo(
+            // 1. ORIGINAL PHOTOREALISTIC HEADER BANNER (Fits perfectly without cropping!)
+            Image(
+                painter = painterResource(id = R.drawable.setup_header),
+                contentDescription = "Chains of Desire Header Banner",
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp)
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
             )
             
             OrnateGothicDivider(modifier = Modifier.padding(vertical = 8.dp))
