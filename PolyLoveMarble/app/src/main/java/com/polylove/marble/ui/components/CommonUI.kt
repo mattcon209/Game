@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +22,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
@@ -379,5 +382,132 @@ fun KinkyPadlockCheckbox(
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawPadlockVector(isClosed = !checked, color = if (checked) BrassGold else SteelGrey)
         }
+    }
+}
+
+// Draw elegant gold gilded corner filigrees
+fun DrawScope.drawGildedCorner(x: Float, y: Float, isLeft: Boolean, isTop: Boolean) {
+    val density = this.density
+    val sizeVal = 24f * density // Beautiful compact size for card corners
+    val path = Path()
+    val dx = if (isLeft) 1f else -1f
+    val dy = if (isTop) 1f else -1f
+    
+    path.moveTo(x, y)
+    path.lineTo(x + sizeVal * dx, y)
+    path.quadraticBezierTo(x + sizeVal * dx * 0.4f, y + sizeVal * dy * 0.4f, x, y + sizeVal * dy)
+    path.close()
+    
+    drawPath(path, color = BrassGold.copy(alpha = 0.15f))
+    drawPath(path, color = BrassGold.copy(alpha = 0.5f), style = Stroke(width = 1.2f * density))
+}
+
+// PREMIUM GOTHIC MODULAR CARD: Obsidian leather card panels with glowing red/violet frames and gold gilded corners!
+@Composable
+fun GothicPremiumCard(
+    modifier: Modifier = Modifier,
+    borderColor: Color = BrassGold.copy(alpha = 0.4f),
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        LeatherDarkPurple.copy(alpha = 0.85f),
+                        ObsidianBlack.copy(alpha = 0.95f)
+                    )
+                )
+            )
+            .border(1.5.dp, borderColor, RoundedCornerShape(16.dp))
+            .shadow(8.dp, RoundedCornerShape(16.dp), ambientColor = BrassGold),
+        contentAlignment = Alignment.Center
+    ) {
+        // Draw the four elegant gold gilded corner filigrees!
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val w = size.width
+            val h = size.height
+            
+            // Top-Left
+            drawGildedCorner(x = 0f, y = 0f, isLeft = true, isTop = true)
+            // Top-Right
+            drawGildedCorner(x = w, y = 0f, isLeft = false, isTop = true)
+            // Bottom-Left
+            drawGildedCorner(x = 0f, y = h, isLeft = true, isTop = false)
+            // Bottom-Right
+            drawGildedCorner(x = w, y = h, isLeft = false, isTop = false)
+        }
+        
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            content()
+        }
+    }
+}
+
+// PREMIUM 3D TACTILE METALLIC STRAP BUTTON: Responsive BDSM-themed leather strap buttons with gold leaf gilding!
+@Composable
+fun PremiumGothicButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isPurple: Boolean = false,
+    enabled: Boolean = true
+) {
+    val haptic = LocalHapticFeedback.current
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, label = "ButtonScale")
+    
+    val bgGradient = if (isPurple) {
+        Brush.verticalGradient(
+            colors = listOf(SeductiveViolet, LeatherDarkPurple)
+        )
+    } else {
+        Brush.verticalGradient(
+            colors = listOf(LatexCrimson, Color(0xFF4A0000))
+        )
+    }
+    
+    val borderCol = if (enabled) BrassGold else Color.Gray.copy(alpha = 0.5f)
+    val textCol = if (enabled) BrassGold else Color.Gray
+    
+    Box(
+        modifier = modifier
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+            .fillMaxWidth()
+            .height(54.dp)
+            .clip(RoundedCornerShape(27.dp))
+            .background(bgGradient)
+            .border(2.dp, borderCol, RoundedCornerShape(27.dp))
+            .shadow(
+                elevation = if (isPressed) 4.dp else 12.dp,
+                shape = RoundedCornerShape(27.dp),
+                ambientColor = if (isPurple) SeductiveViolet else LatexCrimson
+            )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled
+            ) {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text.uppercase(),
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 15.sp,
+            color = textCol,
+            letterSpacing = 1.5.sp
+        )
     }
 }
