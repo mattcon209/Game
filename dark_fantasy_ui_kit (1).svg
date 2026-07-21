@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 2200" width="2400" height="2200" style="background-color: #08060c; color: #ffffff;">
+    <defs>
+        <style>
+            .header-title { font-family: 'Cinzel Decorative', 'Cinzel', serif; font-size: 36px; fill: #ffd700; font-weight: 900; letter-spacing: 3px; text-anchor: middle; }
+            .header-sub { font-family: 'Cinzel', serif; font-size: 18px; fill: #a89bb8; letter-spacing: 2px; text-anchor: middle; }
+            .cat-title { font-family: 'Cinzel', serif; font-size: 22px; fill: #ff2a4b; font-weight: bold; letter-spacing: 2px; }
+            .elem-label { font-family: sans-serif; font-size: 10px; fill: #776e82; text-anchor: middle; }
+            .ui-elem { color: #ffffff; transition: all 0.25s ease; cursor: pointer; }
+            .ui-elem:hover { color: #ff2a4b; filter: drop-shadow(0 0 10px rgba(255,42,75,0.9)); }
+        </style>
+
+        <filter id="glow-crimson" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="glow-gold" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- REUSABLE SYMBOLS -->
+        <g id="sym-btn-1">
+            <path d="M 15 2 L 185 2 L 198 15 L 198 29 L 185 42 L 15 42 L 2 29 L 2 15 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <path d="M 18 6 L 182 6 L 194 18 L 194 26 L 182 38 L 18 38 L 6 26 L 6 18 Z" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4,2"/>
+            <path d="M 0 22 L 8 16 L 8 28 Z M 200 22 L 192 16 L 192 28 Z" fill="currentColor"/>
+        </g>
+        <g id="sym-btn-2">
+            <path d="M 22 2 L 178 2 C 190 2 198 10 198 22 C 198 34 190 42 178 42 L 22 42 C 10 42 2 34 2 22 C 2 10 10 2 22 2 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <circle cx="10" cy="22" r="3" fill="currentColor"/>
+            <circle cx="190" cy="22" r="3" fill="currentColor"/>
+        </g>
+        <g id="sym-btn-3">
+            <path d="M 20 2 C 5 2 2 15 2 22 C 2 29 5 42 20 42 L 180 42 C 195 42 198 29 198 22 C 198 15 195 2 180 2 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <polygon points="100,2 96,6 104,6" fill="currentColor"/>
+            <polygon points="100,42 96,38 104,38" fill="currentColor"/>
+        </g>
+        <g id="sym-btn-4">
+            <rect x="2" y="2" width="196" height="40" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+            <rect x="6" y="6" width="188" height="32" fill="none" stroke="currentColor" stroke-width="1"/>
+            <path d="M 2 10 L 10 2 M 198 10 L 190 2 M 2 34 L 10 42 M 198 34 L 190 42" stroke="currentColor" stroke-width="2"/>
+        </g>
+    </defs>
+
+    <!-- Canvas Grid -->
+    <rect width="2400" height="2200" fill="#07050a"/>
+    <circle cx="1200" cy="1100" r="1000" fill="#1b0826" opacity="0.3"/>
+
+    <!-- HEADER -->
+    <text x="1200" y="60" class="header-title">DARK FANTASY MASTER EXPANDED UI SUITE</text>
+    <text x="1200" y="90" class="header-sub">Complete Master Collection — Over 150 Game UI Vector Assets</text>
+    <line x1="100" y1="110" x2="2300" y2="110" stroke="#442255" stroke-width="2"/>
+
+    <!-- SECTION 1: BUTTONS & TABS -->
+    <text x="60" y="150" class="cat-title">1. BUTTONS, TABS &amp; ACTION CONTROLS</text>
+
+    <g transform="translate(60, 170)" class="ui-elem" id="btn-1">
+        <use href="#sym-btn-1"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">ACCEPT QUEST</text>
+    </g>
+    <g transform="translate(280, 170)" class="ui-elem" id="btn-2">
+        <use href="#sym-btn-2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">INVENTORY</text>
+    </g>
+    <g transform="translate(500, 170)" class="ui-elem" id="btn-3">
+        <use href="#sym-btn-3"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">SPELLBOOK</text>
+    </g>
+    <g transform="translate(720, 170)" class="ui-elem" id="btn-4">
+        <use href="#sym-btn-4"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">EQUIP ALL</text>
+    </g>
+    <g transform="translate(940, 170)" class="ui-elem" id="btn-5">
+        <path d="M 2 2 L 180 2 L 198 22 L 180 42 L 2 42 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="90" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">NEXT TAB ►</text>
+    </g>
+    <g transform="translate(1160, 170)" class="ui-elem" id="btn-6">
+        <path d="M 20 2 L 198 2 L 198 42 L 20 42 L 2 22 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="110" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">◄ PREV TAB</text>
+    </g>
+    <g transform="translate(1380, 170)" class="ui-elem" id="btn-7">
+        <path d="M 10 2 L 90 2 L 100 8 L 110 2 L 190 2 L 198 10 L 198 34 L 190 42 L 110 42 L 100 36 L 90 42 L 10 42 L 2 34 L 2 10 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">CAST SPELL</text>
+    </g>
+    <g transform="translate(1600, 170)" class="ui-elem" id="btn-8">
+        <path d="M 25 2 C 10 2 2 12 2 22 C 2 32 10 42 25 42 L 175 42 C 190 42 198 32 198 22 C 198 12 190 2 175 2 Z" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">PURCHASE</text>
+    </g>
+    <g transform="translate(1820, 170)" class="ui-elem" id="btn-9">
+        <rect x="4" y="4" width="192" height="36" fill="rgba(15,10,22,0.85)" stroke="currentColor" stroke-width="2"/>
+        <path d="M 0 22 L 8 18 L 4 22 L 8 26 Z M 200 22 L 192 18 L 196 22 L 192 26 Z" fill="currentColor"/>
+        <text x="100" y="26" font-family="Cinzel, serif" font-size="12" fill="currentColor" text-anchor="middle" font-weight="bold">DECLINE</text>
+    </g>
+
+    <!-- SECTION 2: ITEM SLOTS & RARITY TIERS -->
+    <text x="60" y="240" class="cat-title">2. ITEM SLOTS, INVENTORY TIERS &amp; RARITY FRAMES</text>
+
+    <g transform="translate(60, 260)" class="ui-elem" id="sq-1">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(12,10,18,0.9)" stroke="#555566" stroke-width="2"/>
+        <rect x="6" y="6" width="48" height="48" fill="none" stroke="#333344" stroke-width="1"/>
+        <text x="30" y="68" class="elem-label">Common</text>
+    </g>
+    <g transform="translate(140, 260)" class="ui-elem" id="sq-2">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(12,10,18,0.9)" stroke="#00d2ff" stroke-width="2"/>
+        <rect x="6" y="6" width="48" height="48" fill="none" stroke="#005588" stroke-width="1"/>
+        <path d="M 2 10 L 10 2 M 50 2 L 58 10 M 58 50 L 50 58 M 10 58 L 2 50" stroke="#00d2ff" stroke-width="2"/>
+        <text x="30" y="68" class="elem-label">Rare</text>
+    </g>
+    <g transform="translate(220, 260)" class="ui-elem" id="sq-3">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(12,10,18,0.9)" stroke="#a855f7" stroke-width="2"/>
+        <polygon points="30,2 24,8 36,8" fill="#a855f7"/>
+        <polygon points="30,58 24,52 36,52" fill="#a855f7"/>
+        <text x="30" y="68" class="elem-label">Epic</text>
+    </g>
+    <g transform="translate(300, 260)" class="ui-elem" id="sq-4" filter="url(#glow-gold)">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(20,15,5,0.9)" stroke="#ffd700" stroke-width="2.5"/>
+        <polygon points="2,30 8,24 8,36" fill="#ffd700"/>
+        <polygon points="58,30 52,24 52,36" fill="#ffd700"/>
+        <text x="30" y="68" class="elem-label">Legendary</text>
+    </g>
+    <g transform="translate(380, 260)" class="ui-elem" id="sq-5" filter="url(#glow-crimson)">
+        <rect x="2" y="2" width="56" height="56" fill="rgba(25,5,10,0.9)" stroke="#ff2a4b" stroke-width="2.5"/>
+        <circle cx="6" cy="6" r="3" fill="#ff2a4b"/>
+        <circle cx="54" cy="6" r="3" fill="#ff2a4b"/>
+        <circle cx="6" cy="54" r="3" fill="#ff2a4b"/>
+        <circle cx="54" cy="54" r="3" fill="#ff2a4b"/>
+        <text x="30" y="68" class="elem-label">Mythic</text>
+    </g>
+
+    <!-- SECTION 3: CIRCULAR HUD & MINIMAP FRAMES -->
+    <text x="60" y="360" class="cat-title">3. CIRCLE HUD FRAMES, PORTRAIT GAUGES &amp; MINIMAP</text>
+
+    <g transform="translate(60, 390)" class="ui-elem" id="circ-minimap">
+        <circle cx="80" cy="80" r="74" fill="rgba(8,6,12,0.9)" stroke="currentColor" stroke-width="3"/>
+        <circle cx="80" cy="80" r="66" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="80" y="22" font-family="Cinzel, serif" font-size="12" fill="#ff2a4b" font-weight="bold" text-anchor="middle">N</text>
+        <text x="80" y="152" font-family="Cinzel, serif" font-size="12" fill="currentColor" font-weight="bold" text-anchor="middle">S</text>
+        <text x="150" y="84" font-family="Cinzel, serif" font-size="12" fill="currentColor" font-weight="bold" text-anchor="middle">E</text>
+        <text x="12" y="84" font-family="Cinzel, serif" font-size="12" fill="currentColor" font-weight="bold" text-anchor="middle">W</text>
+        <polygon points="80,24 76,30 84,30" fill="#ff2a4b"/>
+    </g>
+
+    <g transform="translate(240, 390)" class="ui-elem" id="circ-portrait">
+        <circle cx="80" cy="80" r="72" fill="rgba(8,6,12,0.9)" stroke="currentColor" stroke-width="2"/>
+        <path d="M 80 8 A 72 72 0 0 0 8 80" fill="none" stroke="#ff2a4b" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 80 8 A 72 72 0 0 1 152 80" fill="none" stroke="#00d2ff" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="80" cy="80" r="60" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <!-- SECTION 4: MAGIC SIGILS, PENTACLES & RUNES -->
+    <text x="60" y="580" class="cat-title">4. MAGIC SIGILS, PENTACLES &amp; RUNIC SEALS</text>
+
+    <g transform="translate(60, 610)" class="ui-elem" id="sigil-hexagram">
+        <circle cx="70" cy="70" r="66" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="70" cy="70" r="58" fill="none" stroke="currentColor" stroke-width="1"/>
+        <polygon points="70,10 118,100 22,100" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <polygon points="70,130 118,40 22,40" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="70" cy="70" r="18" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </g>
+
+    <g transform="translate(220, 610)" class="ui-elem" id="sigil-sunburst">
+        <circle cx="70" cy="70" r="66" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M 70 0 L 70 140 M 0 70 L 140 70 M 20 20 L 120 120 M 120 20 L 20 120" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="70" cy="70" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(380, 610)" class="ui-elem" id="sigil-skull-seal">
+        <circle cx="70" cy="70" r="66" fill="none" stroke="#ff2a4b" stroke-width="2"/>
+        <polygon points="70,12 120,118 20,118" fill="none" stroke="#ff2a4b" stroke-width="1.5"/>
+        <circle cx="70" cy="70" r="28" fill="rgba(30,0,10,0.8)" stroke="#ff2a4b" stroke-width="2"/>
+        <path d="M 70 54 C 62 54 58 60 58 68 C 58 73 60 76 62 78 V 82 H 78 V 78 C 80 76 82 73 82 68 C 82 60 78 54 70 54 Z" fill="none" stroke="#ff2a4b" stroke-width="2"/>
+        <circle cx="65" cy="66" r="2" fill="#ff2a4b"/>
+        <circle cx="75" cy="66" r="2" fill="#ff2a4b"/>
+    </g>
+
+    <!-- SECTION 5: GAME ICONS -->
+    <text x="60" y="780" class="cat-title">5. EXPANDED GAME ICONS PACK</text>
+
+    <g transform="translate(60, 810)" class="ui-elem" id="icon-shield">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 30 8 L 50 16 V 34 C 50 46 30 54 30 54 C 30 54 10 46 10 34 V 16 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M 30 16 L 42 21 V 32 C 42 40 30 46 30 46 C 30 46 18 40 18 32 V 21 Z" fill="currentColor"/>
+    </g>
+    <g transform="translate(130, 810)" class="ui-elem" id="icon-swords">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 10 10 L 50 50 M 50 10 L 10 50" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="30" cy="30" r="5" fill="currentColor"/>
+    </g>
+    <g transform="translate(200, 810)" class="ui-elem" id="icon-skull">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 30 8 C 18 8 12 18 12 30 C 12 38 16 43 20 45 V 52 H 40 V 45 C 44 43 48 38 48 30 C 48 18 42 8 30 8 Z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="21" cy="28" r="5" fill="currentColor"/>
+        <circle cx="39" cy="28" r="5" fill="currentColor"/>
+    </g>
+    <g transform="translate(270, 810)" class="ui-elem" id="icon-bow">
+        <rect x="0" y="0" width="60" height="60" fill="rgba(12,10,18,0.8)" stroke="#332244" stroke-width="1"/>
+        <path d="M 12 10 C 35 10 48 25 48 30 C 48 35 35 50 12 50" fill="none" stroke="currentColor" stroke-width="3"/>
+        <line x1="12" y1="10" x2="12" y2="50" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="30" x2="52" y2="30" stroke="currentColor" stroke-width="2"/>
+    </g>
+
+    <!-- SECTION 6: DIVIDERS -->
+    <text x="60" y="910" class="cat-title">6. GOTHIC DIVIDERS &amp; LINE ACCENTS</text>
+
+    <g transform="translate(60, 930)" class="ui-elem" id="div-barbed-wing">
+        <path d="M 0 20 L 400 20 M 500 20 L 900 20" stroke="currentColor" stroke-width="2.5"/>
+        <polygon points="450,2 430,20 450,38 470,20" fill="currentColor"/>
+        <polygon points="450,20 400,10 400,30" fill="currentColor"/>
+        <polygon points="450,20 500,10 500,30" fill="currentColor"/>
+    </g>
+
+    <!-- SECTION 7: GAUGES & STATUS BARS -->
+    <text x="60" y="1000" class="cat-title">7. BOSS HEALTH, MANA &amp; STAMINA BARS</text>
+
+    <g transform="translate(60, 1030)" class="ui-elem" id="bar-boss-hp">
+        <path d="M 20 2 L 780 2 L 798 22 L 780 42 L 20 42 L 2 22 Z" fill="rgba(10,8,15,0.95)" stroke="#ffd700" stroke-width="3"/>
+        <rect x="30" y="8" width="620" height="26" fill="#ff2a4b" rx="2"/>
+        <text x="400" y="26" font-family="Cinzel, serif" font-size="14" fill="#ffffff" font-weight="bold" text-anchor="middle" letter-spacing="2">MALAKOR THE VOIDLORD — 850,000 / 1,000,000 HP</text>
+        <circle cx="20" cy="22" r="16" fill="#800016" stroke="#ffd700" stroke-width="2"/>
+        <path d="M 20 12 L 14 26 H 26 Z" fill="#ffd700"/>
+    </g>
+
+    <!-- SECTION 8: WINDOW FRAMES, DIALOGS & TOOLTIPS -->
+    <text x="60" y="1120" class="cat-title">8. WINDOW FRAMES, QUEST LOGS &amp; ITEM TOOLTIPS</text>
+
+    <g transform="translate(60, 1150)" class="ui-elem" id="win-quest-log">
+        <rect x="10" y="10" width="540" height="380" fill="rgba(12,9,18,0.95)" stroke="currentColor" stroke-width="3" rx="4"/>
+        <rect x="20" y="20" width="520" height="360" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="6,3"/>
+        <path d="M 230 10 L 280 0 L 330 10 L 310 30 L 250 30 Z" fill="rgba(128,0,22,0.8)" stroke="currentColor" stroke-width="2"/>
+        <text x="280" y="55" font-family="Cinzel, serif" font-size="20" fill="#ffd700" font-weight="bold" text-anchor="middle" letter-spacing="2">QUEST LOG SHEET</text>
+        <line x1="50" y1="75" x2="510" y2="75" stroke="#442255" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(630, 1150)" class="ui-elem" id="win-tooltip">
+        <rect x="10" y="10" width="340" height="380" fill="rgba(15,10,22,0.95)" stroke="#a855f7" stroke-width="2.5" rx="6"/>
+        <text x="180" y="45" font-family="Cinzel, serif" font-size="16" fill="#a855f7" font-weight="bold" text-anchor="middle">VOIDMIST ROBE</text>
+        <text x="180" y="65" font-family="sans-serif" font-size="11" fill="#8888aa" text-anchor="middle">Epic Chest Armor</text>
+        <line x1="30" y1="80" x2="330" y2="80" stroke="#a855f7" stroke-width="1"/>
+        <text x="30" y="110" font-family="sans-serif" font-size="13" fill="#ffffff">+450 Armor Rating</text>
+        <text x="30" y="135" font-family="sans-serif" font-size="13" fill="#00d2ff">+85 Spell Power</text>
+        <text x="30" y="160" font-family="sans-serif" font-size="13" fill="#ffd700">+12% Critical Strike Chance</text>
+    </g>
+
+</svg>
