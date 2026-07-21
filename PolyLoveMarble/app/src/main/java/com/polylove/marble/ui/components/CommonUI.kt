@@ -251,15 +251,23 @@ fun OccultPlayerAvatar(
     playerIndex: Int,
     modifier: Modifier = Modifier
 ) {
-    val density = LocalDensity.current.density
-    
     Box(
         modifier = modifier
             .size(44.dp)
             .clip(CircleShape)
-            .background(playerColor)
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.7f),
+                        playerColor,
+                        Color.Black.copy(alpha = 0.85f)
+                    ),
+                    center = Offset(24f, 24f),
+                    radius = 50f
+                )
+            )
             .border(2.dp, BrassGold, CircleShape)
-            .shadow(4.dp, CircleShape)
+            .shadow(6.dp, CircleShape)
     )
 }
 
