@@ -486,7 +486,7 @@ fun GothicWindowFrame(modifier: Modifier = Modifier, title: String = "", content
         Canvas(modifier = Modifier.matchParentSize()) {
             val w = size.width; val h = size.height; val density = this.density
             val inset = 4f * density
-            drawRoundRect(color = Color.White.copy(alpha = 0.4f), topLeft = Offset(inset, inset), size = Size(w - 2 * inset, h - 2 * inset), cornerRadius = CornerRadius(4f * density), style = Stroke(width = 1f * density, pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f * density, 2f * density))))
+            drawRoundRect(color = Color.White.copy(alpha = 0.4f), topLeft = Offset(inset, inset), size = Size(w - 2 * inset, h - 2 * inset), cornerRadius = CornerRadius(4f * density, 4f * density), style = Stroke(width = 1f * density, pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f * density, 2f * density))))
             val cornerSize = 20f * density
             drawLine(color = Color.White, start = Offset(0f, cornerSize), end = Offset(0f, 0f), strokeWidth = 2f * density)
             drawLine(color = Color.White, start = Offset(0f, 0f), end = Offset(cornerSize, 0f), strokeWidth = 2f * density)

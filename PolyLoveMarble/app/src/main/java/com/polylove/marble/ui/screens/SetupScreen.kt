@@ -323,7 +323,7 @@ fun FantasyProgressBar(
                     color = barColor,
                     topLeft = Offset(10f * density, 5f * density),
                     size = androidx.compose.ui.geometry.Size(fillWidth, h - 10f * density),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(2f * density)
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(2f * density, 2f * density)
                 )
             }
         }
