@@ -2,18 +2,50 @@ package com.polylove.marble.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Deep Latex & Leather Obsidian Theme
-val ObsidianBlack = Color(0xFF07040B)
-val LeatherDarkPurple = Color(0xFF140D1E)
-val LatexCrimson = Color(0xFF8B0000)
-val IntensityRed = Color(0xFFD32F2F)
-val SteelGrey = Color(0xFF7A7A8A)
-val BrassGold = Color(0xFFC5A059)
-val SeductiveViolet = Color(0xFF5C1D8D)
-val SilkPurple = Color(0xFFD28EFF)
+// ============================================================
+// DARK FANTASY UI KIT — Color System
+// Matches the dark_fantasy_ui_kit.html design specification
+// ============================================================
+
+// Core Backgrounds
+val ObsidianBlack = Color(0xFF07060A)           // Primary background
+val DarkCardBg = Color(0xFF120E1A)              // Card/panel background
+val DarkSurface = Color(0xFF0D0A14)             // Surface elements
+val DarkElevated = Color(0xFF140F1E)            // Elevated surfaces
+
+// Primary Accents (Crimson Theme)
+val CrimsonPrimary = Color(0xFF800016)           // Primary border/accent
+val CrimsonGlow = Color(0xFFff2a4b)             // Glow effects, active states
+val CrimsonDeep = Color(0xFF3C000A)             // Deep crimson backgrounds
+
+// Gold Accents
+val GoldPrimary = Color(0xFFd4af37)             // Primary gold
+val GoldBright = Color(0xFFffe270)              // Bright gold highlights
+val GoldDark = Color(0xFF8a6d1c)                // Dark gold shadows
+
+// Cyan Accents
+val CyanGlow = Color(0xFF00d2ff)                // Cyan glow effects
+
+// Purple Accents
+val PurpleArcane = Color(0xFFa855f7)             // Arcane purple
+
+// Text Colors
+val TextPrimary = Color(0xFFf0ebf5)             // Primary text
+val TextMuted = Color(0xFF9e95a8)               // Muted/secondary text
+val TextGold = Color(0xFFd4af37)                // Gold text
+val TextCrimson = Color(0xFFff2a4b)             // Crimson text
+
+// Legacy aliases (for backward compatibility)
+val LeatherDarkPurple = DarkCardBg
+val LatexCrimson = CrimsonPrimary
+val IntensityRed = CrimsonGlow
+val SteelGrey = TextMuted
+val BrassGold = GoldPrimary
+val SeductiveViolet = PurpleArcane
+val SilkPurple = TextPrimary
 val WhipBrown = Color(0xFF4E2F1D)
 
-// EXEXCLUSIVE REQUESTED: ROYGBIV + Black & White Gemstone Colors
+// Gemstone Colors (ROYGBIV + Black & White)
 data class GemstoneColor(
     val name: String,
     val color: Color,
