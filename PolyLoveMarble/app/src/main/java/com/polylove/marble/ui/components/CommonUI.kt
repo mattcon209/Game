@@ -160,3 +160,34 @@ fun KinkyCard(
         }
     }
 }
+
+// LeatherStrapButton component used by WinScreen
+@Composable
+fun LeatherStrapButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    containerColor: Color = CrimsonGlow,
+    textColor: Color = Color.White
+) {
+    val haptic = LocalHapticFeedback.current
+    val alpha = if (enabled) 1f else 0.5f
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clip(RoundedCornerShape(29.dp))
+            .border(2.dp, GoldPrimary, RoundedCornerShape(29.dp))
+            .shadow(12.dp, RoundedCornerShape(29.dp), ambientColor = GoldPrimary)
+            .then(if (enabled) Modifier.clickable { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() } else Modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.begin_session_btn),
+            contentDescription = text,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
