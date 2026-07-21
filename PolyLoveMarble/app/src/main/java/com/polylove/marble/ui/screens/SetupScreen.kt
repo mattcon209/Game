@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.polylove.marble.game.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -90,8 +91,8 @@ fun SetupScreen(viewModel: GameViewModel) {
             ) {
                 // Draw elegant gold gilded corner filigrees!
                 Canvas(modifier = Modifier.matchParentSize()) {
-                    val w = size.width
-                    val h = size.height
+                    val w = this.size.width
+                    val h = this.size.height
                     
                     // Top-Left Corner
                     drawGildedCorner(x = 0f, y = 0f, isLeft = true, isTop = true)
