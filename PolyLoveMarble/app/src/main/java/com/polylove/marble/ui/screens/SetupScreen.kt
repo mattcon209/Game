@@ -168,11 +168,11 @@ fun SetupScreen(viewModel: GameViewModel) {
                         ) {
                             viewModel.players.forEachIndexed { index, player ->
                                 Column(modifier = Modifier.wrapContentSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                                    // Player bar backdrop - exactly 248.dp x 50.dp to match un-stretched ratio (1310x264)!
+                                    // Player bar backdrop - exactly 288.dp x 58.dp to match un-stretched ratio (1310x264)!
                                     Box(
                                         modifier = Modifier
-                                            .width(248.dp)
-                                            .height(50.dp),
+                                            .width(288.dp)
+                                            .height(58.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Image(
@@ -186,10 +186,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                                             verticalAlignment = Alignment.CenterVertically,
                                             modifier = Modifier.fillMaxSize()
                                         ) {
-                                            // Left aligned circular portrait socket (occupies exactly 50dp x 50dp)
+                                            // Left aligned circular portrait socket (occupies exactly 58dp x 58dp)
                                             Box(
                                                 modifier = Modifier
-                                                    .width(50.dp)
+                                                    .width(58.dp)
                                                     .fillMaxHeight(),
                                                 contentAlignment = Alignment.Center
                                             ) {
@@ -197,7 +197,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                                     playerColor = player.color,
                                                     playerIndex = index,
                                                     modifier = Modifier
-                                                        .size(36.dp)
+                                                        .size(42.dp)
                                                         .clickable {
                                                             viewModel.activeColorPickerIndex = 
                                                                 if (viewModel.activeColorPickerIndex == index) -1 else index
@@ -222,7 +222,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                                     unfocusedIndicatorColor = Color.Transparent
                                                 ),
                                                 textStyle = LocalTextStyle.current.copy(
-                                                    fontSize = 13.sp,
+                                                    fontSize = 14.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     fontFamily = FontFamily.Serif
                                                 ),
@@ -233,7 +233,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                             if (viewModel.players.size > 2) {
                                                 IconButton(
                                                     onClick = { viewModel.removePlayer(player) },
-                                                    modifier = Modifier.padding(end = 8.dp)
+                                                    modifier = Modifier.padding(end = 16.dp)
                                                 ) {
                                                     Icon(
                                                         Icons.Default.Delete,
@@ -257,7 +257,7 @@ fun SetupScreen(viewModel: GameViewModel) {
                                             border = BorderStroke(1.dp, SeductiveViolet.copy(alpha = 0.3f)),
                                             shape = RoundedCornerShape(8.dp),
                                             modifier = Modifier
-                                                .width(248.dp)
+                                                .width(288.dp)
                                                 .padding(vertical = 4.dp)
                                         ) {
                                             Row(
