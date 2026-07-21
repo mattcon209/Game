@@ -52,10 +52,10 @@ fun SetupScreen(viewModel: GameViewModel) {
             Image(
                 painter = painterResource(id = R.drawable.setup_header),
                 contentDescription = "Chains of Desire Header Banner",
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(230.dp)
+                    .height(190.dp)
                     .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -76,9 +76,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                         ) {
                             Text(
                                 text = "Session Partners (${viewModel.players.size}/8)",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = SilkPurple
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                fontFamily = FontFamily.Serif,
+                                color = BrassGold
                             )
                             IconButton(onClick = { viewModel.addPlayer() }, enabled = viewModel.players.size < 8) {
                                 Icon(
@@ -211,9 +212,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                     KinkyCard(borderColor = SeductiveViolet.copy(alpha = 0.4f)) {
                         Text(
                             text = "Map Layout & Settings",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = SilkPurple,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = FontFamily.Serif,
+                            color = BrassGold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         
@@ -362,9 +364,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                     KinkyCard(isShort = true) {
                         Text(
                             text = "Meeple Hop Animation Speed:",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.LightGray,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = FontFamily.Serif,
+                            color = BrassGold,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                         Row(
@@ -431,8 +434,9 @@ fun SetupScreen(viewModel: GameViewModel) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = "Select Spell Books",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 17.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontFamily = FontFamily.Serif,
                                     color = BrassGold
                                 )
                                 Text(
@@ -486,9 +490,10 @@ fun SetupScreen(viewModel: GameViewModel) {
                     KinkyCard(borderColor = SeductiveViolet.copy(alpha = 0.5f)) {
                         Text(
                             text = "Kink Intensity Levels",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = SilkPurple,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = FontFamily.Serif,
+                            color = BrassGold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         
