@@ -22,9 +22,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.polylove.marble.R
@@ -87,17 +90,59 @@ fun KinkyCard(
     ) {
         // Load the actual photorealistic gothic frame image as the background!
         val bgRes = if (isShort) R.drawable.gothic_frame_short else R.drawable.gothic_frame_large
-        Image(
-            painter = painterResource(id = bgRes),
-            contentDescription = "Gothic Frame Backdrop",
-            contentScale = ContentScale.FillBounds, // Stretches to fill the container perfectly!
-            modifier = Modifier.matchParentSize()
-        )
+        val bitmap = ImageBitmap.imageResource(id = bgRes)
+        
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val w = size.width
+            val h = size.height
+            
+            val imgW = bitmap.width.toFloat()
+            val imgH = bitmap.height.toFloat()
+            
+            // Slice definitions: top border (115px), bottom border (88px), middle stretches
+            val srcTopH = 115f
+            val srcBotH = 88f
+            val srcMidH = imgH - srcTopH - srcBotH
+            
+            // Calculate destination heights while keeping top/bottom aspect ratio correct
+            val dstTopH = srcTopH * (w / imgW)
+            val dstBotH = srcBotH * (w / imgW)
+            val dstMidH = h - dstTopH - dstBotH
+            
+            // 1. Draw top border slice
+            drawImage(
+                image = bitmap,
+                srcOffset = IntOffset(0, 0),
+                srcSize = IntSize(bitmap.width, srcTopH.toInt()),
+                dstOffset = IntOffset(0, 0),
+                dstSize = IntSize(w.toInt(), dstTopH.toInt())
+            )
+            
+            // 2. Draw middle stretchable parchment
+            if (dstMidH > 0) {
+                drawImage(
+                    image = bitmap,
+                    srcOffset = IntOffset(0, srcTopH.toInt()),
+                    srcSize = IntSize(bitmap.width, srcMidH.toInt()),
+                    dstOffset = IntOffset(0, dstTopH.toInt()),
+                    dstSize = IntSize(w.toInt(), dstMidH.toInt())
+                )
+            }
+            
+            // 3. Draw bottom border slice
+            drawImage(
+                image = bitmap,
+                srcOffset = IntOffset(0, (imgH - srcBotH).toInt()),
+                srcSize = IntSize(bitmap.width, srcBotH.toInt()),
+                dstOffset = IntOffset(0, (h - dstBotH).toInt()),
+                dstSize = IntSize(w.toInt(), dstBotH.toInt())
+            )
+        }
         
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 48.dp, vertical = 36.dp), // Extra padding to stay inside the gold scroll frame!
+                .padding(start = 48.dp, end = 48.dp, top = 54.dp, bottom = 42.dp), // Extra padding to stay inside the gold scroll frame!
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()

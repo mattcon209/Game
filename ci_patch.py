@@ -440,14 +440,32 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
         size = androidx.compose.ui.geometry.Size(w * 0.8f, h * 0.15f)
     )
     
-    // Draw statue image with color tint
+    // Slice height calculation: top 70% is figure, bottom 30% is base
+    val topSrcH = (img.height * 0.7f).toInt()
+    val baseSrcY = topSrcH
+    val baseSrcH = img.height - baseSrcY
+    
+    val topDstH = h * 0.7f
+    val baseDstY = (y - h * 0.5f) + topDstH
+    val baseDstH = h * 0.3f
+    
+    // 1. Draw top figure portion with color tint (Modulate preserves textures & shadows!)
     drawImage(
         image = img,
-        srcOffset = IntOffset.Zero,
-        srcSize = IntSize(img.width, img.height),
+        srcOffset = IntOffset(0, 0),
+        srcSize = IntSize(img.width, topSrcH),
         dstOffset = IntOffset((x - w / 2f).toInt(), (y - h * 0.5f).toInt()),
-        dstSize = IntSize(w.toInt(), h.toInt()),
+        dstSize = IntSize(w.toInt(), topDstH.toInt()),
         colorFilter = ColorFilter.tint(color, blendMode = BlendMode.Modulate)
+    )
+    
+    // 2. Draw bottom base portion WITHOUT color tint (keeps pristine stone texture & glows!)
+    drawImage(
+        image = img,
+        srcOffset = IntOffset(0, baseSrcY),
+        srcSize = IntSize(img.width, baseSrcH),
+        dstOffset = IntOffset((x - w / 2f).toInt(), baseDstY.toInt()),
+        dstSize = IntSize(w.toInt(), baseDstH.toInt())
     )
 }
 """
