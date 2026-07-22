@@ -79,3 +79,4 @@ jobs:
             git commit -m "Auto-build APK from ${{ github.sha }}"
             git push
           }
+# Force clean build
