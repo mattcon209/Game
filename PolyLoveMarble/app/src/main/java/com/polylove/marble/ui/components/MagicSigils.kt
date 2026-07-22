@@ -58,10 +58,10 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawDareSigil(cx: F
     drawCircle(color.copy(alpha = 0.3f), r, Offset(cx, cy), style = Stroke(width = 1.5f * density))
     val flamePath = Path().apply {
         moveTo(cx, cy - r * 0.6f)
-        cubicTo(cx + r * 0.3f, cy - r * 0.2f, cx + r * 0.25f, cy + r * 0.3f)
+        quadraticBezierTo(cx + r * 0.3f, cy - r * 0.2f, cx + r * 0.25f, cy + r * 0.3f)
         quadraticBezierTo(cx + r * 0.1f, cy + r * 0.6f, cx, cy + r * 0.6f)
         quadraticBezierTo(cx - r * 0.1f, cy + r * 0.6f, cx - r * 0.25f, cy + r * 0.3f)
-        cubicTo(cx - r * 0.3f, cy - r * 0.2f, cx, cy - r * 0.6f)
+        quadraticBezierTo(cx - r * 0.3f, cy - r * 0.2f, cx, cy - r * 0.6f)
         close()
     }
     drawPath(flamePath, color)
