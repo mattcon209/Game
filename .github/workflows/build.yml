@@ -57,6 +57,9 @@ jobs:
       - name: Apply visual and import patches
         run: python3 ci_patch.py
 
+      - name: Remove stale ChainsOfDesireLogo.kt if exists
+        run: rm -f PolyLoveMarble/app/src/main/java/com/polylove/marble/ui/ChainsOfDesireLogo.kt
+
       - name: Build Debug APK
         working-directory: PolyLoveMarble
         run: gradle assembleDebug --no-daemon --stacktrace
