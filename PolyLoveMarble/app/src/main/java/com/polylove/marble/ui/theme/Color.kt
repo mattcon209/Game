@@ -36,13 +36,13 @@ val TextGold = Color(0xFFd4af37)                // Gold text
 val TextCrimson = Color(0xFFff2a4b)             // Crimson text
 
 // Legacy aliases (for backward compatibility)
-val LeatherDarkPurple = DarkCardBg
-val LatexCrimson = CrimsonPrimary
+val DarkCardBg = DarkCardBg
+val CrimsonGlow = CrimsonPrimary
 val IntensityRed = CrimsonGlow
-val SteelGrey = TextMuted
-val BrassGold = GoldPrimary
-val SeductiveViolet = PurpleArcane
-val SilkPurple = TextPrimary
+val TextMuted = TextMuted
+val GoldPrimary = GoldPrimary
+val CrimsonGlow = PurpleArcane
+val TextPrimary = TextPrimary
 val WhipBrown = Color(0xFF4E2F1D)
 
 // Gemstone Colors (ROYGBIV + Black & White)

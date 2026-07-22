@@ -6,7 +6,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.polylove.marble.ui.theme.BrassGold
+import com.polylove.marble.ui.theme.GoldPrimary
 
 // EXCLUSIVE REQUESTED: Draw a beautiful, physical-looking 3D Board Game Pawn/Meeple (Perfect wide meeple proportions, no more squishing!)
 fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squashX: Float = 1f, stretchY: Float = 1f) {
@@ -30,7 +30,7 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
     )
     // Base gold ring highlight
     drawRoundRect(
-        color = BrassGold,
+        color = GoldPrimary,
         topLeft = Offset(x - w * 0.45f, y + h * 0.15f),
         size = Size(w * 0.9f, h * 0.05f),
         cornerRadius = CornerRadius(w * 0.2f, w * 0.2f),
@@ -50,8 +50,8 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
     }
     drawPath(leftWing, color = color.copy(alpha = 0.85f))
     drawPath(rightWing, color = color.copy(alpha = 0.85f))
-    drawPath(leftWing, color = BrassGold.copy(alpha = 0.5f), style = Stroke(width = 1f * density))
-    drawPath(rightWing, color = BrassGold.copy(alpha = 0.5f), style = Stroke(width = 1f * density))
+    drawPath(leftWing, color = GoldPrimary.copy(alpha = 0.5f), style = Stroke(width = 1f * density))
+    drawPath(rightWing, color = GoldPrimary.copy(alpha = 0.5f), style = Stroke(width = 1f * density))
     
     // 3. Pawn flared body path (wider meeple shoulders)
     val bodyPath = Path().apply {
@@ -73,7 +73,7 @@ fun DrawScope.drawGamePawn(color: Color, x: Float, y: Float, size: Float, squash
     
     // 4. Pawn neck ring (Collar buckle!)
     drawRoundRect(
-        color = BrassGold,
+        color = GoldPrimary,
         topLeft = Offset(x - w * 0.22f, y - h * 0.25f),
         size = Size(w * 0.44f, h * 0.05f),
         cornerRadius = CornerRadius(1f, 1f)
@@ -110,6 +110,6 @@ fun DrawScope.drawGildedCorner(x: Float, y: Float, isLeft: Boolean, isTop: Boole
     path.quadraticBezierTo(x + sizeVal * dx * 0.4f, y + sizeVal * dy * 0.4f, x, y + sizeVal * dy)
     path.close()
     
-    drawPath(path, color = BrassGold.copy(alpha = 0.2f))
-    drawPath(path, color = BrassGold.copy(alpha = 0.6f), style = Stroke(width = 1.5f * density))
+    drawPath(path, color = GoldPrimary.copy(alpha = 0.2f))
+    drawPath(path, color = GoldPrimary.copy(alpha = 0.6f), style = Stroke(width = 1.5f * density))
 }

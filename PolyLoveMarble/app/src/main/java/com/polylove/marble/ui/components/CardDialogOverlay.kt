@@ -45,17 +45,17 @@ fun CardDialogOverlay(viewModel: GameViewModel) {
             
             val borderThemeColor = when (viewModel.cardDialogType) {
                 "PUNISHMENT" -> Color(0xFFFF007F)
-                "MOTIF" -> BrassGold
-                "DOUBLE_CHALLENGE" -> LatexCrimson
+                "MOTIF" -> GoldPrimary
+                "DOUBLE_CHALLENGE" -> CrimsonGlow
                 else -> when (viewModel.currentPromptCategory) {
-                    TileType.START -> LatexCrimson
+                    TileType.START -> CrimsonGlow
                     TileType.TRUTH -> Color.White
-                    TileType.DARE -> LatexCrimson
-                    TileType.KINKY_LIGHT -> SeductiveViolet
-                    TileType.TEASE_DENIAL -> SilkPurple
-                    TileType.IMPACT_DOM -> SeductiveViolet
+                    TileType.DARE -> CrimsonGlow
+                    TileType.KINKY_LIGHT -> CrimsonGlow
+                    TileType.TEASE_DENIAL -> TextPrimary
+                    TileType.IMPACT_DOM -> CrimsonGlow
                     TileType.GROUP_BDSM -> Color(0xFF00FFCC)
-                    else -> LatexCrimson
+                    else -> CrimsonGlow
                 }
             }
 
@@ -93,7 +93,7 @@ fun CardDialogOverlay(viewModel: GameViewModel) {
                                 text = "KINK CARD DRAWN",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                color = BrassGold,
+                                color = GoldPrimary,
                                 letterSpacing = 1.sp
                             )
                             Text(
@@ -134,7 +134,7 @@ fun CardDialogOverlay(viewModel: GameViewModel) {
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         
-                        HorizontalDivider(color = SeductiveViolet.copy(alpha = 0.25f), thickness = 1.dp)
+                        HorizontalDivider(color = CrimsonGlow.copy(alpha = 0.25f), thickness = 1.dp)
                         Spacer(modifier = Modifier.height(14.dp))
                         
                         Text(
@@ -232,7 +232,7 @@ fun CardDialogOverlay(viewModel: GameViewModel) {
                                             viewModel.currentPlayerIndex = (viewModel.currentPlayerIndex + 1) % viewModel.players.size
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = LatexCrimson),
+                                    colors = ButtonDefaults.buttonColors(containerColor = CrimsonGlow),
                                     shape = RoundedCornerShape(10.dp),
                                     modifier = Modifier.weight(1.2f)
                                 ) {
@@ -274,7 +274,7 @@ fun CardDialogOverlay(viewModel: GameViewModel) {
                                             }
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = SeductiveViolet),
+                                    colors = ButtonDefaults.buttonColors(containerColor = CrimsonGlow),
                                     shape = RoundedCornerShape(10.dp),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {

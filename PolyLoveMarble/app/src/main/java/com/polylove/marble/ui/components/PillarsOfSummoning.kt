@@ -147,7 +147,7 @@ fun SummoningPillar(
         // 4. Draw outer gold highlight outline if the active player stands on this column
         if (isActivePlayerOnThisTile) {
             drawCircle(
-                color = BrassGold,
+                color = GoldPrimary,
                 radius = targetW * 0.22f * pulseScale, // Adjusted to match the 3x larger pillar!
                 center = Offset(targetCapCenterX, targetCapCenterY),
                 style = Stroke(width = 1.8f * density)

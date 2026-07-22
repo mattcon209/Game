@@ -31,12 +31,12 @@ fun ConstraintsPanel(
     modifier: Modifier = Modifier
 ) {
     // Active Constraints Card (COVENANTS PANEL)
-    KinkyCard(borderColor = LatexCrimson.copy(alpha = 0.35f), modifier = modifier) {
+    KinkyCard(borderColor = CrimsonGlow.copy(alpha = 0.35f), modifier = modifier) {
         Text(
             text = "Active Spell Constraints",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = LatexCrimson,
+            color = CrimsonGlow,
             modifier = Modifier.padding(bottom = 2.dp)
         )
         if (viewModel.activeConstraints.isEmpty()) {
@@ -61,7 +61,7 @@ fun ConstraintsPanel(
                                 text = constraint.playerName,
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = BrassGold
+                                color = GoldPrimary
                             )
                             Text(
                                 text = constraint.description,
@@ -89,7 +89,7 @@ fun ConstraintsPanel(
                                 },
                                 modifier = Modifier.size(20.dp)
                             ) {
-                                Icon(Icons.Default.CheckCircle, "Done Rep", tint = BrassGold, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.CheckCircle, "Done Rep", tint = GoldPrimary, modifier = Modifier.size(16.dp))
                             }
                         } else {
                             val timerText = when (constraint.durationUnit) {
@@ -105,7 +105,7 @@ fun ConstraintsPanel(
                                 text = timerText,
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Black,
-                                color = LatexCrimson
+                                color = CrimsonGlow
                             )
                         }
                     }

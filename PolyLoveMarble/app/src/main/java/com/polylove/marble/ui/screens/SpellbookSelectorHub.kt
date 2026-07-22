@@ -46,7 +46,7 @@ fun SpellbookSelectorHub(
             text = "CHOOSE A SPELL BOOK TO WEAVE",
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
-            color = BrassGold,
+            color = GoldPrimary,
             modifier = Modifier.padding(bottom = 6.dp)
         )
         Text(
@@ -63,14 +63,14 @@ fun SpellbookSelectorHub(
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 showCreateDeckDialog = true 
             },
-            colors = ButtonDefaults.buttonColors(containerColor = SeductiveViolet),
-            border = BorderStroke(1.5.dp, BrassGold),
+            colors = ButtonDefaults.buttonColors(containerColor = CrimsonGlow),
+            border = BorderStroke(1.5.dp, GoldPrimary),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add Deck", tint = BrassGold)
+            Icon(Icons.Default.Add, contentDescription = "Add Deck", tint = GoldPrimary)
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "CREATE NEW SPELL BOOK",
@@ -88,8 +88,8 @@ fun SpellbookSelectorHub(
         ) {
             gridItems(viewModel.availableSpellbooks) { packName ->
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple),
-                    border = BorderStroke(1.5.dp, BrassGold.copy(alpha = 0.5f)),
+                    colors = CardDefaults.cardColors(containerColor = DarkCardBg),
+                    border = BorderStroke(1.5.dp, GoldPrimary.copy(alpha = 0.5f)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(130.dp)
@@ -110,11 +110,11 @@ fun SpellbookSelectorHub(
                                 .size(36.dp)
                                 .clip(RoundedCornerShape(6.dp))
                                 .background(Color(0xFF2B0E1E))
-                                .border(1.dp, BrassGold, RoundedCornerShape(6.dp)),
+                                .border(1.dp, GoldPrimary, RoundedCornerShape(6.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Canvas(modifier = Modifier.size(16.dp)) {
-                                drawPadlockVector(isClosed = true, color = BrassGold)
+                                drawPadlockVector(isClosed = true, color = GoldPrimary)
                             }
                         }
                         
@@ -133,7 +133,7 @@ fun SpellbookSelectorHub(
                         Text(
                             text = "${packPromptCount} Spells • ${packPunishCount} Curses",
                             fontSize = 8.sp,
-                            color = SteelGrey,
+                            color = TextMuted,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -145,8 +145,8 @@ fun SpellbookSelectorHub(
     if (showCreateDeckDialog) {
         Dialog(onDismissRequest = { showCreateDeckDialog = false }) {
             Card(
-                colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple),
-                border = BorderStroke(1.5.dp, BrassGold),
+                colors = CardDefaults.cardColors(containerColor = DarkCardBg),
+                border = BorderStroke(1.5.dp, GoldPrimary),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             ) {
@@ -158,7 +158,7 @@ fun SpellbookSelectorHub(
                         text = "ENGRAVE NEW SPELL BOOK",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
-                        color = BrassGold,
+                        color = GoldPrimary,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
                     
@@ -183,7 +183,7 @@ fun SpellbookSelectorHub(
                     ) {
                         OutlinedButton(
                             onClick = { showCreateDeckDialog = false },
-                            border = BorderStroke(1.dp, SteelGrey),
+                            border = BorderStroke(1.dp, TextMuted),
                             modifier = Modifier.weight(1f)
                         ) {
                             Text("Cancel", color = Color.LightGray)
@@ -199,7 +199,7 @@ fun SpellbookSelectorHub(
                                     newDeckNameText = ""
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(containerColor = LatexCrimson),
+                            colors = ButtonDefaults.buttonColors(containerColor = CrimsonGlow),
                             modifier = Modifier.weight(1.2f)
                         ) {
                             Text("Engrave", color = Color.White)

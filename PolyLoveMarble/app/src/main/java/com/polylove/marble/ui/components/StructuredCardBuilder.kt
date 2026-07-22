@@ -79,7 +79,7 @@ fun StructuredCardBuilder(
             text = "Occult Structured Card Builder",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = BrassGold
+            color = GoldPrimary
         )
         Text(
             text = "Build a custom sentence program block-by-block. Always ends with a time or rep format:",
@@ -91,11 +91,11 @@ fun StructuredCardBuilder(
         // Live Preview Card
         Card(
             colors = CardDefaults.cardColors(containerColor = ObsidianBlack),
-            border = BorderStroke(1.dp, BrassGold.copy(alpha = 0.5f)),
+            border = BorderStroke(1.dp, GoldPrimary.copy(alpha = 0.5f)),
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
-                Text("LIVE PROMPT PREVIEW:", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = BrassGold)
+                Text("LIVE PROMPT PREVIEW:", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = GoldPrimary)
                 Text(
                     text = synthesizedPrompt,
                     fontSize = 12.sp,
@@ -113,7 +113,7 @@ fun StructuredCardBuilder(
             // Render the sentence segments rows
             itemsIndexed(segments) { index, segment ->
                 KinkyCard(
-                    borderColor = SeductiveViolet.copy(alpha = 0.25f),
+                    borderColor = CrimsonGlow.copy(alpha = 0.25f),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -125,7 +125,7 @@ fun StructuredCardBuilder(
                             text = "Segment Block #${index + 1}",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = BrassGold
+                            color = GoldPrimary
                         )
                         if (segments.size > 1) {
                             IconButton(
@@ -135,7 +135,7 @@ fun StructuredCardBuilder(
                                 },
                                 modifier = Modifier.size(20.dp)
                             ) {
-                                Icon(Icons.Default.Delete, "Remove Block", tint = LatexCrimson, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.Delete, "Remove Block", tint = CrimsonGlow, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -213,12 +213,12 @@ fun StructuredCardBuilder(
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         segments.add(PromptSegment("{target1}", ""))
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = SeductiveViolet.copy(alpha = 0.4f)),
+                    colors = ButtonDefaults.buttonColors(containerColor = CrimsonGlow.copy(alpha = 0.4f)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(36.dp)
                 ) {
-                    Icon(Icons.Default.Add, "Add Segment", tint = BrassGold, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Add, "Add Segment", tint = GoldPrimary, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(6.dp))
                     Text("ADD BLOCK / INSERT TAG", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
@@ -226,8 +226,8 @@ fun StructuredCardBuilder(
             
             // Suffix formatting & Card settings
             item {
-                KinkyCard(borderColor = SeductiveViolet.copy(alpha = 0.25f)) {
-                    Text("Mandatory Suffix Format Settings", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = BrassGold)
+                KinkyCard(borderColor = CrimsonGlow.copy(alpha = 0.25f)) {
+                    Text("Mandatory Suffix Format Settings", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = GoldPrimary)
                     Spacer(modifier = Modifier.height(4.dp))
                     
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -364,7 +364,7 @@ fun StructuredCardBuilder(
                     ))
                 }
             },
-            colors = ButtonDefaults.buttonColors(containerColor = LatexCrimson),
+            colors = ButtonDefaults.buttonColors(containerColor = CrimsonGlow),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(38.dp)
@@ -372,12 +372,12 @@ fun StructuredCardBuilder(
             Text("SAVE STRUCTURED CARD", fontWeight = FontWeight.Bold, fontSize = 12.sp)
         }
 
-        HorizontalDivider(color = SeductiveViolet.copy(alpha = 0.2f), modifier = Modifier.padding(vertical = 4.dp))
+        HorizontalDivider(color = CrimsonGlow.copy(alpha = 0.2f), modifier = Modifier.padding(vertical = 4.dp))
 
         Text(
             text = "Spellbook Deck Cards Manager (${PromptDatabase.prompts.count { it.packName == activeSpellbook }})", 
             fontSize = 11.sp, 
-            color = BrassGold, 
+            color = GoldPrimary, 
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 2.dp)
         )
@@ -390,7 +390,7 @@ fun StructuredCardBuilder(
         LazyColumn(modifier = Modifier.weight(0.7f)) {
             itemsIndexed(filteredDisplayCards) { index, card ->
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple),
+                    colors = CardDefaults.cardColors(containerColor = DarkCardBg),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 2.dp)
@@ -400,14 +400,14 @@ fun StructuredCardBuilder(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Category: ${card.category.displayName} | Level: ${card.spiceLevel.displayName} | Tracker: ${card.durationValue} ${card.durationUnit}", fontSize = 8.sp, color = BrassGold)
+                            Text("Category: ${card.category.displayName} | Level: ${card.spiceLevel.displayName} | Tracker: ${card.durationValue} ${card.durationUnit}", fontSize = 8.sp, color = GoldPrimary)
                             Text(card.template, fontSize = 11.sp, color = Color.White)
                         }
                         IconButton(onClick = {
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             PromptDatabase.prompts.remove(card)
                         }, modifier = Modifier.size(24.dp)) {
-                            Icon(Icons.Default.Delete, "Delete", tint = LatexCrimson, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Default.Delete, "Delete", tint = CrimsonGlow, modifier = Modifier.size(16.dp))
                         }
                     }
                 }

@@ -221,7 +221,7 @@ fun BoardScreen(viewModel: GameViewModel) {
             ) {
                 // Top Turn Info Header
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple),
+                    colors = CardDefaults.cardColors(containerColor = DarkCardBg),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.5.dp, activePlayer.color.copy(alpha = 0.8f)),
                     modifier = Modifier
@@ -281,7 +281,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .border(1.5.dp, SeductiveViolet.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .border(1.5.dp, CrimsonGlow.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                             .clip(RoundedCornerShape(12.dp))
                     ) {
                         // CINEMATIC GRAPHICS VIEWPORT wrapper
@@ -406,9 +406,9 @@ fun BoardScreen(viewModel: GameViewModel) {
                 // Middle Active Controls Bar (Dice & Roll Button)
                 if (!showTurnStartPrompt) {
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple.copy(alpha = 0.9f)),
+                        colors = CardDefaults.cardColors(containerColor = DarkCardBg.copy(alpha = 0.9f)),
                         shape = RoundedCornerShape(10.dp),
-                        border = BorderStroke(1.dp, SeductiveViolet.copy(alpha = 0.4f)),
+                        border = BorderStroke(1.dp, CrimsonGlow.copy(alpha = 0.4f)),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
@@ -436,7 +436,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                                         text = viewModel.animationStatusText,
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = SilkPurple,
+                                        color = TextPrimary,
                                         textAlign = TextAlign.Center
                                     )
                                 } else {
@@ -571,7 +571,7 @@ fun BoardScreen(viewModel: GameViewModel) {
         val tile = pendingLandingTile!!
         Dialog(onDismissRequest = { }) {
             Card(
-                colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple),
+                colors = CardDefaults.cardColors(containerColor = DarkCardBg),
                 border = BorderStroke(2.dp, activePlayer.color),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
@@ -600,7 +600,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                         text = "RUNE LANDED!",
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
-                        color = BrassGold,
+                        color = GoldPrimary,
                         letterSpacing = 1.sp
                     )
                     
@@ -703,7 +703,7 @@ fun BoardScreen(viewModel: GameViewModel) {
     if (showTurnStartPrompt) {
         Dialog(onDismissRequest = { }) {
             Card(
-                colors = CardDefaults.cardColors(containerColor = LeatherDarkPurple),
+                colors = CardDefaults.cardColors(containerColor = DarkCardBg),
                 border = BorderStroke(2.dp, activePlayer.color),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
@@ -719,7 +719,7 @@ fun BoardScreen(viewModel: GameViewModel) {
                         text = "SUMMONING PHASE",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = BrassGold,
+                        color = GoldPrimary,
                         letterSpacing = 1.sp
                     )
                     Text(

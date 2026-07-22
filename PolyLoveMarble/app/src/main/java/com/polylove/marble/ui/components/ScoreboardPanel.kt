@@ -27,7 +27,7 @@ fun ScoreboardPanel(
     modifier: Modifier = Modifier
 ) {
     // Standings Card - Renders Locked Badges for Bound players! (Visual Tracking!)
-    KinkyCard(borderColor = SeductiveViolet.copy(alpha = 0.25f), modifier = modifier) {
+    KinkyCard(borderColor = CrimsonGlow.copy(alpha = 0.25f), modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -37,13 +37,13 @@ fun ScoreboardPanel(
                 text = "Standings",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = BrassGold
+                color = GoldPrimary
             )
             
             if (viewModel.isInfiniteMode) {
                 Text(
                     text = "END",
-                    color = LatexCrimson,
+                    color = CrimsonGlow,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -53,7 +53,7 @@ fun ScoreboardPanel(
                             viewModel.victorySummaryText = "The play session has concluded. ${viewModel.winnerName} completed the most tasks (${highestTasksWinner?.tasksCompleted})!"
                             viewModel.currentScreen = GameScreen.Win
                         }
-                        .border(1.dp, LatexCrimson, RoundedCornerShape(4.dp))
+                        .border(1.dp, CrimsonGlow, RoundedCornerShape(4.dp))
                         .padding(horizontal = 4.dp, vertical = 2.dp)
                 )
             }

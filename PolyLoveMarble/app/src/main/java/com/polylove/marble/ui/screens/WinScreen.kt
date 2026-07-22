@@ -28,7 +28,7 @@ import com.polylove.marble.ui.theme.*
 @Composable
 fun WinScreen(viewModel: GameViewModel) {
     val winningPlayer = viewModel.players.firstOrNull { it.name == viewModel.winnerName }
-    val winningColor = winningPlayer?.color ?: LatexCrimson
+    val winningColor = winningPlayer?.color ?: CrimsonGlow
     val density = LocalDensity.current.density
     
     SeductiveLeatherBackground {
@@ -44,7 +44,7 @@ fun WinScreen(viewModel: GameViewModel) {
                     text = "👑 DOMINANCE DECLARED! 👑",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Black,
-                    color = BrassGold,
+                    color = GoldPrimary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)
                 )
@@ -64,7 +64,7 @@ fun WinScreen(viewModel: GameViewModel) {
             ) {
                 // Standings Card
                 item {
-                    KinkyCard(borderColor = SeductiveViolet.copy(alpha = 0.5f)) {
+                    KinkyCard(borderColor = CrimsonGlow.copy(alpha = 0.5f)) {
                         Text(
                             text = "Final Standings",
                             fontSize = 15.sp,
@@ -87,7 +87,7 @@ fun WinScreen(viewModel: GameViewModel) {
                                         text = "${rank + 1}.",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (p.name == viewModel.winnerName) BrassGold else Color.LightGray,
+                                        color = if (p.name == viewModel.winnerName) GoldPrimary else Color.LightGray,
                                         modifier = Modifier.width(20.dp)
                                     )
                                     Box(modifier = Modifier.size(16.dp)) {
@@ -117,12 +117,12 @@ fun WinScreen(viewModel: GameViewModel) {
 
                 // EXCLUSIVE REQUESTED: Post-Game Heatmap!
                 item {
-                    KinkyCard(borderColor = LatexCrimson.copy(alpha = 0.4f)) {
+                    KinkyCard(borderColor = CrimsonGlow.copy(alpha = 0.4f)) {
                         Text(
                             text = "Pillars Summoning Heatmap",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = LatexCrimson,
+                            color = CrimsonGlow,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                         Text(
@@ -151,7 +151,7 @@ fun WinScreen(viewModel: GameViewModel) {
                                         .size(24.dp)
                                         .clip(RoundedCornerShape(4.dp))
                                         .background(heatColor)
-                                        .border(1.dp, if (landings > 0) BrassGold else Color.Transparent, RoundedCornerShape(4.dp)),
+                                        .border(1.dp, if (landings > 0) GoldPrimary else Color.Transparent, RoundedCornerShape(4.dp)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
@@ -168,12 +168,12 @@ fun WinScreen(viewModel: GameViewModel) {
 
                 // EXCLUSIVE REQUESTED: MVP Dominance Badges (Retrospective rewards!)
                 item {
-                    KinkyCard(borderColor = BrassGold.copy(alpha = 0.4f)) {
+                    KinkyCard(borderColor = GoldPrimary.copy(alpha = 0.4f)) {
                         Text(
                             text = "Ritual Dominance Badges",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = BrassGold,
+                            color = GoldPrimary,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                         

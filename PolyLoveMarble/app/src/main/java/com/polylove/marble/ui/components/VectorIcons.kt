@@ -258,7 +258,7 @@ fun DrawScope.drawChaosVector(color: Color) {
         lineTo(w * 0.5f, h * 0.7f)
         lineTo(w * 0.7f, h * 0.85f)
     }
-    drawPath(stand, color = SteelGrey, style = Stroke(width = w * 0.08f, cap = StrokeCap.Round))
+    drawPath(stand, color = TextMuted, style = Stroke(width = w * 0.08f, cap = StrokeCap.Round))
     
     drawCircle(
         color = color,
@@ -293,10 +293,10 @@ fun TileVectorIcon(type: TileType, action: TileAction, modifier: Modifier = Modi
             TileAction.SKIP_TURN -> drawRestraintIconVector(WhipBrown)
             TileAction.MOVE_SPACES -> drawWhipVector(Color(0xFFFFB703))
             TileAction.SWAP_POS -> drawSwapVector(Color(0xFF2EC4B6))
-            TileAction.ROLL_AGAIN -> drawDoubleDiceVector(BrassGold)
+            TileAction.ROLL_AGAIN -> drawDoubleDiceVector(GoldPrimary)
             TileAction.BOARD_SHUFFLE -> drawChaosVector(Color(0xFF00FFCC))
             else -> when (type) {
-                TileType.START -> drawPadlockVector(true, LatexCrimson)
+                TileType.START -> drawPadlockVector(true, CrimsonGlow)
                 TileType.TRUTH -> drawSpeechVector(color)
                 TileType.DARE -> drawFlameVector(color)
                 TileType.KINKY_LIGHT -> drawSparkleVector(color)
@@ -319,7 +319,7 @@ fun DrawScope.drawRestraintIconVector(color: Color) {
         style = Stroke(width = w * 0.08f)
     )
     drawRect(
-        color = BrassGold,
+        color = GoldPrimary,
         topLeft = Offset(w * 0.42f, h * 0.65f),
         size = Size(w * 0.16f, h * 0.18f)
     )
