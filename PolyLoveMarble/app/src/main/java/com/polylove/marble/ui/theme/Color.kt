@@ -8,41 +8,34 @@ import androidx.compose.ui.graphics.Color
 // ============================================================
 
 // Core Backgrounds
-val ObsidianBlack = Color(0xFF07060A)           // Primary background
-val DarkCardBg = Color(0xFF120E1A)              // Card/panel background
-val DarkSurface = Color(0xFF0D0A14)             // Surface elements
-val DarkElevated = Color(0xFF140F1E)            // Elevated surfaces
+val ObsidianBlack = Color(0xFF07060A)
+val DarkCardBg = Color(0xFF120E1A)
+val DarkSurface = Color(0xFF0D0A14)
+val DarkElevated = Color(0xFF140F1E)
 
 // Primary Accents (Crimson Theme)
-val CrimsonPrimary = Color(0xFF800016)           // Primary border/accent
-val CrimsonGlow = Color(0xFFff2a4b)             // Glow effects, active states
-val CrimsonDeep = Color(0xFF3C000A)             // Deep crimson backgrounds
+val CrimsonPrimary = Color(0xFF800016)
+val CrimsonGlow = Color(0xFFff2a4b)
+val CrimsonDeep = Color(0xFF3C000A)
 
 // Gold Accents
-val GoldPrimary = Color(0xFFd4af37)             // Primary gold
-val GoldBright = Color(0xFFffe270)              // Bright gold highlights
-val GoldDark = Color(0xFF8a6d1c)                // Dark gold shadows
+val GoldPrimary = Color(0xFFd4af37)
+val GoldBright = Color(0xFFffe270)
+val GoldDark = Color(0xFF8a6d1c)
 
 // Cyan Accents
-val CyanGlow = Color(0xFF00d2ff)                // Cyan glow effects
+val CyanGlow = Color(0xFF00d2ff)
 
 // Purple Accents
-val PurpleArcane = Color(0xFFa855f7)             // Arcane purple
+val PurpleArcane = Color(0xFFa855f7)
 
 // Text Colors
-val TextPrimary = Color(0xFFf0ebf5)             // Primary text
-val TextMuted = Color(0xFF9e95a8)               // Muted/secondary text
-val TextGold = Color(0xFFd4af37)                // Gold text
-val TextCrimson = Color(0xFFff2a4b)             // Crimson text
+val TextPrimary = Color(0xFFf0ebf5)
+val TextMuted = Color(0xFF9e95a8)
+val TextGold = Color(0xFFd4af37)
+val TextCrimson = Color(0xFFff2a4b)
 
-// Legacy aliases (for backward compatibility)
-val DarkCardBg = DarkCardBg
-val CrimsonGlow = CrimsonPrimary
-val IntensityRed = CrimsonGlow
-val TextMuted = TextMuted
-val GoldPrimary = GoldPrimary
-val CrimsonGlow = PurpleArcane
-val TextPrimary = TextPrimary
+// Other colors
 val WhipBrown = Color(0xFF4E2F1D)
 
 // Gemstone Colors (ROYGBIV + Black & White)
@@ -64,5 +57,4 @@ val GemstoneColors = listOf(
     GemstoneColor("Silk", Color(0xFFF5F5F5), "High-gloss pearlescent silk white")
 )
 
-// Helper to convert Color to Hex string
 fun Color.toHex(): String = String.format("#%08X", this.value.toLong())
