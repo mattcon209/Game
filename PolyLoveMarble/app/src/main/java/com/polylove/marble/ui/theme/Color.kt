@@ -58,3 +58,4 @@ val GemstoneColors = listOf(
 )
 
 fun Color.toHex(): String = String.format("#%08X", this.value.toLong())
+// Trigger rebuild
