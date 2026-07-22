@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,23 +23,20 @@ import androidx.compose.ui.unit.sp
 import com.polylove.marble.game.*
 import com.polylove.marble.ui.GameScreen
 import com.polylove.marble.ui.GameViewModel
-import com.polylove.marble.ui.components.SeductiveLeatherBackground
+import com.polylove.marble.ui.components.*
 import com.polylove.marble.ui.theme.*
 
 @Composable
 fun EditorScreen(viewModel: GameViewModel) {
-    var editorTab by remember { mutableStateOf("TILES") } // Default to TILES
-    var activeSpellbook by remember { mutableStateOf<String?>(null) } // null = Selector Hub
+    var editorTab by remember { mutableStateOf("TILES") }
+    var activeSpellbook by remember { mutableStateOf<String?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
 
     SeductiveLeatherBackground {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header Row with Back Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -46,29 +44,27 @@ fun EditorScreen(viewModel: GameViewModel) {
             ) {
                 IconButton(onClick = { 
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    if (activeSpellbook != null) {
-                        activeSpellbook = null // Back arrow inside book tabs goes back to the Selector Hub first! (PRESERVING PROGRESS)
-                    } else {
-                        viewModel.currentScreen = GameScreen.Setup // Back from Selector Hub exits back to the Setup lobby!
-                    }
+                    if (activeSpellbook != null) { activeSpellbook = null } else { viewModel.currentScreen = GameScreen.Setup }
                 }) {
-                    Icon(Icons.Default.ArrowBack, "Back", tint = LatexCrimson)
+                    Icon(Icons.Default.ArrowBack, "Back", tint = CrimsonGlow)
                 }
+                
                 Text(
                     text = "CREATION WORKSHOP",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Black,
-                    color = BrassGold
+                    fontFamily = FontFamily.Serif,
+                    color = GoldPrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
                 )
+                
                 Spacer(modifier = Modifier.width(40.dp))
             }
             
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             
             if (activeSpellbook == null) {
-                // ==========================================
-                // 1. MANDATORY SPELLBOOK SELECTOR HUB
-                // ==========================================
                 SpellbookSelectorHub(
                     viewModel = viewModel,
                     hapticFeedback = hapticFeedback,
@@ -76,107 +72,51 @@ fun EditorScreen(viewModel: GameViewModel) {
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                // ==========================================
-                // 2. NOW VIEWING TABS FOR SELECTED SPELL BOOK
-                // ==========================================
                 val activeSpellbookName = activeSpellbook!!
                 
-                // Show current active spell book at top with Change option
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(LeatherDarkPurple)
-                        .border(1.dp, BrassGold.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
+                GlassPanel(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(text = "ACTIVE SPELL BOOK", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = GoldPrimary, letterSpacing = 1.sp)
+                            Text(text = activeSpellbookName.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Black, color = Color.White, fontFamily = FontFamily.Serif)
+                        }
                         Text(
-                            text = "ACTIVE SPELL BOOK",
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = BrassGold
-                        )
-                        Text(
-                            text = activeSpellbookName.uppercase(),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White
+                            text = "CHANGE", color = CrimsonGlow, fontSize = 9.sp, fontWeight = FontWeight.Black,
+                            modifier = Modifier.clickable { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress); activeSpellbook = null }
+                                .border(1.dp, CrimsonGlow, RoundedCornerShape(4.dp)).padding(horizontal = 8.dp, vertical = 4.dp)
                         )
                     }
-                    Text(
-                        text = "CHANGE SPELL BOOK",
-                        color = LatexCrimson,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Black,
-                        modifier = Modifier
-                            .clickable {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                activeSpellbook = null
-                            }
-                            .border(1.dp, LatexCrimson, RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 3.dp)
-                    )
                 }
                 
-                // Tab Swappers Row
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     listOf("TILES", "CARDS", "CURSES").forEach { tab ->
                         val isSelected = editorTab == tab
-                        Button(
-                            onClick = { 
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                editorTab = tab 
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (isSelected) SeductiveViolet else LeatherDarkPurple
-                            ),
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(8.dp),
-                            contentPadding = PaddingValues(0.dp)
+                        Box(
+                            modifier = Modifier.weight(1f).height(36.dp).clip(RoundedCornerShape(6.dp))
+                                .background(if (isSelected) CrimsonDeep else DarkSurface)
+                                .border(1.dp, if (isSelected) CrimsonGlow else Color.White.copy(alpha = 0.2f), RoundedCornerShape(6.dp))
+                                .clickable { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress); editorTab = tab },
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(tab, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(tab, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = if (isSelected) Color.White else TextMuted, letterSpacing = 1.sp)
                         }
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 
                 Box(modifier = Modifier.weight(1f)) {
                     when (editorTab) {
-                        "TILES" -> {
-                            TileEditorTab(
-                                viewModel = viewModel,
-                                hapticFeedback = hapticFeedback,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                        
-                        "CARDS" -> {
-                            CardEditorTab(
-                                viewModel = viewModel,
-                                activeSpellbookName = activeSpellbookName,
-                                hapticFeedback = hapticFeedback,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                        
-                        "CURSES" -> {
-                            CurseEditorTab(
-                                viewModel = viewModel,
-                                activeSpellbookName = activeSpellbookName,
-                                hapticFeedback = hapticFeedback,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
+                        "TILES" -> TileEditorTab(viewModel = viewModel, hapticFeedback = hapticFeedback, modifier = Modifier.fillMaxSize())
+                        "CARDS" -> CardEditorTab(viewModel = viewModel, activeSpellbookName = activeSpellbookName, hapticFeedback = hapticFeedback, modifier = Modifier.fillMaxSize())
+                        "CURSES" -> CurseEditorTab(viewModel = viewModel, activeSpellbookName = activeSpellbookName, hapticFeedback = hapticFeedback, modifier = Modifier.fillMaxSize())
                     }
                 }
             }
